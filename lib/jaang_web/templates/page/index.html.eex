@@ -1,0 +1,4 @@
+<section class="row">
+  <h1 class="text-orange-500 text-5xl font-bold text-center">Jaang</h1>
+  <button class="btn-indigo">Hello</button>
+</section>
