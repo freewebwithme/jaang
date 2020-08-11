@@ -9,15 +9,32 @@ defmodule Jaang.Product do
     field :sale_price, Money.Ecto.Amount.Type
     field :vendor, :string
     field :published, :boolean
+    field :barcode, :string
+
+    # TODO: Add tags
 
     has_one :unit, Jaang.Product.Unit
     belongs_to :store, Jaang.Store
     belongs_to :category, Jaang.Category
+    belongs_to :sub_category, Jaang.Category.SubCategory
+
+    timestamps()
   end
 
   @doc false
   def changeset(%Jaang.Product{} = product, attrs) do
     product
-    |> cast(attrs, [:name, :description, :regular_price, :sale_price, :vendor, :published])
+    |> cast(attrs, [
+      :name,
+      :description,
+      :regular_price,
+      :sale_price,
+      :vendor,
+      :published,
+      :barcode,
+      :store_id,
+      :category_id,
+      :sub_category_id
+    ])
   end
 end

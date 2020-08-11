@@ -39,7 +39,7 @@ defmodule JaangWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: JaangWeb.Telemetry
+      live_dashboard "/live/dashboard", metrics: JaangWeb.Telemetry
     end
   end
 end

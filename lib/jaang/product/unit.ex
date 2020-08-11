@@ -11,6 +11,6 @@ defmodule Jaang.Product.Unit do
   @doc false
   def changeset(%Jaang.Product.Unit{} = unit, attrs) do
     unit
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :product_id])
   end
 end
