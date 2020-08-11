@@ -48,3 +48,4 @@ alias Jaang.{Category, Store, Product}
 alias Jaang.Category.Categories
 alias Jaang.Store.Stores
 alias Jaang.Product.Products
+alias ExAws.S3

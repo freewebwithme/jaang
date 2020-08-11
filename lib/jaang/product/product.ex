@@ -10,10 +10,9 @@ defmodule Jaang.Product do
     field :vendor, :string
     field :published, :boolean
     field :barcode, :string
+    field :unit_id, :id
 
-    # TODO: Add tags
-
-    has_one :unit, Jaang.Product.Unit
+    has_many :product_images, Jaang.Product.ProductImage
     belongs_to :store, Jaang.Store
     belongs_to :category, Jaang.Category
     belongs_to :sub_category, Jaang.Category.SubCategory
@@ -34,7 +33,8 @@ defmodule Jaang.Product do
       :barcode,
       :store_id,
       :category_id,
-      :sub_category_id
+      :sub_category_id,
+      :unit_id
     ])
   end
 end

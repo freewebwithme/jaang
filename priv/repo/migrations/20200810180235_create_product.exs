@@ -13,6 +13,8 @@ defmodule Jaang.Repo.Migrations.CreateProduct do
 
       add :store_id, references(:stores, on_delete: :nothing)
       add :category_id, references(:categories, on_delete: :nothing)
+
+      timestamps()
     end
   end
 end

@@ -58,7 +58,7 @@ alias Jaang.Repo
 
 # Meat & Seafood
 {:ok, packaged_pork} = Categories.create_subcategory(meat_seafood, %{name: "Packaged Pork"})
-{:ok, packaged_beef} = Categories.create_subcategory(meat_seafood, %{name: "Packaged Bee"})
+{:ok, packaged_beef} = Categories.create_subcategory(meat_seafood, %{name: "Packaged Beef"})
 
 # Frozen
 {:ok, frozen_dump} = Categories.create_subcategory(frozen, %{name: "Frozen Dumplings"})
@@ -79,3 +79,111 @@ alias Jaang.Repo
 # Beverages
 {:ok, tea} = Categories.create_subcategory(beverages, %{name: "Tea"})
 {:ok, juice} = Categories.create_subcategory(beverages, %{name: "Juice & Nectars"})
+
+# Create Unit
+{:ok, lb} = Products.create_unit(%{name: "lb"})
+{:ok, each} = Products.create_unit(%{name: "each"})
+{:ok, pack} = Products.create_unit(%{name: "pack"})
+
+prices = [
+  300,
+  499,
+  999,
+  1099,
+  599,
+  1499
+]
+
+product_image_urls = [
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Japchae-Potstickers.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Live-Fluke.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/al-sae-woo.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/bacon.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/bcd-tofu.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/cabbage.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/coffee.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/coke.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/cold-noodle.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/cup-ban.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/curry.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/eggs.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/greek-yogurt.JPG",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/horizon-milk.JPG",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/ice-cream-2.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/ice-cream.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/lemonade.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/nutella.png",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/oj.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/onion-ring.jpeg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/pocky.png",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/pork-shoulder.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/red-cabbage.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/red-grape.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/salmon-filet.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/strawberry.png",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/tofu.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/yogurt.png"
+]
+
+units = [
+  lb,
+  each,
+  pack
+]
+
+stores = [
+  store1,
+  store2,
+  store3
+]
+
+categories = [
+  produce,
+  meat_seafood,
+  deli,
+  frozen,
+  snacks,
+  dairy_eggs,
+  beverages
+]
+
+sub_categories = [
+  fresh_veg,
+  fresh_fruits,
+  packaged_pork,
+  packaged_beef,
+  frozen_dump,
+  ice_cream,
+  cookies_cakes,
+  candy_choco,
+  eggs,
+  milk,
+  prepared_meals,
+  lunch_meat,
+  tea,
+  juice
+]
+
+# Create Products
+for x <- 0..99 do
+  sub_category = Enum.random(sub_categories)
+
+  attrs = %{
+    name: "Product-#{x}",
+    description: "This is nice product #{x}",
+    regular_price: Enum.random(prices),
+    published: true,
+    unit_id: Enum.random(units).id,
+    store_id: Enum.random(stores).id,
+    category_id: sub_category.category_id,
+    sub_category_id: sub_category.id
+  }
+
+  {:ok, product} = Products.create_product(attrs)
+
+  product_images =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      default: true
+    })
+end

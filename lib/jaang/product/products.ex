@@ -3,12 +3,27 @@ defmodule Jaang.Product.Products do
    Function module for Product
   """
   alias Jaang.Product
+  alias Jaang.Product.{Unit, ProductImage}
   alias Jaang.Repo
   import Ecto.Query
 
   def create_product(attrs) do
     %Product{}
     |> Product.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_unit(attrs) do
+    %Unit{}
+    |> Unit.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_product_image(product, attrs) do
+    attrs = Map.put(attrs, :product_id, product.id)
+
+    %ProductImage{}
+    |> ProductImage.changeset(attrs)
     |> Repo.insert()
   end
 
