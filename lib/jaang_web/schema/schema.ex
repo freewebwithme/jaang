@@ -3,6 +3,8 @@ defmodule JaangWeb.Schema do
   alias JaangWeb.Resolvers.{StoreResolver, ProductResolver, CategoryResolver}
   alias Jaang.Product.Products
 
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+
   query do
     @desc "get stores"
     field :get_stores, list_of(:store) do
@@ -51,7 +53,7 @@ defmodule JaangWeb.Schema do
   object :category do
     field :name, :string
     field :sub_categories, list_of(:sub_category)
-    field :products, list_of(:product)
+    field :products, list_of(:product), resolve: dataloader(Products)
   end
 
   object :sub_category do
@@ -89,7 +91,7 @@ defmodule JaangWeb.Schema do
     field :store_name, :string
     field :category_name, :string
     field :sub_category_name, :string
-    field :product_images, list_of(:product_image)
+    field :product_images, list_of(:product_image), resolve: dataloader(Products)
   end
 
   object :product_image do
@@ -101,5 +103,11 @@ defmodule JaangWeb.Schema do
     loader =
       Dataloader.new()
       |> Dataloader.add_source(Products, Products.data())
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
   end
 end

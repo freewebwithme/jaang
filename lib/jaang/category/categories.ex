@@ -27,7 +27,7 @@ defmodule Jaang.Category.Categories do
 
   # TODO: Add limit to products(Pagination)
   def get_products_by_category(id) do
-    Repo.get(Category, id) |> Repo.preload(:products)
+    Repo.get(Category, id)
   end
 
   def get_all_categories() do
