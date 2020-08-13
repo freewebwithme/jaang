@@ -15,6 +15,10 @@ defmodule Jaang.Store.Stores do
     Repo.get(Store, id)
   end
 
+  def get_all_stores() do
+    Repo.all(Store)
+  end
+
   # TODO: Create function that returns
   # first 10 items from each category for front page
 end

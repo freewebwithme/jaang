@@ -28,11 +28,19 @@ defmodule Jaang.Product.Products do
   end
 
   def get_product(id) do
-    Repo.get(Product, id)
+    Repo.get(Product, id) |> Repo.preload(:product_images)
   end
 
   def get_all_products(category_id) do
     query = from p in Product, where: p.category_id == ^category_id
     Repo.all(query)
+  end
+
+  def data() do
+    Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
   end
 end

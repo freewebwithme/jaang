@@ -11,6 +11,10 @@ defmodule Jaang.Product do
     field :published, :boolean
     field :barcode, :string
     field :unit_id, :id
+    field :unit_name, :string
+    field :store_name, :string
+    field :category_name, :string
+    field :sub_category_name, :string
 
     has_many :product_images, Jaang.Product.ProductImage
     belongs_to :store, Jaang.Store
@@ -34,7 +38,11 @@ defmodule Jaang.Product do
       :store_id,
       :category_id,
       :sub_category_id,
-      :unit_id
+      :unit_id,
+      :unit_name,
+      :store_name,
+      :category_name,
+      :sub_category_name
     ])
   end
 end

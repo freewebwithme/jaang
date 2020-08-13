@@ -2,6 +2,7 @@ defmodule Jaang.Category.Categories do
   @moduledoc """
   Function module related to Category Schema
   """
+  alias Jaang.Product
   alias Jaang.Category
   alias Jaang.Category.SubCategory
   alias Jaang.Repo
@@ -24,11 +25,16 @@ defmodule Jaang.Category.Categories do
     Repo.get(Category, id)
   end
 
-  def get_category_with_products(id) do
+  # TODO: Add limit to products(Pagination)
+  def get_products_by_category(id) do
     Repo.get(Category, id) |> Repo.preload(:products)
   end
 
   def get_all_categories() do
     Repo.all(Category)
+  end
+
+  def get_products_by_sub_category(id) do
+    Repo.get_by(Product, sub_category_id: id)
   end
 end

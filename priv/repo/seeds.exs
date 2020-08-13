@@ -166,16 +166,23 @@ sub_categories = [
 
 # Create Products
 for x <- 0..99 do
+  store = Enum.random(stores)
+  category = Enum.random(categories)
   sub_category = Enum.random(sub_categories)
+  unit = Enum.random(units)
 
   attrs = %{
     name: "Product-#{x}",
     description: "This is nice product #{x}",
     regular_price: Enum.random(prices),
     published: true,
-    unit_id: Enum.random(units).id,
-    store_id: Enum.random(stores).id,
+    unit_id: unit.id,
+    unit_name: unit.name,
+    store_name: store.name,
+    store_id: store.id,
+    category_name: category.name,
     category_id: sub_category.category_id,
+    sub_category_name: sub_category.name,
     sub_category_id: sub_category.id
   }
 
