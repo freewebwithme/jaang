@@ -17,6 +17,9 @@ defmodule JaangWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/login", LoginController, :index
+    get "/register", RegisterController, :index
+    get "/newsletter", NewsletterController, :index
   end
 
   forward "/api", Absinthe.Plug, schema: JaangWeb.Schema
