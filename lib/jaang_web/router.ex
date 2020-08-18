@@ -17,9 +17,16 @@ defmodule JaangWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/login", LoginController, :index
     get "/register", RegisterController, :index
     get "/newsletter", NewsletterController, :index
+  end
+
+  scope "/auth", JaangWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/identity/callback", AuthController, :identity_callback
   end
 
   forward "/api", Absinthe.Plug, schema: JaangWeb.Schema

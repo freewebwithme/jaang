@@ -53,7 +53,11 @@ defmodule Jaang.MixProject do
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
-      {:dataloader, "~> 1.0.0"}
+      {:dataloader, "~> 1.0.0"},
+      {:ueberauth, "~>0.6"},
+      {:ueberauth_google, "~> 0.9.0"},
+      {:ueberauth_identity, "~> 0.3.0"},
+      {:comeonin_ecto_password, "~> 3.0"}
     ]
   end
 
