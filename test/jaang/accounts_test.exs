@@ -80,7 +80,14 @@ defmodule Jaang.AccountsTest do
       instructions: "instructions"
     }
 
-    {:ok, address1} = Accounts.create_address(user, attrs1)
-    {:ok, address2} = Accounts.create_address(user, attrs2)
+    {:ok, _address1} = Accounts.create_address(user, attrs1)
+    {:ok, _address2} = Accounts.create_address(user, attrs2)
+
+    # get user with preload addresses
+    query = from u in User, where: u.id == ^user.id
+    saved_user = Repo.one(query) |> Repo.preload(:addresses)
+
+    assert is_list(saved_user.addresses)
+    IO.inspect(saved_user.addresses)
   end
 end
