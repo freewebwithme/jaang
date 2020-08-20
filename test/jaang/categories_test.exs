@@ -1,19 +1,18 @@
 defmodule Jaang.CategoriesTest do
   use Jaang.DataCase, async: true
 
-  alias Jaang.Category.Categories
-  alias Jaang.Product.Products
+  alias Jaang.StoreManager
 
   setup do
     {:ok, category} =
-      Categories.create_category(%{
+      StoreManager.create_category(%{
         name: "Category1"
       })
 
-    {:ok, sub_category} = Categories.create_subcategory(category, %{name: "Subcategory1"})
+    {:ok, sub_category} = StoreManager.create_subcategory(category, %{name: "Subcategory1"})
 
     {:ok, product} =
-      Products.create_product(%{
+      StoreManager.create_product(%{
         name: "Product1",
         category_id: category.id,
         category_name: category.name,
@@ -30,13 +29,13 @@ defmodule Jaang.CategoriesTest do
 
   test "get category correctly?", context do
     category_id = context[:category].id
-    category = Categories.get_category(category_id)
+    category = StoreManager.get_category(category_id)
     assert category.id == category_id
   end
 
   test "get products by subcategory", context do
     sub_category_id = context[:sub_category].id
-    products = Categories.get_subcategory_with_products(sub_category_id)
+    products = StoreManager.get_products_by_sub_category(sub_category_id)
 
     assert products.name == "Product1"
   end

@@ -14,6 +14,8 @@ defmodule Jaang.Account.Accounts do
     %Profile{}
     |> Profile.changeset(attrs)
     |> Repo.insert()
+
+    {:ok, user}
   end
 
   def create_address(%User{} = user, attrs) do

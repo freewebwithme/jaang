@@ -1,7 +1,6 @@
 defmodule Jaang.StoresTest do
   use Jaang.DataCase, async: true
 
-  alias Jaang.Store
   alias Jaang.Store.Stores
 
   test "store is created with information correctly" do

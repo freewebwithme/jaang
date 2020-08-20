@@ -24,7 +24,8 @@ defmodule Jaang.Account.Address do
       :zipcode,
       :city,
       :state,
-      :instructions
+      :instructions,
+      :user_id
     ]
 
     address
