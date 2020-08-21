@@ -29,4 +29,8 @@ defmodule Jaang.Account.Accounts do
   def get_user(id) do
     Repo.get_by(User, id: id) |> Repo.preload([:profile, :addresses])
   end
+
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.changeset(user, attrs)
+  end
 end

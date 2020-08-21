@@ -4,7 +4,8 @@ defmodule JaangWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    plug :fetch_live_flash
+    plug :put_root_layout, {JaangWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -17,8 +18,12 @@ defmodule JaangWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/register", RegisterController, :index
+    live "/register", RegisterLive
     get "/newsletter", NewsletterController, :index
+  end
+
+  scope "/store", JaangWeb do
+    pipe_through :browser
   end
 
   scope "/auth", JaangWeb do

@@ -34,6 +34,8 @@ defmodule Jaang.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.5.4"},
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view", override: true},
+      {:floki, ">= 0.0.0", only: :test},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
