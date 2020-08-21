@@ -13,9 +13,24 @@ defmodule JaangWeb.RegisterLive do
     IO.inspect(params)
 
     changeset = AccountManager.change_user(%Jaang.Account.User{})
-    IO.puts("inspecting changeset")
-    IO.inspect(changeset)
+
     socket = assign(socket, changeset: changeset)
+    {:noreply, socket}
+  end
+
+  def handle_event("validate", %{"user" => params}, socket) do
+    IO.puts("Inspecting params")
+    IO.inspect(params)
+
+    changeset =
+      %Jaang.Account.User{}
+      |> AccountManager.change_user(params)
+      |> Map.put(:action, :insert)
+
+    socket = assign(socket, changeset: changeset)
+
+    IO.puts("Inspecting params")
+    IO.inspect(changeset)
 
     {:noreply, socket}
   end

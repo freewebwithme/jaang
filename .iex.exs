@@ -51,4 +51,5 @@ alias Jaang.Product.Products
 alias Jaang.StoreManager
 alias Jaang.Account.{User, Profile, Address}
 alias Jaang.Account.Accounts
+alias Jaang.AccountManager
 alias ExAws.S3

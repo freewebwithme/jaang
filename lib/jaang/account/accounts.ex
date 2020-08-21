@@ -33,4 +33,8 @@ defmodule Jaang.Account.Accounts do
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
+
+  def change_profile(%Profile{} = profile, attrs \\ %{}) do
+    Profile.changeset(profile, attrs)
+  end
 end

@@ -24,55 +24,60 @@
   </div>
 
   <div class="flex justify-center">
-    <%= f = form_for @changeset, "#", phx_submit: "register", class: "w-1/2" %>
+    <%= f = form_for @changeset, "#",  [phx_change: :validate, phx_submit: :register,  class: "w-1/2"] %>
+
     <div class="mt-5">
-      <label
-        for="firstname"
-        class="block text-sm font-medium leading-5 text-gray-700"
-        >First Name</label
-      >
       <div class="mt-1 relative rounded-md shadow-sm">
-        <%= text_input f, :first_name, required: true, placeholder:
-        "John", class: "form-input block w-full sm:text-sm
-        sm:leading-5" %>
+        <%= inputs_for f, :profile, fn fp -> %>
+          <%= label f, :first_name, class: "block text-sm font-medium leading-5 text-gray-700" %>
+          <%= text_input fp, :first_name, required: true, placeholder: "John",
+              class: "form-input block w-full sm:text-sm sm:leading-5",
+              phx_debounce: "2000"
+              %>
+        <% end %>
       </div>
     </div>
     <div class="mt-5">
-      <label
-        for="lastname"
-        class="block text-sm font-medium leading-5 text-gray-700"
-        >Last Name</label
-      >
       <div class="mt-1 relative rounded-md shadow-sm">
-        <%= text_input f, :last_name, required: true, placeholder:
-        "Doe", class: "form-input block w-full sm:text-sm
-        sm:leading-5" %>
+        <%= inputs_for f, :profile, fn fp -> %>
+          <%= label f, :last_name, class: "block text-sm font-medium leading-5 text-gray-700" %>
+          <%= text_input fp, :last_name, required: true, placeholder: "Doe",
+              class: "form-input block w-full sm:text-sm sm:leading-5",
+              phx_debounce: "2000"
+           %>
+        <% end %>
       </div>
     </div>
     <div class="mt-5">
-      <label
-        for="email"
-        class="block text-sm font-medium leading-5 text-gray-700"
-        >Email</label
-      >
+      <%= label f, :email, class: "block text-sm font-medium leading-5 text-gray-700" %>
       <div class="mt-1 relative rounded-md shadow-sm">
-        <%= text_input f, :email, required: true, placeholder:
-        "you@example.com", class: "form-input block w-full sm:text-sm
-        sm:leading-5" %>
+        <%= text_input f, :email, required: true, placeholder: "you@example.com", 
+            class: "form-input block w-full sm:text-sm sm:leading-5",
+            phx_debounce: "2000"   
+        %>
+        <%= error_tag f, :email %>
       </div>
     </div>
     <div class="mt-5">
-      <label
-        for="password"
-        class="block text-sm font-medium leading-5 text-gray-700"
-        >Password</label
-      >
+      <%= label f, :password, class: "block text-sm font-medium leading-5 text-gray-700" %>
       <div class="mt-1 relative rounded-md shadow-sm">
-        <%= text_input f, :password, required: true, type: "password", placeholder:
-        "********", class: "form-input block w-full sm:text-sm
-        sm:leading-5" %>
+        <%= password_input f, :password, required: true, placeholder: "********", value: input_value(f, :password),
+            class: "form-input block w-full sm:text-sm sm:leading-5", 
+            phx_debounce: "2000"
+        %>
+        <%= error_tag f, :password%>
       </div>
     </div>
+    <div class="mt-5">
+      <%= label f, :password_confirm, class: "block text-sm font-medium leading-5 text-gray-700" %>
+      <div class="mt-1 relative rounded-md shadow-sm">
+        <%= password_input f, :password_confirm, required: true, placeholder: "********", value: input_value(f, :password_confirm),
+            class: "form-input block w-full sm:text-sm sm:leading-5", 
+            phx_debounce: "2000"    
+        %>
+      </div>
+    </div>
+
 
     <div class="mt-6">
       <span class="block w-full rounded-md shadow-sm">
@@ -82,6 +87,6 @@
         %>
       </span>
     </div>
-  </form>
+   </form>
   </div>
 </div>

@@ -5,4 +5,5 @@ defmodule Jaang.AccountManager do
   defdelegate create_address(user, attrs), to: Accounts
   defdelegate get_user(id), to: Accounts
   defdelegate change_user(user, attrs \\ %{}), to: Accounts
+  defdelegate change_profile(profile, attrs \\ %{}), to: Accounts
 end
