@@ -14,6 +14,11 @@ defmodule JaangWeb.RegisterLive do
 
     changeset = AccountManager.change_user(%Jaang.Account.User{})
 
+    case AccountManager.create_user(params) do
+      {:ok, user} ->
+        nil
+    end
+
     socket = assign(socket, changeset: changeset)
     {:noreply, socket}
   end

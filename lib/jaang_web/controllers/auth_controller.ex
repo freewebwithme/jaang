@@ -2,9 +2,12 @@ defmodule JaangWeb.AuthController do
   use JaangWeb, :controller
   plug Ueberauth
 
+  alias Jaang.AccountManager
+  alias JaangWeb.UserAuth
   alias Ueberauth.Strategy.Helpers
 
   def request(conn, _params) do
+    IO.inspect(conn)
     render(conn, "request.html", callback_url: Helpers.callback_url(conn))
   end
 
@@ -33,14 +36,18 @@ defmodule JaangWeb.AuthController do
     |> redirect(to: "/")
   end
 
+  @doc """
+  Regular log in using email and password
+  """
   def identity_callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
     IO.puts("printing ueberauth identity auth struct")
     IO.inspect(auth)
+    %{extra: %{raw_info: %{"email" => email, "password" => password}}} = auth
 
-    conn
-    |> put_flash(:info, "Successfully logged in")
-    |> put_session(:current_user, "user")
-    |> configure_session(renew: true)
-    |> redirect(to: "/")
+    if user = AccountManager.get_user_by_email_and_password(email, password) do
+      UserAuth.log_in_user(conn, user, auth)
+    else
+      render(conn, "request.html", error_message: "Invalid email or password")
+    end
   end
 end

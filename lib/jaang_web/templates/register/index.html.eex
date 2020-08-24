@@ -23,20 +23,65 @@
     </p>
   </div>
 
-  <div>
-    <%= form_for @conn, Routes.register_path(@conn, :create), fn f -> %>
-    <div>
-      <label
-        for="email"
-        class="block text-sm font-medium leading-5 text-gray-700"
-        >Email</label
-      >
+  <div class="flex justify-center">
+    <%= f = form_for @changeset, Routes.register_path(@conn, :create), [class: "w-1/2"] %>
+
+    <div class="mt-5">
+      <div class="mt-1 relative rounded-md shadow-sm">
+        <%= inputs_for f, :profile, fn fp -> %>
+         <%= label f, :first_name, class: "block text-sm font-medium leading-5 text-gray-700" %> 
+         <%= text_input fp, :first_name, required: true, placeholder: "John", 
+             class: "form-input block w-full sm:text-sm sm:leading-5" %> 
+        <% end %>
+      </div>
+    </div>
+    <div class="mt-5">
+      <div class="mt-1 relative rounded-md shadow-sm">
+        <%= inputs_for f, :profile, fn fp -> %>
+         <%= label f, :last_name, class: "block text-sm font-medium leading-5 text-gray-700" %> 
+         <%= text_input fp, :last_name, required: true, placeholder: "Doe", 
+            class: "form-input block w-full sm:text-sm sm:leading-5" %> 
+        <% end %>
+      </div>
+    </div>
+    <div class="mt-5">
+      <%= label f, :email, class: "block text-sm font-medium leading-5
+      text-gray-700" %>
       <div class="mt-1 relative rounded-md shadow-sm">
         <%= text_input f, :email, required: true, placeholder:
         "you@example.com", class: "form-input block w-full sm:text-sm
-        sm:leading-5" %>
+        sm:leading-5" %> <%= error_tag f, :email %>
       </div>
     </div>
-    <% end %>
+    <div class="mt-5">
+      <%= label f, :password, class: "block text-sm font-medium leading-5
+      text-gray-700" %>
+      <div class="mt-1 relative rounded-md shadow-sm">
+        <%= password_input f, :password, required: true, placeholder:
+        "********", value: input_value(f, :password), class: "form-input block
+        w-full sm:text-sm sm:leading-5" %> <%= error_tag f, :password %>
+      </div>
+    </div>
+    <div class="mt-5">
+      <%= label f, :password_confirmation, class: "block text-sm font-medium
+      leading-5 text-gray-700" %>
+      <div class="mt-1 relative rounded-md shadow-sm">
+        <%= password_input f, :password_confirmation, required: true,
+        placeholder: "********", value: input_value(f, :password_confirm),
+        class: "form-input block w-full sm:text-sm sm:leading-5" %> <%=
+        error_tag f, :password_confirmation %>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <span class="block w-full rounded-md shadow-sm">
+        <%= submit "Register", class: "w-full flex justify-center py-2 px-4
+        border border-transparent text-sm font-medium rounded-md text-white
+        bg-indigo-600 hover:bg-indigo-500 focus:outline-none
+        focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700
+        transition duration-150 ease-in-out" %>
+      </span>
+    </div>
+  </form>
   </div>
 </div>

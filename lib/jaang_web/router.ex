@@ -1,6 +1,8 @@
 defmodule JaangWeb.Router do
   use JaangWeb, :router
 
+  import JaangWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule JaangWeb.Router do
     plug :put_root_layout, {JaangWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -18,12 +21,15 @@ defmodule JaangWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    live "/register", RegisterLive
+    get "/register", RegisterController, :index
+    post "/register", RegisterController, :create
     get "/newsletter", NewsletterController, :index
   end
 
   scope "/store", JaangWeb do
-    pipe_through :browser
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/", MainLive
   end
 
   scope "/auth", JaangWeb do

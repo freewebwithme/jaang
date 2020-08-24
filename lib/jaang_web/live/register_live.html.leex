@@ -65,16 +65,17 @@
             class: "form-input block w-full sm:text-sm sm:leading-5", 
             phx_debounce: "2000"
         %>
-        <%= error_tag f, :password%>
+        <%= error_tag f, :password %>
       </div>
     </div>
     <div class="mt-5">
-      <%= label f, :password_confirm, class: "block text-sm font-medium leading-5 text-gray-700" %>
+      <%= label f, :password_confirmation, class: "block text-sm font-medium leading-5 text-gray-700" %>
       <div class="mt-1 relative rounded-md shadow-sm">
-        <%= password_input f, :password_confirm, required: true, placeholder: "********", value: input_value(f, :password_confirm),
+        <%= password_input f, :password_confirmation, required: true, placeholder: "********", value: input_value(f, :password_confirm),
             class: "form-input block w-full sm:text-sm sm:leading-5", 
             phx_debounce: "2000"    
         %>
+        <%= error_tag f, :password_confirmation %>
       </div>
     </div>
 

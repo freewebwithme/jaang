@@ -59,9 +59,7 @@ defmodule Jaang.MixProject do
       {:ueberauth, "~>0.6"},
       {:ueberauth_google, "~> 0.9.0"},
       {:ueberauth_identity, "~> 0.3.0"},
-      {:comeonin_ecto_password, "~> 3.0"},
-      {:pbkdf2_elixir, "~> 1.0"},
-      {:email_checker, "~> 0.1.3"}
+      {:bcrypt_elixir, "~> 2.0"}
     ]
   end
 
