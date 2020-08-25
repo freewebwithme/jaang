@@ -23,6 +23,13 @@ defmodule Jaang.Account.User do
     |> cast_assoc(:profile, with: &Jaang.Account.Profile.changeset/2)
   end
 
+  def google_changeset(%Jaang.Account.User{} = user, attrs) do
+    user
+    |> cast(attrs, [:email, :password])
+    |> validate_email()
+    |> cast_assoc(:profile)
+  end
+
   defp validate_email(changeset) do
     changeset
     |> validate_required([:email])

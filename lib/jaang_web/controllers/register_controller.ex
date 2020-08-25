@@ -9,20 +9,27 @@ defmodule JaangWeb.RegisterController do
     render(conn, "index.html", changeset: changeset)
   end
 
-  def create(conn, %{"user" => user_params}) do
-    IO.puts("Inspecting register params")
-    IO.inspect(user_params)
+  def create(conn, %{"g-recaptcha-response" => recaptcha_response, "user" => user_params}) do
+    IO.inspect(recaptcha_response)
 
-    case AccountManager.create_user_with_profile(user_params) do
-      {:ok, user} ->
-        # TODO: Send confirmation email
+    case Recaptcha.verify(recaptcha_response) do
+      {:ok, _response} ->
+        case AccountManager.create_user_with_profile(user_params) do
+          {:ok, user} ->
+            # TODO: Send welcome email
 
+            conn
+            |> put_flash(:info, "Your account is created successfully")
+            |> UserAuth.log_in_user(user)
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            render(conn, "index.html", changeset: changeset)
+        end
+
+      _ ->
         conn
-        |> put_flash(:info, "Your account is created successfully")
-        |> UserAuth.log_in_user(user)
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "index.html", changeset: changeset)
+        |> put_flash(:error, "Recaptch value is invalid, Try again")
+        |> redirect(to: Routes.register_path(conn, :index))
     end
   end
 end

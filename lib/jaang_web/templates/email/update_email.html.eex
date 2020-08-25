@@ -1,0 +1,6 @@
+<h4>Update your email address</h4>
+
+<p>Hi <%= @user.email %></p>
+<p>You can change your email by visiting the url below:</p>
+<a href="<%= @url %>" target="_blank">Change your email</a>
+<p>If you didn't request this change, please ignore this.</p>

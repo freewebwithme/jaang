@@ -1,1 +1,6 @@
 <h1>Main page</h1>
+<div class="text-sm leading-5">
+  <%= link "Logout", to: Routes.auth_path(@socket, :delete), method: :delete,
+  class: "font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none
+  focus:underline transition ease-in-out duration-150" %>
+</div>

@@ -18,6 +18,8 @@ config :jaang, JaangWeb.Endpoint,
   pubsub_server: Jaang.PubSub,
   live_view: [signing_salt: "KJsHXRjB"]
 
+config :jaang, Jaang.Mailer, adapter: Bamboo.LocalAdapter
+
 config :money,
   default_currency: :USD
 
@@ -28,13 +30,18 @@ config :ex_aws,
 
 config :ueberauth, Ueberauth,
   providers: [
-    google: {Ueberauth.Strategy.Google, []},
+    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]},
     identity: {Ueberauth.Strategy.Identity, [callback_methods: ["POST"]]}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
+
+config :recaptcha,
+  public_key: {:system, "RECAPTCHA_PUBLIC_KEY"},
+  secret: {:system, "RECAPTCHA_PRIVATE_KEY"},
+  json_library: Jason
 
 # Configures Elixir's Logger
 config :logger, :console,

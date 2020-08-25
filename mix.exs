@@ -59,7 +59,9 @@ defmodule Jaang.MixProject do
       {:ueberauth, "~>0.6"},
       {:ueberauth_google, "~> 0.9.0"},
       {:ueberauth_identity, "~> 0.3.0"},
-      {:bcrypt_elixir, "~> 2.0"}
+      {:bcrypt_elixir, "~> 2.0"},
+      {:bamboo, "~> 1.5"},
+      {:recaptcha, "~> 3.0"}
     ]
   end
 

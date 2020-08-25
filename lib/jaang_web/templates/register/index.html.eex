@@ -15,7 +15,7 @@
     <p class="mt-2 text-center text-sm leading-5 text-gray-600 max-w">
       or
       <a
-        href="#"
+        href="<%= Routes.auth_path(@conn, :request, "identity") %>"
         class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
       >
         sign in
@@ -73,6 +73,12 @@
       </div>
     </div>
 
+    <div class="flex justify-end">
+
+      <div class="mt-6">
+        <%= raw Recaptcha.Template.display %>
+      </div>
+    </div>
     <div class="mt-6">
       <span class="block w-full rounded-md shadow-sm">
         <%= submit "Register", class: "w-full flex justify-center py-2 px-4
