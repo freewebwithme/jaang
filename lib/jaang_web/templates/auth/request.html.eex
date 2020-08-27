@@ -21,7 +21,11 @@
         sign up
       </a>
     </p>
+    <%= if @conn.assigns[:error_message] do %>
+    <p class="text-center mt-6 text-red-400"><%= @error_message %></p>
+    <% end %>
   </div>
+
 
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">

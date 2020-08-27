@@ -1,19 +1,22 @@
 defmodule Jaang.AccountsTest do
   use Jaang.DataCase, async: true
 
-  alias Jaang.Account.Accounts
+  alias Jaang.AccountManager
   alias Jaang.Account.User
 
   setup do
     attrs = %{
       email: "test@example.com",
-      password: "secret",
-      first_name: "Taehwan",
-      last_name: "Kim",
-      phone: "2135055819"
+      password: "secretsecret",
+      password_confirmation: "secretsecret",
+      profile: %{
+        first_name: "Taehwan",
+        last_name: "Kim",
+        phone: "2135055819"
+      }
     }
 
-    {:ok, user} = Accounts.create_user(attrs)
+    {:ok, user} = AccountManager.create_user_with_profile(attrs)
 
     {:ok, %{user: user}}
   end
@@ -45,7 +48,7 @@ defmodule Jaang.AccountsTest do
       instructions: "instructions"
     }
 
-    {:ok, address1} = Accounts.create_address(user, attrs)
+    {:ok, address1} = AccountManager.create_address(user, attrs)
 
     assert address1.address_line_1 == "777 Good st"
     assert address1.address_line_2 == "APT 320"
@@ -80,14 +83,13 @@ defmodule Jaang.AccountsTest do
       instructions: "instructions"
     }
 
-    {:ok, _address1} = Accounts.create_address(user, attrs1)
-    {:ok, _address2} = Accounts.create_address(user, attrs2)
+    {:ok, _address1} = AccountManager.create_address(user, attrs1)
+    {:ok, _address2} = AccountManager.create_address(user, attrs2)
 
     # get user with preload addresses
     query = from u in User, where: u.id == ^user.id
     saved_user = Repo.one(query) |> Repo.preload(:addresses)
 
     assert is_list(saved_user.addresses)
-    IO.inspect(saved_user.addresses)
   end
 end

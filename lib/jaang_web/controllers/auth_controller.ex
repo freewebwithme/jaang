@@ -22,20 +22,12 @@ defmodule JaangWeb.AuthController do
     |> redirect(to: "/")
   end
 
-  # TODO: Implement fail scenario
+  @doc """
+  Google OAuth Login
+  """
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    IO.puts("printing ueberauth auth struct")
-    IO.inspect(auth)
-
-    %{
-      extra: %{
-        raw_info: %{
-          user: %{"email" => email, "family_name" => last_name, "given_name" => first_name}
-        }
-      }
-    } = auth
-
-    attrs = %{email: email, first_name: first_name, last_name: last_name}
+    %{info: %{email: email, first_name: first_name, last_name: last_name}} = auth
+    attrs = %{email: email, profile: %{first_name: first_name, last_name: last_name}}
 
     case AccountManager.create_user_with_profile_using_google(attrs) do
       {:ok, user} ->
@@ -45,26 +37,16 @@ defmodule JaangWeb.AuthController do
       {:error, changeset} ->
         render(conn, "request.html",
           error_message: "Invalid email or password",
-          changeset: changeset
+          changeset: changeset,
+          callback_url: Helpers.callback_url(conn)
         )
-
-        IO.inspect(changeset)
     end
-
-    conn
-    |> put_flash(:info, "Successfully logged in")
-    |> put_session(:current_user, "user")
-    |> configure_session(renew: true)
-    |> redirect(to: "/")
   end
 
   @doc """
   Regular log in using email and password
   """
   def identity_callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    IO.puts("printing ueberauth identity auth struct")
-    IO.inspect(auth)
-
     %{
       extra: %{
         raw_info: %{"email" => email, "password" => password, "remember_me" => remember_me}
@@ -74,7 +56,10 @@ defmodule JaangWeb.AuthController do
     if user = AccountManager.get_user_by_email_and_password(email, password) do
       UserAuth.log_in_user(conn, user, %{"remember_me" => remember_me})
     else
-      render(conn, "request.html", error_message: "Invalid email or password")
+      render(conn, "request.html",
+        error_message: "Invalid email or password",
+        callback_url: Helpers.callback_url(conn)
+      )
     end
   end
 end

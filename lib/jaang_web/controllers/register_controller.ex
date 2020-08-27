@@ -10,13 +10,11 @@ defmodule JaangWeb.RegisterController do
   end
 
   def create(conn, %{"g-recaptcha-response" => recaptcha_response, "user" => user_params}) do
-    IO.inspect(recaptcha_response)
-
     case Recaptcha.verify(recaptcha_response) do
       {:ok, _response} ->
         case AccountManager.create_user_with_profile(user_params) do
           {:ok, user} ->
-            # TODO: Send welcome email
+            Jaang.EmailManager.send_welcome_email(user)
 
             conn
             |> put_flash(:info, "Your account is created successfully")

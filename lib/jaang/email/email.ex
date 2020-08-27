@@ -2,6 +2,15 @@ defmodule Jaang.Email do
   import Bamboo.Email
   use Bamboo.Phoenix, view: JaangWeb.EmailView
 
+  # TODO: Edit it later
+  def welcome_email(user) do
+    base_email()
+    |> to(user.email)
+    |> subject("Welcome to Jaang")
+    |> assign(:user, user)
+    |> render(:welcome_email)
+  end
+
   def reset_password_email(user, url) do
     base_email()
     |> to(user.email)
