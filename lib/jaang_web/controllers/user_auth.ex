@@ -1,4 +1,7 @@
 defmodule JaangWeb.UserAuth do
+  @moduledoc """
+  User authentication module for web client(Phoenix)
+  """
   import Plug.Conn
   import Phoenix.Controller
 
@@ -91,6 +94,17 @@ defmodule JaangWeb.UserAuth do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && AccountManager.get_user_by_session_token(user_token)
     assign(conn, :current_user, user)
+  end
+
+  @doc """
+  Authenticates the user by looking into the session
+  and remember me token and return the user
+  This function used by SetCurrentUser plug for Api request
+  authentication.
+  """
+  def fetch_current_user_for_graphql(conn) do
+    {user_token, conn} = ensure_user_token(conn)
+    user_token && AccountManager.get_user_by_session_token(user_token)
   end
 
   defp ensure_user_token(conn) do

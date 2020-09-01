@@ -51,6 +51,18 @@ defmodule Jaang.Account.Accounts do
     Profile.changeset(profile, attrs)
   end
 
+  @doc """
+  Log in a user using email and password
+
+  ## Examples
+
+      iex> get_user_by_email_and_password("foo@example.com", "secret")
+      %User{}
+
+      iex> get_user_by_email_and_password("foo@example.com", "wrong")
+      nil
+  """
+
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
@@ -244,5 +256,13 @@ defmodule Jaang.Account.Accounts do
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
     Repo.one(query)
+  end
+
+  def data() do
+    Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
   end
 end

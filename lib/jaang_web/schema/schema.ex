@@ -1,7 +1,8 @@
 defmodule JaangWeb.Schema do
   use Absinthe.Schema
-  alias JaangWeb.Resolvers.{StoreResolver, ProductResolver, CategoryResolver}
+  alias JaangWeb.Resolvers.{StoreResolver, ProductResolver, CategoryResolver, AccountResolver}
   alias Jaang.Product.Products
+  alias Jaang.Account.Accounts
 
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
@@ -40,6 +41,44 @@ defmodule JaangWeb.Schema do
       arg(:id, :id)
       resolve(&CategoryResolver.get_products_by_subcategory/3)
     end
+  end
+
+  mutation do
+    @desc "Log in an user"
+    field :log_in, :session do
+      arg(:email, :string)
+      arg(:password, :string)
+      resolve(&AccountResolver.log_in/3)
+    end
+  end
+
+  object :user do
+    field :id, :id
+    field :email, :string
+    field :confirmed_at, :string
+    field :profile, :profile, resolve: dataloader(Accounts)
+    field :addresses, list_of(:address), resolve: dataloader(Accounts)
+  end
+
+  object :session do
+    field :user, :user
+    field :token, :binary
+  end
+
+  object :profile do
+    field :first_name, :string
+    field :last_name, :string
+    field :phone, :string
+  end
+
+  object :address do
+    field :address_line_1, :string
+    field :address_line_2, :string
+    field :business_name, :string
+    field :zipcode, :string
+    field :city, :string
+    field :state, :string
+    field :instructions, :string
   end
 
   object :store do
@@ -103,6 +142,7 @@ defmodule JaangWeb.Schema do
     loader =
       Dataloader.new()
       |> Dataloader.add_source(Products, Products.data())
+      |> Dataloader.add_source(Accounts, Accounts.data())
 
     Map.put(ctx, :loader, loader)
   end

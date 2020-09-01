@@ -1,5 +1,5 @@
 defmodule Jaang.AccountManager do
-  alias Jaang.Account.Accounts
+  alias Jaang.Account.{Accounts, UserAuth}
 
   defdelegate create_user(attrs), to: Accounts
   defdelegate create_address(user, attrs), to: Accounts
@@ -14,6 +14,9 @@ defmodule Jaang.AccountManager do
   defdelegate create_user_with_profile_using_google(attrs), to: Accounts
   defdelegate get_user_by_email_and_password(email, password), to: Accounts
   defdelegate change_user_password(user), to: Accounts
+
+  # User auth
+  defdelegate log_in_user(email, password), to: UserAuth
 
   # Reset password
   defdelegate deliver_user_reset_password_instructions(user, func), to: Accounts
