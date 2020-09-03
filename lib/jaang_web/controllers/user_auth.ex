@@ -96,17 +96,6 @@ defmodule JaangWeb.UserAuth do
     assign(conn, :current_user, user)
   end
 
-  @doc """
-  Authenticates the user by looking into the session
-  and remember me token and return the user
-  This function used by SetCurrentUser plug for Api request
-  authentication.
-  """
-  def fetch_current_user_for_graphql(conn) do
-    {user_token, conn} = ensure_user_token(conn)
-    user_token && AccountManager.get_user_by_session_token(user_token)
-  end
-
   defp ensure_user_token(conn) do
     if user_token = get_session(conn, :user_token) do
       {user_token, conn}

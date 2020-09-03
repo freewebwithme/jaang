@@ -46,8 +46,8 @@ defmodule JaangWeb.Schema do
   mutation do
     @desc "Log in an user"
     field :log_in, :session do
-      arg(:email, :string)
-      arg(:password, :string)
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
       resolve(&AccountResolver.log_in/3)
     end
   end
@@ -62,7 +62,7 @@ defmodule JaangWeb.Schema do
 
   object :session do
     field :user, :user
-    field :token, :binary
+    field :token, :string
   end
 
   object :profile do

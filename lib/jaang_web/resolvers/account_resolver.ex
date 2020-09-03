@@ -1,9 +1,13 @@
 defmodule JaangWeb.Resolvers.AccountResolver do
-  alias Jaang.AccountManager
+  alias Jaang.Account.UserAuthMobile
 
   def log_in(_, %{email: email, password: password}, _) do
-    {user, token} = AccountManager.log_in_user(email, password)
+    case UserAuthMobile.log_in_mobile_user(email, password) do
+      {:ok, user, token} ->
+        {:ok, %{user: user, token: token}}
 
-    {:ok, %{user: user, token: token}}
+      _ ->
+        {:error, "Can't log in"}
+    end
   end
 end

@@ -2,8 +2,7 @@ defmodule JaangWeb.Plugs.SetCurrentUser do
   @behaviour Plug
   import Plug.Conn
 
-  alias JaangWeb.UserAuth
-  alias Jaang.Account.User
+  alias Jaang.Account.UserAuthMobile
 
   def init(opts), do: opts
 
@@ -13,14 +12,14 @@ defmodule JaangWeb.Plugs.SetCurrentUser do
   end
 
   defp build_context(conn) do
-    with ["Bearer " <> token] = get_req_header(conn, "authorization"),
-         %User{} = user <- UserAuth.fetch_current_user_for_graphql(conn) do
+    with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
+         %{} = user <- UserAuthMobile.get_user_by_session_token(token) do
       IO.puts("user has bearer token in context")
 
       %{current_user: user}
     else
       _ ->
-        IO.puts("Can't find bearer")
+        IO.puts("Can't find bearer, not authenticated")
         %{}
     end
   end
