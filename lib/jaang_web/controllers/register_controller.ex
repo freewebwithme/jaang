@@ -18,7 +18,7 @@ defmodule JaangWeb.RegisterController do
 
             conn
             |> put_flash(:info, "Your account is created successfully")
-            |> UserAuth._user(user)
+            |> UserAuth.log_in_user(user)
 
           {:error, %Ecto.Changeset{} = changeset} ->
             render(conn, "index.html", changeset: changeset)

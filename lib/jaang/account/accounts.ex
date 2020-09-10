@@ -29,6 +29,9 @@ defmodule Jaang.Account.Accounts do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+
+    # TODO: Maybe preload profile, addresses?
+    # |> Repo.preload([:profile, :addresses])
   end
 
   def create_address(%User{} = user, attrs) do

@@ -50,6 +50,17 @@ defmodule JaangWeb.Schema do
       arg(:password, non_null(:string))
       resolve(&AccountResolver.log_in/3)
     end
+
+    @desc "Register an user"
+    field :sign_up, :session do
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
+      arg(:password_confirmation, non_null(:string))
+      arg(:first_name, non_null(:string))
+      arg(:last_name, non_null(:string))
+
+      resolve(&AccountResolver.sign_up/3)
+    end
   end
 
   object :user do
