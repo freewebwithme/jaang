@@ -27,6 +27,7 @@ defmodule Jaang.Account.User do
     user
     |> cast(attrs, [:email, :password])
     |> validate_email()
+    |> generate_password()
     |> cast_assoc(:profile)
   end
 
@@ -37,6 +38,17 @@ defmodule Jaang.Account.User do
     |> validate_length(:email, max: 160)
     |> unsafe_validate_unique(:email, Jaang.Repo)
     |> unique_constraint(:email)
+  end
+
+  # This function will generate random password for google sign in.
+  # Because password field is not nullable, we need to generate a password.
+  defp generate_password(changeset) do
+    random_password = :base64.encode(:crypto.strong_rand_bytes(30))
+
+    changeset
+    |> put_change(:password, random_password)
+    # hash password
+    |> prepare_changes(&hash_password/1)
   end
 
   defp validate_password(changeset) do

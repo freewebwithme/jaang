@@ -27,4 +27,17 @@ defmodule JaangWeb.Resolvers.AccountResolver do
         {:error, "Can't register, please try again"}
     end
   end
+
+  def reset_password(_, %{email: email}, _) do
+    if user = AccountManager.get_user_by_email(email) do
+      AccountManager.deliver_user_reset_password_instructions(
+        user,
+        &JaangWeb.Router.Helpers.reset_password_url(JaangWeb.Endpoint, :edit, &1)
+      )
+
+      {:ok, %{sent: true, message: "email sent"}}
+    else
+      {:ok, %{sent: false, message: "email not sent"}}
+    end
+  end
 end

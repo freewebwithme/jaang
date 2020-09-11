@@ -61,6 +61,18 @@ defmodule JaangWeb.Schema do
 
       resolve(&AccountResolver.sign_up/3)
     end
+
+    @desc "Reset password"
+    field :reset_password, :simple_response do
+      arg(:email, non_null(:string))
+
+      resolve(&AccountResolver.reset_password/3)
+    end
+  end
+
+  object :simple_response do
+    field :sent, :boolean
+    field :message, :string
   end
 
   object :user do

@@ -29,17 +29,22 @@ defmodule JaangWeb.AuthController do
     %{info: %{email: email, first_name: first_name, last_name: last_name}} = auth
     attrs = %{email: email, profile: %{first_name: first_name, last_name: last_name}}
 
-    case AccountManager.create_user_with_profile_using_google(attrs) do
-      {:ok, user} ->
-        UserAuth.log_in_user(conn, user, %{})
-        IO.inspect(user)
+    # Check if user already has an account with us
+    if user = AccountManager.get_user_by_email(email) do
+      UserAuth.log_in_user(conn, user, %{})
+    else
+      case AccountManager.create_user_with_profile_using_google(attrs) do
+        {:ok, user} ->
+          UserAuth.log_in_user(conn, user, %{})
+          IO.inspect(user)
 
-      {:error, changeset} ->
-        render(conn, "request.html",
-          error_message: "Invalid email or password",
-          changeset: changeset,
-          callback_url: Helpers.callback_url(conn)
-        )
+        {:error, changeset} ->
+          render(conn, "request.html",
+            error_message: "Invalid email or password",
+            changeset: changeset,
+            callback_url: Helpers.callback_url(conn)
+          )
+      end
     end
   end
 
