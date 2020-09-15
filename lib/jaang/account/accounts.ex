@@ -3,7 +3,14 @@ defmodule Jaang.Account.Accounts do
   alias Jaang.Account.{User, UserToken, Address, Profile}
   alias Jaang.EmailManager
 
-  # TODO: write a test
+  @doc """
+  attrs = %{email: "user@example.com",
+            profile: %{
+              first_name: "John",
+              last_name: "Doe"
+              }
+            }
+  """
   def create_user_with_profile(attrs) do
     with {:ok, user} <- create_user(attrs) do
       {:ok, user}
@@ -20,9 +27,7 @@ defmodule Jaang.Account.Accounts do
   end
 
   def create_user_using_google(attrs) do
-    %User{}
-    |> User.google_changeset(attrs)
-    |> Repo.insert()
+    %User{} |> User.google_changeset(attrs) |> Repo.insert()
   end
 
   def create_user(attrs) do
@@ -239,20 +244,17 @@ defmodule Jaang.Account.Accounts do
   @doc """
   Generates a session token.
   """
-  # TODO: Need a test
   def generate_user_session_token(user) do
     {token, user_token} = UserToken.build_session_token(user)
     Repo.insert!(user_token)
     token
   end
 
-  # TODO: Need a test
   def delete_session_token(token) do
     Repo.delete_all(UserToken.token_and_context_query(token, "session"))
     :ok
   end
 
-  # TODO: Need a test
   @doc """
   Gets the user with the given signed token.
   """
@@ -260,6 +262,59 @@ defmodule Jaang.Account.Accounts do
     {:ok, query} = UserToken.verify_session_token_query(token)
     Repo.one(query)
   end
+
+  ## Google Sign in
+
+  @doc """
+  Accept idToken and name and return User
+  If user exists return an user
+  if user doesn't exist, create a new user
+
+  This function will be use for mobile google sign in
+  """
+  ### TODO: Can't figure out why can't get idToken from flutter
+  ### not using it until find a solution.
+  def authenticate_google_idToken(idToken) do
+    with {:ok, result} <- Jaang.Account.GoogleToken.verify_and_validate(idToken) do
+      email = result["email"]
+
+      if user = get_user_by_email(email) do
+        {:ok, user}
+      else
+        attrs = %{
+          email: email,
+          first_name: result["given_name"],
+          last_name: result["family_name"]
+        }
+
+        user = create_user_with_profile_using_google(attrs)
+        {:ok, user}
+      end
+    else
+      _ -> :error
+    end
+  end
+
+  def google_signin_from_mobile(email, display_name) do
+    if user = get_user_by_email(email) do
+      {:ok, user}
+    else
+      [first_name, last_name] = String.split(display_name, " ")
+
+      attrs = %{
+        email: email,
+        profile: %{
+          first_name: first_name,
+          last_name: last_name
+        }
+      }
+
+      {:ok, user} = create_user_with_profile_using_google(attrs)
+      {:ok, user}
+    end
+  end
+
+  ## Absinthe
 
   def data() do
     Dataloader.Ecto.new(Jaang.Repo, query: &query/2)

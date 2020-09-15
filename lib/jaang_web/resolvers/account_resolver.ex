@@ -40,4 +40,29 @@ defmodule JaangWeb.Resolvers.AccountResolver do
       {:ok, %{sent: false, message: "email not sent"}}
     end
   end
+
+  @doc """
+  Authenticate google user with idToken
+  """
+  def googleSignIn_with_id_token(_, %{idToken: idToken}, _) do
+    case AccountManager.authenticate_google_idToken(idToken) do
+      {:ok, user} ->
+        # User signs in with google and authenticated
+        # and generate session token
+        token = AccountManager.generate_user_session_token(user)
+        {:ok, %{user: user, token: token}}
+
+      _ ->
+        {:error, "Something wrong, please try again"}
+    end
+  end
+
+  @doc """
+  Autheticate google user using email
+  """
+  def google_signIn(_, %{email: email, display_name: display_name}, _) do
+    {:ok, user} = AccountManager.google_signin_from_mobile(email, display_name)
+    token = UserAuthMobile.generate_user_session_token(user)
+    {:ok, %{user: user, token: token}}
+  end
 end

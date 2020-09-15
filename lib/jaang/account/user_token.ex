@@ -28,6 +28,7 @@ defmodule Jaang.Account.UserToken do
   tokens do not need to be hashed.
   """
   def build_session_token(user) do
+    IO.inspect(user)
     token = :crypto.strong_rand_bytes(@rand_size)
     {token, %Jaang.Account.UserToken{token: token, context: "session", user_id: user.id}}
   end

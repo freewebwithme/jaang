@@ -68,6 +68,14 @@ defmodule JaangWeb.Schema do
 
       resolve(&AccountResolver.reset_password/3)
     end
+
+    @desc "Google Sign in"
+    field :google_signin, :session do
+      arg(:email, non_null(:string))
+      arg(:display_name, :string)
+
+      resolve(&AccountResolver.google_signIn/3)
+    end
   end
 
   object :simple_response do

@@ -53,7 +53,7 @@ defmodule Jaang.MixProject do
       {:money, "~> 1.7"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
-      {:hackney, "~> 1.9"},
+      {:hackney, "~> 1.9", override: true},
       {:sweet_xml, "~> 0.6"},
       {:dataloader, "~> 1.0.0"},
       {:ueberauth, "~>0.6"},
@@ -61,7 +61,9 @@ defmodule Jaang.MixProject do
       {:ueberauth_identity, "~> 0.3.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:bamboo, "~> 1.5"},
-      {:recaptcha, "~> 3.0"}
+      {:recaptcha, "~> 3.0"},
+      {:joken, "~> 2.2"},
+      {:joken_jwks, "~> 1.3"}
     ]
   end
 
