@@ -15,10 +15,13 @@ defmodule JaangWeb.Plugs.SetCurrentUser do
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
          %{} = user <- UserAuthMobile.get_user_by_session_token(token) do
       IO.puts("user has bearer token in context")
+      IO.inspect(token)
 
       %{current_user: user}
     else
       _ ->
+        IO.puts("inspecting conn")
+        IO.inspect(conn)
         IO.puts("Can't find bearer, not authenticated")
         %{}
     end

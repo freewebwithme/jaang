@@ -15,6 +15,7 @@ defmodule JaangWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug JaangWeb.Plugs.SetCurrentUser
   end
 
   scope "/", JaangWeb do
@@ -53,12 +54,16 @@ defmodule JaangWeb.Router do
     post "/identity/callback", AuthController, :identity_callback
   end
 
-  forward "/api", Absinthe.Plug, schema: JaangWeb.Schema
+  scope "/" do
+    pipe_through :api
 
-  if Mix.env() == :dev do
-    forward "/graphiql", Absinthe.Plug.GraphiQL,
-      schema: JaangWeb.Schema,
-      socket: JaangWeb.UserSocket
+    forward "/api", Absinthe.Plug, schema: JaangWeb.Schema
+
+    if Mix.env() == :dev do
+      forward "/graphiql", Absinthe.Plug.GraphiQL,
+        schema: JaangWeb.Schema,
+        socket: JaangWeb.UserSocket
+    end
   end
 
   # Enables LiveDashboard only for development
