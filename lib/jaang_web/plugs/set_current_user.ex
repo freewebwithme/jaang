@@ -13,7 +13,7 @@ defmodule JaangWeb.Plugs.SetCurrentUser do
 
   defp build_context(conn) do
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
-         %{} = user <- UserAuthMobile.get_user_by_session_token(token) do
+         {:ok, user} <- UserAuthMobile.get_user_by_session_token(token) do
       IO.puts("user has bearer token in context")
       IO.inspect(token)
 

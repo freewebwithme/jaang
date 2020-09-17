@@ -76,6 +76,13 @@ defmodule JaangWeb.Schema do
 
       resolve(&AccountResolver.google_signIn/3)
     end
+
+    @desc "Verify session token from client"
+    field :verify_token, :session do
+      arg(:token, non_null(:string))
+
+      resolve(&AccountResolver.verify_token/3)
+    end
   end
 
   object :simple_response do
@@ -94,6 +101,7 @@ defmodule JaangWeb.Schema do
   object :session do
     field :user, :user
     field :token, :string
+    field :expired, :boolean, default_value: false
   end
 
   object :profile do
