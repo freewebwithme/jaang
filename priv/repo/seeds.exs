@@ -23,7 +23,9 @@ alias Jaang.Repo
     name: "LA Mart",
     description: "Best market available in Los Angeles",
     price_info: "Online prices may be higher than store's price",
-    available_hours: "11am - 7pm"
+    available_hours: "11am - 7pm",
+    address: "777 Wilshire Blvd Los Angeles, CA 90032",
+    phone_number: "2134445555"
   })
 
 {:ok, store2} =
@@ -31,7 +33,9 @@ alias Jaang.Repo
     name: "California Mart",
     description: "Best market available in Los Angeles",
     price_info: "Online prices may be higher than store's price",
-    available_hours: "11am - 7pm"
+    available_hours: "11am - 7pm",
+    address: "555 Vermont Ave Los Angeles, CA 90054",
+    phone_number: "2139994444"
   })
 
 {:ok, store3} =
@@ -39,7 +43,9 @@ alias Jaang.Repo
     name: "HanIn Mart",
     description: "Best market available in Los Angeles",
     price_info: "Online prices may be higher than store's price",
-    available_hours: "11am - 7pm"
+    available_hours: "11am - 7pm",
+    address: "3256 Olympic Blvd Los Angeles, CA 90010",
+    phone_number: "2139994444"
   })
 
 # Create categories

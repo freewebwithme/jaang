@@ -72,6 +72,8 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   def verify_token(_, %{token: token}, _) do
     case UserAuthMobile.get_user_by_session_token(token) do
       {:ok, user} ->
+        IO.puts("Printing user info from token")
+        IO.inspect(user)
         {:ok, %{user: user, token: token, expired: false}}
 
       {:error, _} ->

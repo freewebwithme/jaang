@@ -54,12 +54,11 @@ defmodule Jaang.Account.UserAuthMobile do
   end
 
   def get_user_by_session_token(token) do
-    case verify_session_token_query(token) do
-      {:ok, query} ->
-        {:ok, Repo.one(query)}
-
-      nil ->
-        {:error, "Can't find a user"}
+    with {:ok, query} <- verify_session_token_query(token),
+         %{} = user <- Repo.one(query) do
+      {:ok, user}
+    else
+      nil -> {:error, "Can't find a user"}
     end
   end
 

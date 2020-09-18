@@ -7,6 +7,8 @@ defmodule Jaang.Store do
     field :description, :string
     field :price_info, :string
     field :available_hours, :string
+    field :address, :string
+    field :phone_number, :string
 
     has_many :products, Jaang.Product
 
@@ -16,6 +18,6 @@ defmodule Jaang.Store do
   @doc false
   def changeset(%Jaang.Store{} = store, attrs) do
     store
-    |> cast(attrs, [:name, :description, :price_info, :available_hours])
+    |> cast(attrs, [:name, :description, :price_info, :available_hours, :address, :phone_number])
   end
 end
