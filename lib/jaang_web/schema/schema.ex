@@ -10,12 +10,14 @@ defmodule JaangWeb.Schema do
   query do
     @desc "get stores"
     field :get_stores, list_of(:store) do
+      middleware(Middleware.Authenticate)
       resolve(&StoreResolver.get_stores/3)
     end
 
     @desc "get store"
     field :get_store, :store do
-      arg(:id, :id)
+      arg(:id, non_null(:string))
+      middleware(Middleware.Authenticate)
       resolve(&StoreResolver.get_store/3)
     end
 
@@ -88,7 +90,7 @@ defmodule JaangWeb.Schema do
     @desc "Change current store for user"
     field :change_store, :session do
       arg(:token, non_null(:string))
-      arg(:store_id, non_null(:id))
+      arg(:store_id, non_null(:string))
       middleware(Middleware.Authenticate)
 
       resolve(&StoreResolver.change_store/3)
@@ -137,6 +139,7 @@ defmodule JaangWeb.Schema do
     field :description, :string
     field :price_info, :string
     field :phone_number, :string
+    field :address, :string
     field :available_hours, :string
     # field :product, list_of(:product), resolve: dataloader(Products)
   end
