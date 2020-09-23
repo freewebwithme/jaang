@@ -3,6 +3,7 @@ defmodule JaangWeb.Schema do
   alias JaangWeb.Resolvers.{StoreResolver, ProductResolver, CategoryResolver, AccountResolver}
   alias Jaang.Product.Products
   alias Jaang.Account.Accounts
+  alias JaangWeb.Schema.Middleware
 
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
@@ -83,6 +84,15 @@ defmodule JaangWeb.Schema do
 
       resolve(&AccountResolver.verify_token/3)
     end
+
+    @desc "Change current store for user"
+    field :change_store, :session do
+      arg(:token, non_null(:string))
+      arg(:store_id, non_null(:id))
+      middleware(Middleware.Authenticate)
+
+      resolve(&StoreResolver.change_store/3)
+    end
   end
 
   object :simple_response do
@@ -108,6 +118,7 @@ defmodule JaangWeb.Schema do
     field :first_name, :string
     field :last_name, :string
     field :phone, :string
+    field :store_id, :id
   end
 
   object :address do
@@ -125,7 +136,9 @@ defmodule JaangWeb.Schema do
     field :name, :string
     field :description, :string
     field :price_info, :string
+    field :phone_number, :string
     field :available_hours, :string
+    # field :product, list_of(:product), resolve: dataloader(Products)
   end
 
   object :category do

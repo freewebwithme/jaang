@@ -2,6 +2,7 @@ defmodule Jaang.Account.Accounts do
   alias Jaang.Repo
   alias Jaang.Account.{User, UserToken, Address, Profile}
   alias Jaang.EmailManager
+  alias Ecto.Changeset
 
   @doc """
   attrs = %{email: "user@example.com",
@@ -57,6 +58,13 @@ defmodule Jaang.Account.Accounts do
 
   def change_profile(%Profile{} = profile, attrs \\ %{}) do
     Profile.changeset(profile, attrs)
+  end
+
+  def update_profile(user, attrs) do
+    # put profile id to attrs
+    attrs = Map.put(attrs, :id, user.profile.id)
+    user_changeset = user |> Repo.preload(:profile) |> Changeset.change()
+    Changeset.put_assoc(user_changeset, :profile, attrs) |> Repo.update!()
   end
 
   @doc """
@@ -260,7 +268,7 @@ defmodule Jaang.Account.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
+    Repo.one(query) |> Repo.preload(:profile)
   end
 
   ## Google Sign in

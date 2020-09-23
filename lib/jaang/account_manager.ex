@@ -6,6 +6,7 @@ defmodule Jaang.AccountManager do
   defdelegate get_user(id), to: Accounts
   defdelegate change_user(user, attrs \\ %{}), to: Accounts
   defdelegate change_profile(profile, attrs \\ %{}), to: Accounts
+  defdelegate update_profile(user, attrs), to: Accounts
   defdelegate get_user_by_email(email), to: Accounts
   defdelegate create_user_with_profile(attrs), to: Accounts
   defdelegate create_user_with_profile_using_google(attrs), to: Accounts

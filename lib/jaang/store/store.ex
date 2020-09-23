@@ -11,7 +11,6 @@ defmodule Jaang.Store do
     field :phone_number, :string
 
     has_many :products, Jaang.Product
-
     timestamps()
   end
 
