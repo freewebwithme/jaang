@@ -13,11 +13,25 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   end
 
   def sign_up(_, args, _) do
-    %{email: email, password: password} = args
+    %{
+      email: email,
+      password: password,
+      password_confirmation: password_confirmation,
+      first_name: first_name,
+      last_name: last_name
+    } = args
+
+    # Remap for profile
+    attrs = %{
+      email: email,
+      password: password,
+      password_confirmation: password_confirmation,
+      profile: %{first_name: first_name, last_name: last_name}
+    }
 
     IO.inspect(args)
 
-    case AccountManager.create_user_with_profile(args) do
+    case AccountManager.create_user_with_profile(attrs) do
       {:ok, user} ->
         Jaang.EmailManager.send_welcome_email(user)
         {:ok, user, token} = UserAuthMobile.log_in_mobile_user(email, password)

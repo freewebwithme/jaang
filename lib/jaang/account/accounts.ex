@@ -22,8 +22,12 @@ defmodule Jaang.Account.Accounts do
 
   def create_user_with_profile_using_google(attrs) do
     case create_user_using_google(attrs) do
-      {:ok, user} -> {:ok, user}
-      {:error, error} -> {:error, error}
+      {:ok, user} ->
+        user = Repo.get_by(User, id: user.id) |> Repo.preload(:profile)
+        {:ok, user}
+
+      {:error, error} ->
+        {:error, error}
     end
   end
 
@@ -35,9 +39,6 @@ defmodule Jaang.Account.Accounts do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
-
-    # TODO: Maybe preload profile, addresses?
-    # |> Repo.preload([:profile, :addresses])
   end
 
   def create_address(%User{} = user, attrs) do
@@ -81,7 +82,7 @@ defmodule Jaang.Account.Accounts do
 
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
+    user = Repo.get_by(User, email: email) |> Repo.preload(:profile)
     if User.valid_password?(user, password), do: user
   end
 
