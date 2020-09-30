@@ -304,7 +304,7 @@ defmodule Jaang.Account.Accounts do
     end
   end
 
-  def google_signin_from_mobile(email, display_name) do
+  def google_signin_from_mobile(email, display_name, photo_url) do
     if user = get_user_by_email(email) do
       {:ok, user}
     else
@@ -314,7 +314,8 @@ defmodule Jaang.Account.Accounts do
         email: email,
         profile: %{
           first_name: first_name,
-          last_name: last_name
+          last_name: last_name,
+          photo_url: photo_url
         }
       }
 

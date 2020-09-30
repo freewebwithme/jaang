@@ -76,8 +76,17 @@ defmodule JaangWeb.Schema do
     field :google_signin, :session do
       arg(:email, non_null(:string))
       arg(:display_name, :string)
+      arg(:photo_url, :string)
 
       resolve(&AccountResolver.google_signIn/3)
+    end
+
+    @desc "Log out"
+    field :log_out, :session do
+      arg(:token, :string)
+      middleware(Middleware.Authenticate)
+
+      resolve(&AccountResolver.log_out/3)
     end
 
     @desc "Verify session token from client"
@@ -119,6 +128,7 @@ defmodule JaangWeb.Schema do
   object :profile do
     field :first_name, :string
     field :last_name, :string
+    field :photo_url, :string
     field :phone, :string
     field :store_id, :id
   end

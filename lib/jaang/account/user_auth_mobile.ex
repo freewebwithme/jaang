@@ -33,6 +33,17 @@ defmodule Jaang.Account.UserAuthMobile do
     {token, %Jaang.Account.UserToken{token: token, context: "session", user_id: user.id}}
   end
 
+  def delete_session_token(token) do
+    user_token = token_and_context_query(token, "session") |> Repo.one()
+
+    if user_token do
+      case Repo.delete(user_token) do
+        {:ok, struct} -> {:ok, struct}
+        {:error, changeset} -> {:error, changeset}
+      end
+    end
+  end
+
   @session_validity_in_days 60
   # 60 days
   @max_age 24 * 60 * 60 * 60

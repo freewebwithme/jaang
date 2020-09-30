@@ -74,8 +74,8 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   @doc """
   Autheticate google user using email
   """
-  def google_signIn(_, %{email: email, display_name: display_name}, _) do
-    {:ok, user} = AccountManager.google_signin_from_mobile(email, display_name)
+  def google_signIn(_, %{email: email, display_name: display_name, photo_url: photo_url}, _) do
+    {:ok, user} = AccountManager.google_signin_from_mobile(email, display_name, photo_url)
     token = UserAuthMobile.generate_user_session_token(user)
     {:ok, %{user: user, token: token, expired: false}}
   end
@@ -92,6 +92,20 @@ defmodule JaangWeb.Resolvers.AccountResolver do
 
       {:error, _} ->
         {:ok, %{user: nil, token: token, expired: true}}
+    end
+  end
+
+  @doc """
+  Log a user out
+  Delete session token from database and return empty session
+  """
+  def log_out(_, %{token: token}, _) do
+    case UserAuthMobile.delete_session_token(token) do
+      {:ok, _struct} ->
+        {:ok, %{user: nil, token: nil, expired: true}}
+
+      {:error, _changeset} ->
+        {:error, "Can't delete session token"}
     end
   end
 end
