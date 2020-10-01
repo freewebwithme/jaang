@@ -66,7 +66,7 @@ defmodule Jaang.Account.UserAuthMobile do
 
   def get_user_by_session_token(token) do
     with {:ok, query} <- verify_session_token_query(token),
-         %{} = user <- Repo.one(query) do
+         %{} = user <- Repo.one(query) |> Repo.preload(:profile) do
       {:ok, user}
     else
       nil -> {:error, "Can't find a user"}
