@@ -44,6 +44,13 @@ defmodule JaangWeb.Schema do
       arg(:id, :id)
       resolve(&CategoryResolver.get_products_by_subcategory/3)
     end
+
+    @desc "Get categories and product for home screen"
+    field :get_products_for_homescreen, list_of(:category_homescreen) do
+      arg(:limit, :integer, default_value: 10)
+
+      resolve(&StoreResolver.get_products_for_homescreen/3)
+    end
   end
 
   mutation do
@@ -155,9 +162,22 @@ defmodule JaangWeb.Schema do
   end
 
   object :category do
+    field :id, :id
     field :name, :string
-    field :sub_categories, list_of(:sub_category)
+    field :sub_categories, list_of(:sub_category), resolve: dataloader(Products)
     field :products, list_of(:product), resolve: dataloader(Products)
+  end
+
+  object :category_homescreen do
+    field :id, :id
+    field :name, :string
+    field :sub_categories, list_of(:sub_category), resolve: dataloader(Products)
+
+    field :products, list_of(:product) do
+      resolve(fn parent, _, _ ->
+        {:ok, parent.products}
+      end)
+    end
   end
 
   object :sub_category do

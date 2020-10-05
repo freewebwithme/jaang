@@ -6,7 +6,8 @@ defmodule Jaang.StoreManager do
   # Stores
   defdelegate get_all_stores(), to: Stores
   defdelegate get_store(id), to: Stores
-  defdelegate create_store(attrs_), to: Stores
+  defdelegate create_store(attrs), to: Stores
+  defdelegate get_products_for_homescreen(limit), to: Stores
 
   # Products
   defdelegate create_product(attrs), to: Products

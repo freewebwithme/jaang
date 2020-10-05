@@ -18,4 +18,11 @@ defmodule JaangWeb.Resolvers.StoreResolver do
 
     {:ok, %{user: user, token: token, expired: false}}
   end
+
+  def get_products_for_homescreen(_, %{limit: limit}, _) do
+    categories = StoreManager.get_products_for_homescreen(limit)
+    IO.puts("Printing categories from resolver")
+    IO.inspect(categories)
+    {:ok, categories}
+  end
 end
