@@ -197,6 +197,18 @@ for x <- 0..99 do
   product_images =
     Products.create_product_image(product, %{
       image_url: Enum.random(product_image_urls),
-      default: true
+      default_image: true
+    })
+
+  product_images_2 =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      default_image: false
+    })
+
+  product_images_3 =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      default_image: false
     })
 end

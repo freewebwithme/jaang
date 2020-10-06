@@ -211,6 +211,7 @@ defmodule JaangWeb.Schema do
     field :vendor, :string
     field :published, :boolean
     field :barcode, :string
+    field :unit_id, :string
     field :unit_name, :string
     field :store_name, :string
     field :category_name, :string
@@ -220,7 +221,7 @@ defmodule JaangWeb.Schema do
 
   object :product_image do
     field :image_url, :string
-    field :default, :boolean
+    field :default_image, :boolean
   end
 
   def context(ctx) do
