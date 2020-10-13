@@ -209,6 +209,9 @@ defmodule JaangWeb.Schema do
     field :id, :id
     field :name, :string
     field :description, :string
+    field :ingredients, :string
+    field :directions, :string
+    field :warnings, :string
 
     field :regular_price, :string do
       resolve(fn parent, _, _ ->

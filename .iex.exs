@@ -51,6 +51,8 @@ alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage}
 alias Jaang.{StoreManager, AccountManager, ProductManager}
 alias Jaang.Account.{User, Profile, Address}
 alias Jaang.Account.Accounts
+alias Jaang.Checkout.{Order, LineItem}
+
 alias ExAws.S3
 
 import Ecto.Query

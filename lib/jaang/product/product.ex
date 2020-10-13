@@ -8,6 +8,9 @@ defmodule Jaang.Product do
   schema "products" do
     field :name, :string
     field :description, :string
+    field :ingredients, :string
+    field :directions, :string
+    field :warnings, :string
     field :regular_price, Money.Ecto.Amount.Type
     field :sale_price, Money.Ecto.Amount.Type
     field :vendor, :string
@@ -42,6 +45,9 @@ defmodule Jaang.Product do
     |> cast(attrs, [
       :name,
       :description,
+      :ingredients,
+      :directions,
+      :warnings,
       :regular_price,
       :sale_price,
       :vendor,
