@@ -47,9 +47,10 @@ alias Jaang.Repo
 alias Jaang.{Category, Store, Product}
 alias Jaang.Category.Categories
 alias Jaang.Store.Stores
-alias Jaang.Product.Products
-alias Jaang.StoreManager
+alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage}
+alias Jaang.{StoreManager, AccountManager, ProductManager}
 alias Jaang.Account.{User, Profile, Address}
 alias Jaang.Account.Accounts
-alias Jaang.AccountManager
 alias ExAws.S3
+
+import Ecto.Query

@@ -1,12 +1,30 @@
 defmodule JaangWeb.Resolvers.ProductResolver do
-  alias Jaang.StoreManager
+  alias Jaang.ProductManager
 
   def get_product(_, %{id: id}, _) do
     IO.puts("calling product resolver")
-    {:ok, StoreManager.get_product(id)}
+    {:ok, ProductManager.get_product(id)}
   end
 
   def get_all_products(_, %{category_id: cat_id}, _) do
-    {:ok, StoreManager.get_all_products(cat_id)}
+    {:ok, ProductManager.get_all_products(cat_id)}
+  end
+
+  def get_related_products(
+        _,
+        %{product_id: product_id, tag_id: tag_id, limit: limit, store_id: store_id},
+        _
+      ) do
+    products = ProductManager.get_related_products(product_id, tag_id, limit, store_id)
+    {:ok, products}
+  end
+
+  def get_often_bought_with_products(
+        _,
+        %{product_id: product_id, tag_id: tag_id, limit: limit, store_id: store_id},
+        _
+      ) do
+    products = ProductManager.get_often_bought_with_products(product_id, tag_id, limit, store_id)
+    {:ok, products}
   end
 end

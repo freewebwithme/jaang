@@ -4,7 +4,7 @@ defmodule Jaang.Product.ProductImage do
 
   schema "product_images" do
     field :image_url, :string
-    field :default_image, :boolean, default: false
+    field :order, :integer
 
     belongs_to :product, Jaang.Product
     timestamps()
@@ -12,6 +12,6 @@ defmodule Jaang.Product.ProductImage do
 
   def changeset(%Jaang.Product.ProductImage{} = product_image, attrs) do
     product_image
-    |> cast(attrs, [:image_url, :default_image, :product_id])
+    |> cast(attrs, [:image_url, :order, :product_id])
   end
 end

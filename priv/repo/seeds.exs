@@ -170,6 +170,33 @@ sub_categories = [
   juice
 ]
 
+tags = [
+  "egg, organic",
+  "milk, probiotic",
+  "beef, pasture raised",
+  "orange, organic",
+  "juice",
+  "snacks",
+  "candy",
+  "kimchi",
+  "tea",
+  "organic",
+  "ice cream"
+]
+
+recipe_tags = [
+  "kimchi soup",
+  "daenjang soup",
+  "bulgogi",
+  "korean bbq",
+  "egg sandwich",
+  "dduk Bok i",
+  "udon soup",
+  "korean pizza",
+  "rice cake",
+  "bibimbap"
+]
+
 # Create Products
 for x <- 0..99 do
   store = Enum.random(stores)
@@ -178,8 +205,9 @@ for x <- 0..99 do
   unit = Enum.random(units)
 
   attrs = %{
-    name: "Product-#{x}",
-    description: "This is nice product #{x}",
+    name: "Product name should be long for detail for product-#{x}",
+    description:
+      "This is nice product. #{x}.  Aut laboriosam illo adipisci quibusdam sapiente. Dignissimos mollitia ut eos. Voluptas omnis qui temporibus tempora quis officia. Porro dolorum architecto officia omnis quae maxime dolorem quas. Aut neque esse magnam sint temporibus delectus necessitatibus ratione.",
     regular_price: Enum.random(prices),
     published: true,
     unit_id: unit.id,
@@ -189,7 +217,9 @@ for x <- 0..99 do
     category_name: category.name,
     category_id: sub_category.category_id,
     sub_category_name: sub_category.name,
-    sub_category_id: sub_category.id
+    sub_category_id: sub_category.id,
+    tags: Enum.random(tags),
+    recipe_tags: Enum.random(recipe_tags)
   }
 
   {:ok, product} = Products.create_product(attrs)
@@ -197,18 +227,20 @@ for x <- 0..99 do
   product_images =
     Products.create_product_image(product, %{
       image_url: Enum.random(product_image_urls),
-      default_image: true
+      order: 1
     })
 
   product_images_2 =
     Products.create_product_image(product, %{
       image_url: Enum.random(product_image_urls),
-      default_image: false
+      order: 2
     })
 
   product_images_3 =
     Products.create_product_image(product, %{
       image_url: Enum.random(product_image_urls),
-      default_image: false
+      order: 3
     })
+
+  # Creating tags
 end

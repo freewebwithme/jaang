@@ -1,5 +1,4 @@
 defmodule Jaang.StoreManager do
-  alias Jaang.Product.Products
   alias Jaang.Store.Stores
   alias Jaang.Category.Categories
 
@@ -7,14 +6,7 @@ defmodule Jaang.StoreManager do
   defdelegate get_all_stores(), to: Stores
   defdelegate get_store(id), to: Stores
   defdelegate create_store(attrs), to: Stores
-  defdelegate get_products_for_homescreen(limit), to: Stores
-
-  # Products
-  defdelegate create_product(attrs), to: Products
-  defdelegate create_unit(attrs), to: Products
-  defdelegate create_product_image(product, attrs), to: Products
-  defdelegate get_product(id), to: Products
-  defdelegate get_all_products(category_id), to: Products
+  defdelegate get_products_for_homescreen(limit, store_id), to: Stores
 
   # Categories
   defdelegate create_category(attrs), to: Categories

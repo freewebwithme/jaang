@@ -48,8 +48,29 @@ defmodule JaangWeb.Schema do
     @desc "Get categories and product for home screen"
     field :get_products_for_homescreen, list_of(:category_homescreen) do
       arg(:limit, :integer, default_value: 10)
+      arg(:store_id, non_null(:string))
 
       resolve(&StoreResolver.get_products_for_homescreen/3)
+    end
+
+    @desc "Get related product using product tag"
+    field :get_related_products, list_of(:product) do
+      arg(:product_id, non_null(:string))
+      arg(:tag_id, non_null(:string))
+      arg(:limit, :integer, default_value: 5)
+      arg(:store_id, non_null(:string))
+
+      resolve(&ProductResolver.get_related_products/3)
+    end
+
+    @desc "Get often bought with product using recipe tag"
+    field :get_often_bought_with_products, list_of(:product) do
+      arg(:product_id, non_null(:string))
+      arg(:tag_id, non_null(:string))
+      arg(:limit, :integer, default_value: 5)
+      arg(:store_id, non_null(:string))
+
+      resolve(&ProductResolver.get_often_bought_with_products/3)
     end
   end
 
@@ -217,11 +238,23 @@ defmodule JaangWeb.Schema do
     field :category_name, :string
     field :sub_category_name, :string
     field :product_images, list_of(:product_image), resolve: dataloader(Products)
+    field :tags, list_of(:tag), resolve: dataloader(Products)
+    field :recipe_tags, list_of(:recipe_tag), resolve: dataloader(Products)
   end
 
   object :product_image do
     field :image_url, :string
-    field :default_image, :boolean
+    field :order, :integer
+  end
+
+  object :tag do
+    field :id, :id
+    field :name, :string
+  end
+
+  object :recipe_tag do
+    field :id, :id
+    field :name, :string
   end
 
   def context(ctx) do
