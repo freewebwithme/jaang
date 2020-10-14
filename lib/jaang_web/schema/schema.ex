@@ -151,6 +151,44 @@ defmodule JaangWeb.Schema do
     field :user, :user
     field :token, :string
     field :expired, :boolean, default_value: false
+    field :carts, list_of(:order)
+  end
+
+  object :order do
+    field :id, :id
+    field :store_id, :id
+    field :user_id, :id
+    field :status, :string
+
+    field :total, :string do
+      resolve(fn parent, _, _ ->
+        money = Map.get(parent, :total)
+        {:ok, Money.to_string(money)}
+      end)
+    end
+
+    field :line_items, list_of(:line_item)
+  end
+
+  object :line_item do
+    field :product_id, :id
+    field :product_name, :string
+    field :unit_name, :string
+    field :quantity, :integer
+
+    field :price, :string do
+      resolve(fn parent, _, _ ->
+        money = Map.get(parent, :price)
+        {:ok, Money.to_string(money)}
+      end)
+    end
+
+    field :total, :string do
+      resolve(fn parent, _, _ ->
+        money = Map.get(parent, :total)
+        {:ok, Money.to_string(money)}
+      end)
+    end
   end
 
   object :profile do

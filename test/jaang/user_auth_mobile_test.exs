@@ -54,7 +54,7 @@ defmodule Jaang.UserAuthMobileTest do
     user = context[:user]
     token = UserAuthMobile.generate_user_session_token(user)
 
-    saved_user = UserAuthMobile.get_user_by_session_token(token)
+    {:ok, saved_user} = UserAuthMobile.get_user_by_session_token(token)
     assert user.id == saved_user.id
     refute user.id == 9999
   end

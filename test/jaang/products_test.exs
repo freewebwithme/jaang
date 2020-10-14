@@ -1,12 +1,12 @@
 defmodule Jaang.ProductsTest do
   use Jaang.DataCase, async: true
 
-  alias Jaang.StoreManager
+  alias Jaang.{StoreManager, ProductManager}
   alias Jaang.Product
 
   test "create product correctly? " do
     {:ok, product} =
-      StoreManager.create_product(%{
+      ProductManager.create_product(%{
         name: "Product1",
         description: "Product1 description",
         regular_price: 300,
@@ -26,7 +26,7 @@ defmodule Jaang.ProductsTest do
   end
 
   test "create unit correctly?" do
-    {:ok, unit} = StoreManager.create_unit(%{name: "lb"})
+    {:ok, unit} = ProductManager.create_unit(%{name: "lb"})
     assert unit.name == "lb"
   end
 
@@ -37,7 +37,7 @@ defmodule Jaang.ProductsTest do
     {:ok, sub_category} = StoreManager.create_subcategory(category, %{name: "SubCategory1"})
 
     {:ok, product} =
-      StoreManager.create_product(%{
+      ProductManager.create_product(%{
         name: "Product1",
         description: "Product1 description",
         regular_price: 300,
@@ -51,18 +51,18 @@ defmodule Jaang.ProductsTest do
       })
 
     {:ok, _product_image1} =
-      StoreManager.create_product_image(product, %{
+      ProductManager.create_product_image(product, %{
         image_url: "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/yogurt.png",
-        default: true
+        order: 1
       })
 
     {:ok, _product_image2} =
-      StoreManager.create_product_image(product, %{
+      ProductManager.create_product_image(product, %{
         image_url: "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/tofu.jpg",
-        default: false
+        order: 2
       })
 
-    product = StoreManager.get_product(product.id)
+    product = ProductManager.get_product(product.id)
 
     assert product.name == "Product1"
     assert product.description == "Product1 description"

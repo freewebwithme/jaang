@@ -1,7 +1,7 @@
 defmodule Jaang.CategoriesTest do
   use Jaang.DataCase, async: true
 
-  alias Jaang.StoreManager
+  alias Jaang.{StoreManager, ProductManager}
 
   setup do
     {:ok, category} =
@@ -12,7 +12,7 @@ defmodule Jaang.CategoriesTest do
     {:ok, sub_category} = StoreManager.create_subcategory(category, %{name: "Subcategory1"})
 
     {:ok, product} =
-      StoreManager.create_product(%{
+      ProductManager.create_product(%{
         name: "Product1",
         category_id: category.id,
         category_name: category.name,

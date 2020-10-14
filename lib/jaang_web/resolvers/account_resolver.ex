@@ -1,11 +1,13 @@
 defmodule JaangWeb.Resolvers.AccountResolver do
   alias Jaang.Account.UserAuthMobile
-  alias Jaang.AccountManager
+  alias Jaang.{AccountManager, OrderManager}
 
   def log_in(_, %{email: email, password: password}, _) do
     case UserAuthMobile.log_in_mobile_user(email, password) do
       {:ok, user, token} ->
-        {:ok, %{user: user, token: token, expired: false}}
+        # get cart or create new
+        carts = OrderManager.get_all_carts_or_create_new(user)
+        {:ok, %{user: user, token: token, expired: false, carts: carts}}
 
       _ ->
         {:error, "Can't log in"}
@@ -35,7 +37,11 @@ defmodule JaangWeb.Resolvers.AccountResolver do
       {:ok, user} ->
         Jaang.EmailManager.send_welcome_email(user)
         {:ok, user, token} = UserAuthMobile.log_in_mobile_user(email, password)
-        {:ok, %{user: user, token: token, expired: false}}
+
+        # get cart or create new
+        carts = OrderManager.get_all_carts_or_create_new(user)
+
+        {:ok, %{user: user, token: token, expired: false, carts: carts}}
 
       _ ->
         {:error, "Can't register, please try again"}
@@ -64,7 +70,11 @@ defmodule JaangWeb.Resolvers.AccountResolver do
         # User signs in with google and authenticated
         # and generate session token
         token = AccountManager.generate_user_session_token(user)
-        {:ok, %{user: user, token: token, expired: false}}
+
+        # get cart or create new
+        carts = OrderManager.get_all_carts_or_create_new(user)
+
+        {:ok, %{user: user, token: token, expired: false, carts: carts}}
 
       _ ->
         {:error, "Something wrong, please try again"}
@@ -77,7 +87,11 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   def google_signIn(_, %{email: email, display_name: display_name, photo_url: photo_url}, _) do
     {:ok, user} = AccountManager.google_signin_from_mobile(email, display_name, photo_url)
     token = UserAuthMobile.generate_user_session_token(user)
-    {:ok, %{user: user, token: token, expired: false}}
+
+    # get cart or create new
+    carts = OrderManager.get_all_carts_or_create_new(user)
+
+    {:ok, %{user: user, token: token, expired: false, carts: carts}}
   end
 
   @doc """
@@ -86,9 +100,10 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   def verify_token(_, %{token: token}, _) do
     case UserAuthMobile.get_user_by_session_token(token) do
       {:ok, user} ->
-        IO.puts("Printing user info from token")
-        IO.inspect(user)
-        {:ok, %{user: user, token: token, expired: false}}
+        # get cart or create new
+        carts = OrderManager.get_all_carts_or_create_new(user)
+
+        {:ok, %{user: user, token: token, expired: false, carts: carts}}
 
       {:error, _} ->
         {:ok, %{user: nil, token: token, expired: true}}

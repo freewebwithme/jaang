@@ -48,10 +48,11 @@ alias Jaang.{Category, Store, Product}
 alias Jaang.Category.Categories
 alias Jaang.Store.Stores
 alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage}
-alias Jaang.{StoreManager, AccountManager, ProductManager}
+alias Jaang.{StoreManager, AccountManager, ProductManager, OrderManager}
 alias Jaang.Account.{User, Profile, Address}
 alias Jaang.Account.Accounts
 alias Jaang.Checkout.{Order, LineItem}
+alias Jaang.Checkout
 
 alias ExAws.S3
 

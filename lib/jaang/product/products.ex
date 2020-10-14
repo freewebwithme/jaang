@@ -3,7 +3,7 @@ defmodule Jaang.Product.Products do
    Function module for Product
   """
   alias Jaang.Product
-  alias Jaang.Product.{Unit, ProductImage, ProductTags, RecipeTag, ProductRecipeTags}
+  alias Jaang.Product.{Unit, ProductImage, ProductTags, ProductRecipeTags}
   alias Jaang.Repo
   import Ecto.Query
 
