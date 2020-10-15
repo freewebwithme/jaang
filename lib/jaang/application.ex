@@ -12,9 +12,10 @@ defmodule Jaang.Application do
       # Start the Telemetry supervisor
       JaangWeb.Telemetry,
       # Start the PubSub system
-      {Phoenix.PubSub, name: Jaang.PubSub},
+      {Phoenix.PubSub, [name: Jaang.PubSub, adapter: Phoenix.PubSub.PG2]},
       # Start the Endpoint (http/https)
-      JaangWeb.Endpoint
+      JaangWeb.Endpoint,
+      {Absinthe.Subscription, JaangWeb.Endpoint}
       # Start a worker by calling: Jaang.Worker.start_link(arg)
       # {Jaang.Worker, arg}
     ]

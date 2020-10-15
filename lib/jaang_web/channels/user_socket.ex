@@ -1,5 +1,6 @@
 defmodule JaangWeb.UserSocket do
   use Phoenix.Socket
+  use Absinthe.Phoenix.Socket, schema: JaangWeb.Schema
 
   ## Channels
   # channel "room:*", JaangWeb.RoomChannel

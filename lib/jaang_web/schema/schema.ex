@@ -1,6 +1,14 @@
 defmodule JaangWeb.Schema do
   use Absinthe.Schema
-  alias JaangWeb.Resolvers.{StoreResolver, ProductResolver, CategoryResolver, AccountResolver}
+
+  alias JaangWeb.Resolvers.{
+    StoreResolver,
+    ProductResolver,
+    CategoryResolver,
+    AccountResolver,
+    CartResolver
+  }
+
   alias Jaang.Product.Products
   alias Jaang.Account.Accounts
   alias JaangWeb.Schema.Middleware
@@ -71,6 +79,13 @@ defmodule JaangWeb.Schema do
       arg(:store_id, non_null(:string))
 
       resolve(&ProductResolver.get_often_bought_with_products/3)
+    end
+
+    ### Carts
+    @desc "Get all carts that has not been checked out"
+    field :get_all_carts, :carts do
+      arg(:user_id, non_null(:string))
+      resolve(&CartResolver.get_all_carts/3)
     end
   end
 
@@ -151,7 +166,19 @@ defmodule JaangWeb.Schema do
     field :user, :user
     field :token, :string
     field :expired, :boolean, default_value: false
-    field :carts, list_of(:order)
+    #    field :carts, list_of(:order)
+  end
+
+  object :carts do
+    field :orders, list_of(:order)
+    field :total_items, :integer
+
+    field :total_price, :string do
+      resolve(fn parent, _, _ ->
+        money = Map.get(parent, :total_price)
+        {:ok, Money.to_string(money)}
+      end)
+    end
   end
 
   object :order do

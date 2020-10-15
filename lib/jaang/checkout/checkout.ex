@@ -27,7 +27,7 @@ defmodule Jaang.Checkout do
   to send carts info with session
   """
   def get_all_carts_or_create_new(user) do
-    carts = Repo.all(from o in Order, where: o.user_id == ^user.id and o.status == :cart)
+    carts = get_all_carts(user.id)
 
     cond do
       Enum.count(carts) > 0 ->
@@ -37,6 +37,13 @@ defmodule Jaang.Checkout do
         {:ok, cart} = create_cart(user.id, user.profile.store_id)
         [cart]
     end
+  end
+
+  @doc """
+  Used to call in the first app loading to retrieve all carts information that is not checked out.
+  """
+  def get_all_carts(user_id) do
+    Repo.all(from o in Order, where: o.user_id == ^user_id and o.status == :cart)
   end
 
   def update_cart(%Order{} = order, attrs) do
@@ -78,5 +85,29 @@ defmodule Jaang.Checkout do
         attrs = %{line_items: [new_cart_attrs | existing_line_items]}
         update_cart(cart, attrs)
     end
+  end
+
+  @doc """
+  Count total items in the all carts
+  """
+  def count_total_item(carts) do
+    item_num =
+      Enum.map(carts, fn cart ->
+        Enum.reduce(cart.line_items, 0, fn line_item, acc -> line_item.quantity + acc end)
+      end)
+
+    Enum.sum(item_num)
+  end
+
+  @doc """
+  Calculate total price in the all carts
+  """
+  def calculate_total_price(carts) do
+    Enum.map(carts, fn cart ->
+      Enum.reduce(cart.line_items, Money.new(0), fn line_item, acc ->
+        Money.add(line_item.total, acc)
+      end)
+    end)
+    |> Enum.reduce(Money.new(0), fn price, acc -> Money.add(price, acc) end)
   end
 end
