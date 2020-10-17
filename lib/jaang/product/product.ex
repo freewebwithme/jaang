@@ -60,7 +60,8 @@ defmodule Jaang.Product do
       :unit_name,
       :store_name,
       :category_name,
-      :sub_category_name
+      :sub_category_name,
+      :store_id
     ])
     |> put_assoc(:tags, parse_tags(attrs))
     |> put_assoc(:recipe_tags, parse_recipe_tags(attrs))

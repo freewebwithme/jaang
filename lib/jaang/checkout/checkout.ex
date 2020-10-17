@@ -62,10 +62,12 @@ defmodule Jaang.Checkout do
 
   def add_to_cart(%Order{line_items: existing_line_items} = cart, cart_attrs) do
     %{product_id: product_id, quantity: quantity} = cart_attrs
-
+    product_id = String.to_integer(product_id)
     # Check if exisiting cart has same product id
     case Enum.find(existing_line_items, fn line_item -> line_item.product_id == product_id end) do
       nil ->
+        IO.puts("No current product in carts")
+        IO.inspect(product_id)
         # there is no same product in cart just add a product
         existing_line_items = existing_line_items |> Enum.map(&Map.from_struct/1)
         attrs = %{line_items: [cart_attrs | existing_line_items]}
@@ -73,7 +75,7 @@ defmodule Jaang.Checkout do
 
       line_item ->
         # Found same product then increase quantity and total price.
-
+        IO.puts("Found a product in cart")
         # exclude same product
         existing_line_items =
           existing_line_items

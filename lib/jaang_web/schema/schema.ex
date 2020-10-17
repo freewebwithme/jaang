@@ -32,24 +32,30 @@ defmodule JaangWeb.Schema do
     @desc "get product"
     field :get_product, :product do
       arg(:id, :id)
+      middleware(Middleware.Authenticate)
+
       resolve(&ProductResolver.get_product/3)
     end
 
     @desc "get all products in category"
     field :get_all_products, list_of(:product) do
       arg(:category_id, :id)
+      middleware(Middleware.Authenticate)
+
       resolve(&ProductResolver.get_all_products/3)
     end
 
     @desc "Get products by category"
     field :get_products_by_category, :category do
       arg(:id, :id)
+      middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_category/3)
     end
 
     @desc "Get products by sub_category"
     field :get_products_by_subcategory, list_of(:product) do
       arg(:id, :id)
+      middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_subcategory/3)
     end
 
@@ -57,6 +63,7 @@ defmodule JaangWeb.Schema do
     field :get_products_for_homescreen, list_of(:category_homescreen) do
       arg(:limit, :integer, default_value: 10)
       arg(:store_id, non_null(:string))
+      middleware(Middleware.Authenticate)
 
       resolve(&StoreResolver.get_products_for_homescreen/3)
     end
@@ -67,6 +74,7 @@ defmodule JaangWeb.Schema do
       arg(:tag_id, non_null(:string))
       arg(:limit, :integer, default_value: 5)
       arg(:store_id, non_null(:string))
+      middleware(Middleware.Authenticate)
 
       resolve(&ProductResolver.get_related_products/3)
     end
@@ -77,6 +85,7 @@ defmodule JaangWeb.Schema do
       arg(:tag_id, non_null(:string))
       arg(:limit, :integer, default_value: 5)
       arg(:store_id, non_null(:string))
+      middleware(Middleware.Authenticate)
 
       resolve(&ProductResolver.get_often_bought_with_products/3)
     end
@@ -85,6 +94,7 @@ defmodule JaangWeb.Schema do
     @desc "Get all carts that has not been checked out"
     field :get_all_carts, :carts do
       arg(:user_id, non_null(:string))
+      # middleware(Middleware.Authenticate)
       resolve(&CartResolver.get_all_carts/3)
     end
   end
@@ -146,6 +156,17 @@ defmodule JaangWeb.Schema do
       middleware(Middleware.Authenticate)
 
       resolve(&StoreResolver.change_store/3)
+    end
+
+    @desc "Add item to cart"
+    field :add_to_cart, :carts do
+      arg(:user_id, non_null(:string))
+      arg(:product_id, non_null(:string))
+      arg(:quantity, non_null(:integer))
+      arg(:store_id, non_null(:integer))
+      # middleware(Middleware.Authenticate)
+
+      resolve(&CartResolver.add_to_cart/3)
     end
   end
 
@@ -303,6 +324,7 @@ defmodule JaangWeb.Schema do
     field :unit_id, :string
     field :unit_name, :string
     field :store_name, :string
+    field :store_id, :integer
     field :category_name, :string
     field :sub_category_name, :string
     field :product_images, list_of(:product_image), resolve: dataloader(Products)
