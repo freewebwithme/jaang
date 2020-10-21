@@ -28,7 +28,7 @@ defmodule Jaang.Product.Products do
   end
 
   def get_product(id) do
-    Repo.get(Product, id)
+    Repo.get(Product, id) |> Repo.preload(:product_images)
   end
 
   def get_all_products(category_id) do

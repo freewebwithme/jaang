@@ -9,7 +9,7 @@ defmodule Jaang.Checkout.Order do
     embeds_many :line_items, LineItem, on_replace: :delete
 
     field :store_id, :id
-
+    field :store_name, :string
     belongs_to :user, Jaang.Account.User
 
     timestamps()
@@ -18,7 +18,7 @@ defmodule Jaang.Checkout.Order do
   @doc false
   def changeset(%Order{} = order, attrs) do
     order
-    |> cast(attrs, [:status, :total, :user_id, :store_id])
+    |> cast(attrs, [:status, :total, :user_id, :store_id, :store_name])
     |> cast_embed(:line_items, required: true, with: &LineItem.changeset/2)
     |> set_order_total()
     |> validate_required([:status, :total, :user_id])

@@ -1,4 +1,5 @@
 defmodule Jaang.Checkout do
+  alias Jaang.StoreManager
   alias Jaang.Checkout.Order
   alias Jaang.Repo
   import Ecto.Query
@@ -8,12 +9,15 @@ defmodule Jaang.Checkout do
   attrs should include user_id
   """
   def create_cart(user_id, store_id) do
+    store = StoreManager.get_store(store_id)
+
     %Order{
       user_id: user_id,
       total: Money.new(0),
       line_items: [],
       status: :cart,
-      store_id: store_id
+      store_id: store_id,
+      store_name: store.name
     }
     |> Repo.insert()
   end

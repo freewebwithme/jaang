@@ -7,6 +7,7 @@ defmodule Jaang.Checkout.LineItem do
 
   embedded_schema do
     field :product_id, :integer
+    field :image_url, :string
     field :product_name, :string
     field :unit_name, :string
     field :quantity, :integer
@@ -17,10 +18,10 @@ defmodule Jaang.Checkout.LineItem do
   @doc false
   def changeset(%LineItem{} = line_item, attrs) do
     line_item
-    |> cast(attrs, [:product_id, :product_name, :unit_name, :quantity, :price, :total])
+    |> cast(attrs, [:product_id, :product_name, :image_url, :unit_name, :quantity, :price, :total])
     |> set_product_details()
     |> set_total()
-    |> validate_required([:product_id, :product_name, :unit_name, :quantity, :price])
+    |> validate_required([:product_id, :product_name, :image_url, :unit_name, :quantity, :price])
   end
 
   def set_product_details(changeset) do
@@ -30,8 +31,13 @@ defmodule Jaang.Checkout.LineItem do
 
       product_id ->
         product = ProductManager.get_product(product_id)
+        # get first product images
+        [product_image] = Enum.filter(product.product_images, fn pi -> pi.order == 1 end)
+        IO.puts("Printing image url")
+        IO.inspect(product_image.image_url)
 
         changeset
+        |> put_change(:image_url, product_image.image_url)
         |> put_change(:product_name, product.name)
         |> put_change(:price, product.regular_price)
         |> put_change(:unit_name, product.unit_name)

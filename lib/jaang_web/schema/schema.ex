@@ -205,6 +205,7 @@ defmodule JaangWeb.Schema do
   object :order do
     field :id, :id
     field :store_id, :id
+    field :store_name, :string
     field :user_id, :id
     field :status, :string
 
@@ -220,6 +221,7 @@ defmodule JaangWeb.Schema do
 
   object :line_item do
     field :product_id, :id
+    field :image_url, :string
     field :product_name, :string
     field :unit_name, :string
     field :quantity, :integer
