@@ -63,7 +63,7 @@ defmodule JaangWeb.Schema do
     field :get_products_for_homescreen, list_of(:category_homescreen) do
       arg(:limit, :integer, default_value: 10)
       arg(:store_id, non_null(:string))
-      middleware(Middleware.Authenticate)
+      # middleware(Middleware.Authenticate)
 
       resolve(&StoreResolver.get_products_for_homescreen/3)
     end
@@ -164,9 +164,21 @@ defmodule JaangWeb.Schema do
       arg(:product_id, non_null(:string))
       arg(:quantity, non_null(:integer))
       arg(:store_id, non_null(:integer))
+
       # middleware(Middleware.Authenticate)
 
       resolve(&CartResolver.add_to_cart/3)
+    end
+
+    @desc "Update a cart, change a quantity of item or delete a item from cart"
+    field :update_cart, :carts do
+      arg(:user_id, non_null(:string))
+      arg(:product_id, non_null(:string))
+      arg(:quantity, non_null(:integer))
+      arg(:store_id, non_null(:integer))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&CartResolver.update_cart/3)
     end
   end
 
@@ -221,6 +233,7 @@ defmodule JaangWeb.Schema do
 
   object :line_item do
     field :product_id, :id
+    field :store_id, :integer
     field :image_url, :string
     field :product_name, :string
     field :unit_name, :string

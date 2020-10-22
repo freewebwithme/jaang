@@ -34,6 +34,23 @@ defmodule JaangWeb.Resolvers.CartResolver do
     end
   end
 
+  def update_cart(
+        _,
+        %{user_id: user_id, product_id: _product_id, store_id: store_id, quantity: _quantity} =
+          attrs,
+        _
+      ) do
+    user_id = String.to_integer(user_id)
+    IO.puts("Inspecting store_id")
+    IO.inspect(store_id)
+    cart = OrderManager.get_cart(user_id, store_id)
+    OrderManager.change_quantity_from_cart(cart, attrs)
+
+    # Get updated carts
+    {carts, total_items, total_price} = get_updated_carts(user_id)
+    {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
+  end
+
   defp get_updated_carts(user_id) do
     carts = OrderManager.get_all_carts(user_id)
     total_items = OrderManager.count_total_item(carts)

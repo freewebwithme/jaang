@@ -71,7 +71,6 @@ defmodule Jaang.Checkout do
     case Enum.find(existing_line_items, fn line_item -> line_item.product_id == product_id end) do
       nil ->
         IO.puts("No current product in carts")
-        IO.inspect(product_id)
         # there is no same product in cart just add a product
         existing_line_items = existing_line_items |> Enum.map(&Map.from_struct/1)
         attrs = %{line_items: [cart_attrs | existing_line_items]}
@@ -93,16 +92,47 @@ defmodule Jaang.Checkout do
     end
   end
 
+  def change_quantity_from_cart(%Order{line_items: existing_line_items} = cart, cart_attrs) do
+    %{product_id: product_id, quantity: quantity} = cart_attrs
+    product_id = String.to_integer(product_id)
+
+    # Find correct line item that match selected product.
+    case Enum.find(existing_line_items, fn line_item -> line_item.product_id == product_id end) do
+      nil ->
+        IO.puts("Can't find a product in the cart")
+        # just return a cart
+        {:ok, cart}
+
+      _line_item ->
+        # Found same product then change a quantity and total price.
+        IO.puts("Found a product in cart")
+
+        # exclude same product
+        existing_line_items =
+          existing_line_items
+          |> Enum.filter(fn line_item -> line_item.product_id != product_id end)
+          |> Enum.map(&Map.from_struct/1)
+
+        cond do
+          quantity == 0 ->
+            # User deleted a product from a cart
+            # So just return excluded line_items.
+            attrs = %{line_items: existing_line_items}
+            update_cart(cart, attrs)
+
+          true ->
+            new_cart_attrs = %{product_id: product_id, quantity: quantity}
+            attrs = %{line_items: [new_cart_attrs | existing_line_items]}
+            update_cart(cart, attrs)
+        end
+    end
+  end
+
   @doc """
   Count total items in the all carts
   """
   def count_total_item(carts) do
-    item_num =
-      Enum.map(carts, fn cart ->
-        Enum.reduce(cart.line_items, 0, fn line_item, acc -> line_item.quantity + acc end)
-      end)
-
-    Enum.sum(item_num)
+    Enum.reduce(carts, 0, fn cart, acc -> Enum.count(cart.line_items) + acc end)
   end
 
   @doc """
