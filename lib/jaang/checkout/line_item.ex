@@ -14,6 +14,8 @@ defmodule Jaang.Checkout.LineItem do
     field :quantity, :integer
     field :price, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
+
+    timestamps()
   end
 
   @doc false
@@ -27,7 +29,9 @@ defmodule Jaang.Checkout.LineItem do
       :unit_name,
       :quantity,
       :price,
-      :total
+      :total,
+      :inserted_at,
+      :updated_at
     ])
     |> set_product_details()
     |> set_total()

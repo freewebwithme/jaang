@@ -53,8 +53,16 @@ defmodule JaangWeb.Resolvers.CartResolver do
 
   defp get_updated_carts(user_id) do
     carts = OrderManager.get_all_carts(user_id)
-    total_items = OrderManager.count_total_item(carts)
-    total_price = OrderManager.calculate_total_price(carts)
-    {carts, total_items, total_price}
+
+    # Extract line items and sort by inserted at
+    sorted_carts =
+      Enum.map(carts, fn %{line_items: line_items} = cart ->
+        line_items = Enum.sort(line_items, &(&1.inserted_at <= &2.inserted_at))
+        Map.put(cart, :line_items, line_items)
+      end)
+
+    total_items = OrderManager.count_total_item(sorted_carts)
+    total_price = OrderManager.calculate_total_price(sorted_carts)
+    {sorted_carts, total_items, total_price}
   end
 end

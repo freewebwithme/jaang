@@ -47,7 +47,9 @@ defmodule Jaang.Checkout do
   Used to call in the first app loading to retrieve all carts information that is not checked out.
   """
   def get_all_carts(user_id) do
-    Repo.all(from o in Order, where: o.user_id == ^user_id and o.status == :cart)
+    Repo.all(
+      from o in Order, where: o.user_id == ^user_id and o.status == :cart, order_by: o.store_id
+    )
   end
 
   def update_cart(%Order{} = order, attrs) do
@@ -108,7 +110,7 @@ defmodule Jaang.Checkout do
         IO.puts("Found a product in cart")
 
         # exclude same product
-        existing_line_items =
+        excluding_line_items =
           existing_line_items
           |> Enum.filter(fn line_item -> line_item.product_id != product_id end)
           |> Enum.map(&Map.from_struct/1)
@@ -117,12 +119,27 @@ defmodule Jaang.Checkout do
           quantity == 0 ->
             # User deleted a product from a cart
             # So just return excluded line_items.
-            attrs = %{line_items: existing_line_items}
+            attrs = %{line_items: excluding_line_items}
             update_cart(cart, attrs)
 
           true ->
-            new_cart_attrs = %{product_id: product_id, quantity: quantity}
-            attrs = %{line_items: [new_cart_attrs | existing_line_items]}
+            # Find product that will be updated from line items
+            [line_item] =
+              Enum.filter(existing_line_items, fn line_item ->
+                line_item.product_id == product_id
+              end)
+              |> Enum.map(&Map.from_struct/1)
+              |> Enum.map(fn line_item ->
+                Map.update!(line_item, :quantity, fn _value -> quantity end)
+              end)
+
+            # Merge updated line_item and excluding_line_items
+            # I need to just update existing line items not adding new line items
+            # If I just update by adding new line items, line_items' created_at time
+            # is reset so I can't order by line_item by created at.
+            updated_line_items = [line_item | excluding_line_items]
+            # new_cart_attrs = %{product_id: product_id, quantity: quantity}
+            attrs = %{line_items: updated_line_items}
             update_cart(cart, attrs)
         end
     end
