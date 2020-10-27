@@ -47,14 +47,16 @@ defmodule JaangWeb.Schema do
 
     @desc "Get products by category"
     field :get_products_by_category, :category do
-      arg(:id, :string)
+      arg(:category_id, :string)
+      arg(:store_id, :integer)
       # middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_category/3)
     end
 
     @desc "Get products by sub_category"
-    field :get_products_by_subcategory, list_of(:product) do
-      arg(:id, :id)
+    field :get_products_by_subcategory, list_of(:sub_category_product) do
+      arg(:category_id, :string)
+      arg(:store_id, :integer)
       # middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_subcategory/3)
     end
@@ -320,6 +322,12 @@ defmodule JaangWeb.Schema do
     field :name, :string
   end
 
+  object :sub_category_product do
+    field :id, :id
+    field :name, :string
+    field :products, list_of(:product)
+  end
+
   object :product do
     field :id, :id
     field :name, :string
@@ -357,6 +365,7 @@ defmodule JaangWeb.Schema do
     field :category_name, :string
     field :category_id, :integer
     field :sub_category_name, :string
+    field :sub_category_id, :integer
     field :product_images, list_of(:product_image), resolve: dataloader(Products)
     field :tags, list_of(:tag), resolve: dataloader(Products)
     field :recipe_tags, list_of(:recipe_tag), resolve: dataloader(Products)

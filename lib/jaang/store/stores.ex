@@ -18,8 +18,8 @@ defmodule Jaang.Store.Stores do
     Repo.all(Store)
   end
 
-  # TODO: Create function that returns
-  # first 10 items from each category for front page
+  # * Create function that returns
+  # * first 10 items from each category for front page
   def get_products_for_homescreen(limit, store_id) do
     raw_query =
       "SELECT * FROM categories c LEFT JOIN LATERAL (SELECT p.* FROM products p WHERE c.id = p.category_id AND p.store_id = #{

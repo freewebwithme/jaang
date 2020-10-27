@@ -45,7 +45,7 @@ IEx.configure(
 
 alias Jaang.Repo
 alias Jaang.{Category, Store, Product}
-alias Jaang.Category.Categories
+alias Jaang.Category.{Categories, SubCategory}
 alias Jaang.Store.Stores
 alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage}
 alias Jaang.{StoreManager, AccountManager, ProductManager, OrderManager}

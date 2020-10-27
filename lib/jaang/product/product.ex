@@ -61,6 +61,7 @@ defmodule Jaang.Product do
       :store_name,
       :category_name,
       :sub_category_name,
+      :sub_category_id,
       :store_id
     ])
     |> put_assoc(:tags, parse_tags(attrs))
