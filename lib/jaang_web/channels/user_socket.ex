@@ -2,6 +2,8 @@ defmodule JaangWeb.UserSocket do
   use Phoenix.Socket
   use Absinthe.Phoenix.Socket, schema: JaangWeb.Schema
 
+  alias Jaang.Account.UserAuthMobile
+
   ## Channels
   # channel "room:*", JaangWeb.RoomChannel
 
@@ -17,9 +19,23 @@ defmodule JaangWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(%{"token" => token} = params, socket, _connect_info) do
+    IO.puts("Inspecting socket params")
+    IO.inspect(params)
+
+    with {:ok, user} <- UserAuthMobile.get_user_by_session_token(token) do
+      socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{current_user: user})
+      IO.puts(" Has current user")
+      {:ok, socket}
+    else
+      _ ->
+        {:ok, socket}
+    end
   end
+
+  # def connect(_params, socket, _connect_info) do
+  #  {:ok, socket}
+  # end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #

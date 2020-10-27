@@ -16,6 +16,7 @@ alias Jaang.Store.Stores
 alias Jaang.Category.Categories
 alias Jaang.Product.Products
 alias Jaang.Repo
+import Ecto.Query
 
 # Create a stores
 {:ok, store1} =
@@ -60,18 +61,22 @@ alias Jaang.Repo
 # Create sub-categories
 # Produce
 {:ok, fresh_veg} = Categories.create_subcategory(produce, %{name: "Fresh Vegetables"})
+
 {:ok, fresh_fruits} = Categories.create_subcategory(produce, %{name: "Fresh Fruits"})
 
 # Meat & Seafood
 {:ok, packaged_pork} = Categories.create_subcategory(meat_seafood, %{name: "Packaged Pork"})
+
 {:ok, packaged_beef} = Categories.create_subcategory(meat_seafood, %{name: "Packaged Beef"})
 
 # Frozen
 {:ok, frozen_dump} = Categories.create_subcategory(frozen, %{name: "Frozen Dumplings"})
+
 {:ok, ice_cream} = Categories.create_subcategory(frozen, %{name: "Ice Cream"})
 
 # Snacks
 {:ok, cookies_cakes} = Categories.create_subcategory(snacks, %{name: "Cookies, Cakes & Pies"})
+
 {:ok, candy_choco} = Categories.create_subcategory(snacks, %{name: "Candy & Chocolate"})
 
 # Dairy and Eggs
@@ -80,10 +85,12 @@ alias Jaang.Repo
 
 # Deli
 {:ok, prepared_meals} = Categories.create_subcategory(deli, %{name: "Prepared Meals"})
+
 {:ok, lunch_meat} = Categories.create_subcategory(deli, %{name: "Lunch Meat"})
 
 # Beverages
 {:ok, tea} = Categories.create_subcategory(beverages, %{name: "Tea"})
+
 {:ok, juice} = Categories.create_subcategory(beverages, %{name: "Juice & Nectars"})
 
 # Create Unit
@@ -201,6 +208,8 @@ recipe_tags = [
 for x <- 0..99 do
   store = Enum.random(stores)
   category = Enum.random(categories)
+  # get sub category
+  sub_categories = Repo.all(from sc in SubCategory, where: sc.category_id == ^category.id)
   sub_category = Enum.random(sub_categories)
   unit = Enum.random(units)
 
@@ -220,7 +229,7 @@ for x <- 0..99 do
     store_name: store.name,
     store_id: store.id,
     category_name: category.name,
-    category_id: sub_category.category_id,
+    category_id: category.id,
     sub_category_name: sub_category.name,
     sub_category_id: sub_category.id,
     tags: Enum.random(tags),

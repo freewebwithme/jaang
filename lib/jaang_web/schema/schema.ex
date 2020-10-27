@@ -47,15 +47,15 @@ defmodule JaangWeb.Schema do
 
     @desc "Get products by category"
     field :get_products_by_category, :category do
-      arg(:id, :id)
-      middleware(Middleware.Authenticate)
+      arg(:id, :string)
+      # middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_category/3)
     end
 
     @desc "Get products by sub_category"
     field :get_products_by_subcategory, list_of(:product) do
       arg(:id, :id)
-      middleware(Middleware.Authenticate)
+      # middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_subcategory/3)
     end
 
@@ -90,7 +90,7 @@ defmodule JaangWeb.Schema do
       resolve(&ProductResolver.get_often_bought_with_products/3)
     end
 
-    ### Carts
+    ### * Carts
     @desc "Get all carts that has not been checked out"
     field :get_all_carts, :carts do
       arg(:user_id, non_null(:string))
@@ -179,6 +179,20 @@ defmodule JaangWeb.Schema do
 
       # middleware(Middleware.Authenticate)
       resolve(&CartResolver.update_cart/3)
+    end
+  end
+
+  ### * Subscription
+  subscription do
+    @desc "Subscribe to cart changes"
+    field :cart_change, :carts do
+      arg(:user_id, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+
+      config(fn arg, _res ->
+        {:ok, topic: arg.user_id}
+      end)
     end
   end
 
@@ -341,6 +355,7 @@ defmodule JaangWeb.Schema do
     field :store_name, :string
     field :store_id, :integer
     field :category_name, :string
+    field :category_id, :integer
     field :sub_category_name, :string
     field :product_images, list_of(:product_image), resolve: dataloader(Products)
     field :tags, list_of(:tag), resolve: dataloader(Products)
