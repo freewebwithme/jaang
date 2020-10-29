@@ -6,6 +6,7 @@ defmodule Jaang.Category.SubCategory do
     field :name, :string
 
     belongs_to :category, Jaang.Category
+    has_many :products, Jaang.Product
   end
 
   @doc false

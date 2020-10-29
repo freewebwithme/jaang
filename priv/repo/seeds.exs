@@ -204,9 +204,9 @@ recipe_tags = [
   "bibimbap"
 ]
 
-# Create Products
-for x <- 0..99 do
-  store = Enum.random(stores)
+# Create Products for store 1
+for x <- 0..299 do
+  store = store1
   category = Enum.random(categories)
   # get sub category
   sub_categories = Repo.all(from sc in SubCategory, where: sc.category_id == ^category.id)
@@ -214,7 +214,117 @@ for x <- 0..99 do
   unit = Enum.random(units)
 
   attrs = %{
-    name: "Product name should be long for detail for product-#{x}",
+    name: "#{x} Product name should be long for detail for product",
+    description:
+      "This is nice product. #{x}.  Aut laboriosam illo adipisci quibusdam sapiente. Dignissimos mollitia ut eos. Voluptas omnis qui temporibus tempora quis officia. Porro dolorum architecto officia omnis quae maxime dolorem quas. Aut neque esse magnam sint temporibus delectus necessitatibus ratione.",
+    ingredients:
+      "Contains orange juice, Less than 1% of: Calcium phosphate and caclium lactate(calcium sources), Vitamin D3",
+    directions:
+      "Keep refrigerated. Shake well. Best if used within 7-10 days after opening. Do not use.",
+    warnings: "Do no reuse.",
+    regular_price: Enum.random(prices),
+    published: true,
+    unit_id: unit.id,
+    unit_name: unit.name,
+    store_name: store.name,
+    store_id: store.id,
+    category_name: category.name,
+    category_id: category.id,
+    sub_category_name: sub_category.name,
+    sub_category_id: sub_category.id,
+    tags: Enum.random(tags),
+    recipe_tags: Enum.random(recipe_tags)
+  }
+
+  {:ok, product} = Products.create_product(attrs)
+
+  product_images =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      order: 1
+    })
+
+  product_images_2 =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      order: 2
+    })
+
+  product_images_3 =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      order: 3
+    })
+
+  # Creating tags
+end
+
+# Create Products for store 2
+for x <- 0..299 do
+  store = store2
+  category = Enum.random(categories)
+  # get sub category
+  sub_categories = Repo.all(from sc in SubCategory, where: sc.category_id == ^category.id)
+  sub_category = Enum.random(sub_categories)
+  unit = Enum.random(units)
+
+  attrs = %{
+    name: "#{x} Product name should be long for detail for product",
+    description:
+      "This is nice product. #{x}.  Aut laboriosam illo adipisci quibusdam sapiente. Dignissimos mollitia ut eos. Voluptas omnis qui temporibus tempora quis officia. Porro dolorum architecto officia omnis quae maxime dolorem quas. Aut neque esse magnam sint temporibus delectus necessitatibus ratione.",
+    ingredients:
+      "Contains orange juice, Less than 1% of: Calcium phosphate and caclium lactate(calcium sources), Vitamin D3",
+    directions:
+      "Keep refrigerated. Shake well. Best if used within 7-10 days after opening. Do not use.",
+    warnings: "Do no reuse.",
+    regular_price: Enum.random(prices),
+    published: true,
+    unit_id: unit.id,
+    unit_name: unit.name,
+    store_name: store.name,
+    store_id: store.id,
+    category_name: category.name,
+    category_id: category.id,
+    sub_category_name: sub_category.name,
+    sub_category_id: sub_category.id,
+    tags: Enum.random(tags),
+    recipe_tags: Enum.random(recipe_tags)
+  }
+
+  {:ok, product} = Products.create_product(attrs)
+
+  product_images =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      order: 1
+    })
+
+  product_images_2 =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      order: 2
+    })
+
+  product_images_3 =
+    Products.create_product_image(product, %{
+      image_url: Enum.random(product_image_urls),
+      order: 3
+    })
+
+  # Creating tags
+end
+
+# Create Products for store 3
+for x <- 0..299 do
+  store = store3
+  category = Enum.random(categories)
+  # get sub category
+  sub_categories = Repo.all(from sc in SubCategory, where: sc.category_id == ^category.id)
+  sub_category = Enum.random(sub_categories)
+  unit = Enum.random(units)
+
+  attrs = %{
+    name: "#{x} Product name should be long for detail for product",
     description:
       "This is nice product. #{x}.  Aut laboriosam illo adipisci quibusdam sapiente. Dignissimos mollitia ut eos. Voluptas omnis qui temporibus tempora quis officia. Porro dolorum architecto officia omnis quae maxime dolorem quas. Aut neque esse magnam sint temporibus delectus necessitatibus ratione.",
     ingredients:

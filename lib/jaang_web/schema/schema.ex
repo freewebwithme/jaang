@@ -53,12 +53,24 @@ defmodule JaangWeb.Schema do
       resolve(&CategoryResolver.get_products_by_category/3)
     end
 
-    @desc "Get products by sub_category"
-    field :get_products_by_subcategory, list_of(:sub_category_product) do
+    @desc "Get products by sub_category and display for each sub category products"
+    field :get_products_by_subcategory, list_of(:sub_category) do
       arg(:category_id, :string)
       arg(:store_id, :integer)
+      arg(:limit, :integer, default_value: 3)
       # middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_subcategory/3)
+    end
+
+    @desc "Get products by sub category name and display in subcategory screen"
+    field :get_products_by_subcategory_name, list_of(:product) do
+      arg(:category_name, non_null(:string))
+      arg(:store_id, non_null(:integer))
+      arg(:limit, :integer, default_value: 6)
+      arg(:offset, :integer)
+      # middleware(Middleware.Authenticate)
+
+      resolve(&CategoryResolver.get_products_by_subcategory_name/3)
     end
 
     @desc "Get categories and product for home screen"
@@ -320,6 +332,8 @@ defmodule JaangWeb.Schema do
 
   object :sub_category do
     field :name, :string
+    field :id, :id
+    field :products, list_of(:product)
   end
 
   object :sub_category_product do
