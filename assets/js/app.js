@@ -16,6 +16,8 @@ let liveSocket = new LiveSocket("/live", Socket, {
 // Connect if there are any LiveView on the page
 liveSocket.connect();
 
+import socket from "./socket";
+
 // Expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
@@ -31,6 +33,5 @@ window.liveSocket = liveSocket;
 // Import deps with the dep name or local files with a relative path, for example:
 //
 //     import {Socket} from "phoenix"
-//     import socket from "./socket"
 //
 import "phoenix_html";

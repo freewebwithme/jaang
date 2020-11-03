@@ -30,12 +30,19 @@ defmodule JaangWeb.UserAuth do
   def log_in_user(conn, user, params \\ %{}) do
     token = AccountManager.generate_user_session_token(user)
 
+    IO.puts("Inspecting user token when log in ")
+    IO.inspect(token)
+
     conn
     |> renew_session()
+    |> assign(:user_token, token)
+    |> assign(:user_id, user.id)
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
     |> maybe_write_remember_me_cookies(token, params)
-    |> redirect(to: Routes.live_path(conn, JaangWeb.MainLive))
+    |> redirect(to: Routes.main_store_path(conn, :index))
+
+    # |> redirect(to: Routes.live_path(conn, JaangWeb.MainLive))
   end
 
   defp maybe_write_remember_me_cookies(conn, token, %{"remember_me" => "true"}) do
@@ -92,8 +99,20 @@ defmodule JaangWeb.UserAuth do
   """
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
-    user = user_token && AccountManager.get_user_by_session_token(user_token)
-    assign(conn, :current_user, user)
+    IO.puts("Inspecting user_token")
+
+    IO.inspect(user_token)
+    IO.inspect(conn)
+
+    if(user_token == nil) do
+      conn
+    else
+      user = AccountManager.get_user_by_session_token(user_token)
+
+      assign(conn, :current_user, user)
+      |> assign(:user_token, user_token)
+      |> assign(:user_id, user.id)
+    end
   end
 
   defp ensure_user_token(conn) do

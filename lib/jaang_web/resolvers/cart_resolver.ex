@@ -70,7 +70,7 @@ defmodule JaangWeb.Resolvers.CartResolver do
     {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
   end
 
-  defp get_updated_carts(user_id) do
+  def get_updated_carts(user_id) do
     carts = OrderManager.get_all_carts(user_id)
 
     # Extract line items and sort by inserted at

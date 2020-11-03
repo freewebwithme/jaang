@@ -33,7 +33,8 @@ defmodule JaangWeb.Router do
   scope "/store", JaangWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live "/", MainLive
+    get "/", MainStoreController, :index
+    # live "/", MainLive
   end
 
   scope "/auth", JaangWeb do

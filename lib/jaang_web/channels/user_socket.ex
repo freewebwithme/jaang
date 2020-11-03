@@ -2,10 +2,14 @@ defmodule JaangWeb.UserSocket do
   use Phoenix.Socket
   use Absinthe.Phoenix.Socket, schema: JaangWeb.Schema
 
-  alias Jaang.Account.UserAuthMobile
+  alias Jaang.Account.{User, UserAuthMobile, UserToken}
+  alias Jaang.AccountManager
+  alias Jaang.Repo
 
   ## Channels
   # channel "room:*", JaangWeb.RoomChannel
+  channel "cart:*", JaangWeb.CartChannel
+  channel "ping", JaangWeb.CartChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -24,18 +28,43 @@ defmodule JaangWeb.UserSocket do
     IO.inspect(params)
 
     with {:ok, user} <- UserAuthMobile.get_user_by_session_token(token) do
-      socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{current_user: user})
+      # socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{current_user: user})
       IO.puts(" Has current user")
-      {:ok, socket}
+      {:ok, assign(socket, :current_user, user)}
     else
       _ ->
+        IO.puts("Can't find a user")
         {:ok, socket}
     end
   end
 
-  # def connect(_params, socket, _connect_info) do
-  #  {:ok, socket}
-  # end
+  @impl true
+  def connect(%{"web_token" => token} = params, socket, _connect_info) do
+    IO.puts("Inspecting socket params")
+    IO.inspect(params)
+
+    if(token == nil or token == "") do
+      IO.puts("Token is nil")
+      {:ok, socket}
+    else
+      IO.puts("Token not is nil")
+      IO.inspect(token)
+
+      with %User{} = user <- AccountManager.get_user_by_session_token(token) do
+        # socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{current_user: user})
+        IO.puts(" Has current user")
+        {:ok, assign(socket, :current_user, user)}
+      else
+        _ ->
+          {:ok, socket}
+      end
+    end
+  end
+
+  @impl true
+  def connect(_params, socket, _connect_info) do
+    {:ok, socket}
+  end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #

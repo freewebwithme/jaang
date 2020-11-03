@@ -3,6 +3,11 @@ defmodule Jaang.Checkout.Order do
   import Ecto.Changeset
   alias Jaang.Checkout.{Order, LineItem}
 
+  @derive {Jason.Encoder, only: [:status, :total, :line_items, :store_id, :store_name, :user_id]}
+  defprotocol MoneyProtocol do
+    Protocol.derive(Jason.Encoder, Money)
+  end
+
   schema "orders" do
     field :status, Ecto.Enum, values: [:cart, :confirmd]
     field :total, Money.Ecto.Amount.Type

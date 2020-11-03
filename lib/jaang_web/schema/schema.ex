@@ -67,7 +67,7 @@ defmodule JaangWeb.Schema do
       arg(:category_name, non_null(:string))
       arg(:store_id, non_null(:integer))
       arg(:limit, :integer, default_value: 6)
-      arg(:offset, :integer)
+      arg(:offset, :integer, default_value: 0)
       # middleware(Middleware.Authenticate)
 
       resolve(&CategoryResolver.get_products_by_subcategory_name/3)

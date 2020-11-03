@@ -5,6 +5,7 @@ defmodule Jaang.Checkout.LineItem do
 
   import Ecto.Changeset
 
+  @derive Jason.Encoder
   embedded_schema do
     field :product_id, :integer
     field :store_id, :integer

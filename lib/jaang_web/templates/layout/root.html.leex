@@ -1,25 +1,28 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jaang · Get your groceries at your door step!</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css")
+    %>"/>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <%= csrf_meta_tag() %>
 
-    <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    <script>window.userToken = "<%= assigns[:user_token] %>";</script>
+    <script>window.userId = "<%= assigns[:user_id] %>";</script>
+    <script
+      defer
+      type="text/javascript"
+      src="<%= Routes.static_path(@conn, "/js/app.js") %>"
+    ></script>
   </head>
 
-<body>
-  <header>
-    <section class="container">
-
-    </section>
-  </header>
+  <body>
+    <header>
+      <section class="container"></section>
+    </header>
     <%= @inner_content %>
-</body>
-
+  </body>
 </html>
