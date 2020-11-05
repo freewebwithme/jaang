@@ -58,6 +58,11 @@ defmodule Jaang.Checkout do
     |> Repo.update()
   end
 
+  def delete_cart(%Order{} = order) do
+    order
+    |> Repo.delete!()
+  end
+
   @doc """
   Minimum required attrs %{product_id: id, quantity: 1}
   """
@@ -119,8 +124,16 @@ defmodule Jaang.Checkout do
           quantity == 0 ->
             # User deleted a product from a cart
             # So just return excluded line_items.
-            attrs = %{line_items: excluding_line_items}
-            update_cart(cart, attrs)
+            IO.puts("request quantity == 0, so delete a product from cart")
+            IO.inspect(excluding_line_items)
+
+            if Enum.count(excluding_line_items) == 0 do
+              # There is no item in the cart, delete a cart
+              delete_cart(cart)
+            else
+              attrs = %{line_items: excluding_line_items}
+              update_cart(cart, attrs)
+            end
 
           true ->
             # Find product that will be updated from line items

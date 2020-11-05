@@ -29,7 +29,7 @@ defmodule JaangWeb.CartChannel do
     {carts, total_items, total_price} = get_updated_carts(user.id)
 
     broadcast!(socket, event, %{
-      carts: carts,
+      orders: carts,
       total_items: total_items,
       total_price: total_price
     })
@@ -53,6 +53,8 @@ defmodule JaangWeb.CartChannel do
       "quantity" => quantity
     } = payload
 
+    user_id = String.to_integer(user_id)
+
     case OrderManager.get_cart(user_id, store_id) do
       nil ->
         # There is no cart for store.  Create initial carts
@@ -67,7 +69,30 @@ defmodule JaangWeb.CartChannel do
 
     send(self(), {:send_cart, "add_to_cart"})
 
-    {:noreply, socket}
+    # I have to send a reply to client
+    # If I don't do this, it will send status: timeout, response: {}
+    {:reply, {:ok, %{message: "add to cart success"}}, socket}
+  end
+
+  def handle_in("update_cart", payload, socket) do
+    %{
+      "user_id" => user_id,
+      "product_id" => product_id,
+      "store_id" => store_id,
+      "quantity" => quantity
+    } = payload
+
+    user_id = String.to_integer(user_id)
+    attrs = %{user_id: user_id, product_id: product_id, store_id: store_id, quantity: quantity}
+
+    cart = OrderManager.get_cart(user_id, store_id)
+    OrderManager.change_quantity_from_cart(cart, attrs)
+
+    send(self(), {:send_cart, "update_cart"})
+
+    # I have to send a reply to client
+    # If I don't do this, it will send status: timeout, response: {}
+    {:reply, {:ok, %{message: "update cart success"}}, socket}
   end
 
   def get_updated_carts(user_id) do

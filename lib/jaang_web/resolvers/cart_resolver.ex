@@ -23,12 +23,6 @@ defmodule JaangWeb.Resolvers.CartResolver do
         # Get updated carts
         {carts, total_items, total_price} = get_updated_carts(user_id)
 
-        # Publush cart changes
-        publish_cart_change(
-          %{orders: carts, total_items: total_items, total_price: total_price},
-          user_id
-        )
-
         {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
 
       cart ->
@@ -37,12 +31,6 @@ defmodule JaangWeb.Resolvers.CartResolver do
 
         # Get updated carts
         {carts, total_items, total_price} = get_updated_carts(user_id)
-
-        # Publush cart changes
-        publish_cart_change(
-          %{orders: carts, total_items: total_items, total_price: total_price},
-          user_id
-        )
 
         {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
     end
@@ -61,12 +49,6 @@ defmodule JaangWeb.Resolvers.CartResolver do
     # Get updated carts
     {carts, total_items, total_price} = get_updated_carts(user_id)
 
-    # Publush cart changes
-    publish_cart_change(
-      %{orders: carts, total_items: total_items, total_price: total_price},
-      user_id
-    )
-
     {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
   end
 
@@ -83,13 +65,5 @@ defmodule JaangWeb.Resolvers.CartResolver do
     total_items = OrderManager.count_total_item(sorted_carts)
     total_price = OrderManager.calculate_total_price(sorted_carts)
     {sorted_carts, total_items, total_price}
-  end
-
-  defp publish_cart_change(carts, user_id) do
-    Absinthe.Subscription.publish(
-      JaangWeb.Endpoint,
-      carts,
-      cart_change: user_id
-    )
   end
 end
