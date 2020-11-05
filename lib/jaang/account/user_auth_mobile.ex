@@ -27,7 +27,7 @@ defmodule Jaang.Account.UserAuthMobile do
     token
   end
 
-  @salt "jaang mobile token"
+  @salt "jaang token"
   def build_session_token(user) do
     token = Phoenix.Token.sign(JaangWeb.Endpoint, @salt, %{id: user.id})
     {token, %Jaang.Account.UserToken{token: token, context: "session", user_id: user.id}}

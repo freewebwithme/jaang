@@ -11,7 +11,7 @@ defmodule Jaang.Account.UserToken do
   @confirm_validity_in_days 7
   @change_email_validity_in_days 7
   @session_validity_in_days 60
-  @salt "jaang web token"
+  @salt "jaang token"
   # 60 days
   @max_age 24 * 60 * 60 * 60
   schema "users_tokens" do
