@@ -49,7 +49,7 @@ alias Jaang.Category.{Categories, SubCategory}
 alias Jaang.Store.Stores
 alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage}
 alias Jaang.{StoreManager, AccountManager, ProductManager, OrderManager}
-alias Jaang.Account.{User, Profile, Address}
+alias Jaang.Account.{User, Profile, Address, Addresses}
 alias Jaang.Account.Accounts
 alias Jaang.Checkout.{Order, LineItem}
 alias Jaang.Checkout

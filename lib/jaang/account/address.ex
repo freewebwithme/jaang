@@ -3,13 +3,14 @@ defmodule Jaang.Account.Address do
   import Ecto.Changeset
 
   schema "addresses" do
-    field :address_line_1, :string
-    field :address_line_2, :string
+    field :address_line_one, :string
+    field :address_line_two, :string
     field :business_name, :string
     field :zipcode, :string
     field :city, :string
     field :state, :string
     field :instructions, :string
+    field :default, :boolean, default: false
 
     belongs_to :user, Jaang.Account.User
     timestamps()
@@ -18,18 +19,16 @@ defmodule Jaang.Account.Address do
   @doc false
   def changeset(%Jaang.Account.Address{} = address, attrs) do
     required_fields = [
-      :address_line_1,
-      :address_line_2,
-      :business_name,
+      :address_line_one,
+      :address_line_two,
       :zipcode,
       :city,
       :state,
-      :instructions,
       :user_id
     ]
 
     address
-    |> cast(attrs, required_fields)
+    |> cast(attrs, [:default, :business_name, :instructions] ++ required_fields)
     |> validate_required(required_fields)
   end
 end

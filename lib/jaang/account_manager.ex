@@ -28,4 +28,6 @@ defmodule Jaang.AccountManager do
   # Account confirm
   defdelegate deliver_user_confirmation_instructions(user, func), to: Accounts
   defdelegate confirm_user(token), to: Accounts
+
+  # Address
 end

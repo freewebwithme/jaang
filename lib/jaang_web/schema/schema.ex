@@ -291,13 +291,14 @@ defmodule JaangWeb.Schema do
   end
 
   object :address do
-    field :address_line_1, :string
-    field :address_line_2, :string
+    field :address_line_one, :string
+    field :address_line_two, :string
     field :business_name, :string
     field :zipcode, :string
     field :city, :string
     field :state, :string
     field :instructions, :string
+    field :default, :boolean
   end
 
   object :store do
