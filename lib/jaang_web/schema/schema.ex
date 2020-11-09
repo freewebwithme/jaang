@@ -6,7 +6,8 @@ defmodule JaangWeb.Schema do
     ProductResolver,
     CategoryResolver,
     AccountResolver,
-    CartResolver
+    CartResolver,
+    ProfileResolver
   }
 
   alias Jaang.Product.Products
@@ -172,6 +173,47 @@ defmodule JaangWeb.Schema do
       resolve(&StoreResolver.change_store/3)
     end
 
+    # Address
+    @desc "Update address"
+    field :update_address, :session do
+      arg(:user_token, non_null(:string))
+      arg(:address_id, non_null(:string))
+      arg(:address_line_one, :string)
+      arg(:address_line_two, :string)
+      arg(:business_name, :string)
+      arg(:zipcode, :string)
+      arg(:city, :string)
+      arg(:state, :string)
+      arg(:instructions, :string)
+
+      # middleware(Middleware.Authenticate)
+      resolve(&ProfileResolver.update_address/3)
+    end
+
+    @desc "Change default address"
+    field :change_default_address, :session do
+      arg(:user_token, non_null(:string))
+      arg(:address_id, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&ProfileResolver.change_default_address/3)
+    end
+
+    @desc "Add a new address"
+    field :add_address, :session do
+      arg(:user_token, non_null(:string))
+      arg(:address_line_one, non_null(:string))
+      arg(:address_line_two, :string)
+      arg(:business_name, :string)
+      arg(:zipcode, non_null(:string))
+      arg(:city, non_null(:string))
+      arg(:state, non_null(:string))
+      arg(:instructions, :string)
+
+      # middleware(Middleware.Authenticate)
+      resolve(&ProfileResolver.add_address/3)
+    end
+
     @desc "Add item to cart"
     field :add_to_cart, :carts do
       arg(:user_id, non_null(:string))
@@ -196,20 +238,6 @@ defmodule JaangWeb.Schema do
     end
   end
 
-  ### * Subscription
-  subscription do
-    @desc "Subscribe to cart changes"
-    field :cart_change, :carts do
-      arg(:user_id, non_null(:string))
-
-      # middleware(Middleware.Authenticate)
-
-      config(fn arg, _res ->
-        {:ok, topic: arg.user_id}
-      end)
-    end
-  end
-
   object :simple_response do
     field :sent, :boolean
     field :message, :string
@@ -227,7 +255,6 @@ defmodule JaangWeb.Schema do
     field :user, :user
     field :token, :string
     field :expired, :boolean, default_value: false
-    #    field :carts, list_of(:order)
   end
 
   object :carts do
@@ -291,6 +318,7 @@ defmodule JaangWeb.Schema do
   end
 
   object :address do
+    field :id, :id
     field :address_line_one, :string
     field :address_line_two, :string
     field :business_name, :string

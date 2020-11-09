@@ -23,7 +23,7 @@ IEx.configure(
       # plain string
       "❤",
       :green,
-      "%prefix",
+      "Jesus",
       :white,
       "|",
       :blue,
@@ -49,8 +49,7 @@ alias Jaang.Category.{Categories, SubCategory}
 alias Jaang.Store.Stores
 alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage}
 alias Jaang.{StoreManager, AccountManager, ProductManager, OrderManager}
-alias Jaang.Account.{User, Profile, Address, Addresses}
-alias Jaang.Account.Accounts
+alias Jaang.Account.{User, Account, Profile, Address, Addresses}
 alias Jaang.Checkout.{Order, LineItem}
 alias Jaang.Checkout
 
