@@ -214,6 +214,15 @@ defmodule JaangWeb.Schema do
       resolve(&ProfileResolver.add_address/3)
     end
 
+    @desc "Delete address"
+    field :delete_address, :session do
+      arg(:user_token, non_null(:string))
+      arg(:address_id, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&ProfileResolver.delete_address/3)
+    end
+
     @desc "Add item to cart"
     field :add_to_cart, :carts do
       arg(:user_id, non_null(:string))

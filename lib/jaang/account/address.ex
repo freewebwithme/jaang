@@ -20,7 +20,6 @@ defmodule Jaang.Account.Address do
   def changeset(%Jaang.Account.Address{} = address, attrs) do
     required_fields = [
       :address_line_one,
-      :address_line_two,
       :zipcode,
       :city,
       :state,
@@ -28,7 +27,10 @@ defmodule Jaang.Account.Address do
     ]
 
     address
-    |> cast(attrs, [:default, :business_name, :instructions] ++ required_fields)
+    |> cast(
+      attrs,
+      [:default, :business_name, :instructions, :address_line_two] ++ required_fields
+    )
     |> validate_required(required_fields)
   end
 end

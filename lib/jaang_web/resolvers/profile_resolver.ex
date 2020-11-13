@@ -35,7 +35,26 @@ defmodule JaangWeb.Resolvers.ProfileResolver do
     %{user_token: token} = args
     user = AccountManager.get_user_by_session_token(token)
     attrs = Map.put(args, :user_id, user.id)
-    ProfileManager.create_address(attrs)
+
+    case ProfileManager.create_address(attrs) do
+      {:ok, _address} ->
+        {:ok, %{user: user, token: token, expired: false}}
+
+      {:error, _changeset} ->
+        {:error, %{user: user, token: token, expired: false}}
+    end
+  end
+
+  def delete_address(_, args, _) do
+    %{user_token: token, address_id: address_id} = args
+    user = AccountManager.get_user_by_session_token(token)
+    address = ProfileManager.get_address(address_id)
+
+    if(address.user_id == user.id) do
+      # Delete address
+      ProfileManager.delete_address(address)
+    end
+
     {:ok, %{user: user, token: token, expired: false}}
   end
 end

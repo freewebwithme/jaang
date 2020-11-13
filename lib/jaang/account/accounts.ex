@@ -3,6 +3,7 @@ defmodule Jaang.Account.Accounts do
   alias Jaang.Account.{User, UserToken, Address, Profile}
   alias Jaang.EmailManager
   alias Ecto.Changeset
+  import Ecto.Query
 
   @doc """
   attrs = %{email: "user@example.com",
@@ -330,7 +331,12 @@ defmodule Jaang.Account.Accounts do
     Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
   end
 
-  def query(queryable, _params) do
+  # Return addresses order by inserted at
+  def query(Address, _) do
+    from addr in Address, order_by: addr.inserted_at
+  end
+
+  def query(queryable, _) do
     queryable
   end
 end
