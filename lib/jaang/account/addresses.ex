@@ -4,9 +4,23 @@ defmodule Jaang.Account.Addresses do
   import Ecto.Query
 
   def create_address(attrs) do
-    %Address{}
-    |> Address.changeset(attrs)
-    |> Repo.insert()
+    user_id = Map.get(attrs, :user_id)
+    addresses = get_all_addresses(user_id)
+
+    cond do
+      Enum.count(addresses) == 0 ->
+        # There is no address, This will be first and default address.
+        attrs = Map.put(attrs, :default, true)
+
+        %Address{}
+        |> Address.changeset(attrs)
+        |> Repo.insert()
+
+      true ->
+        %Address{}
+        |> Address.changeset(attrs)
+        |> Repo.insert()
+    end
   end
 
   def get_address(id) do
@@ -24,7 +38,13 @@ defmodule Jaang.Account.Addresses do
   end
 
   def delete_address(%Address{} = address) do
-    address
-    |> Repo.delete!()
+    cond do
+      address.default == true ->
+        {:error, "can't delete default address"}
+
+      true ->
+        address
+        |> Repo.delete!()
+    end
   end
 end

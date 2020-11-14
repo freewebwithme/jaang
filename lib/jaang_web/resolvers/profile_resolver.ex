@@ -57,4 +57,11 @@ defmodule JaangWeb.Resolvers.ProfileResolver do
 
     {:ok, %{user: user, token: token, expired: false}}
   end
+
+  def update_profile(_, args, _) do
+    %{user_token: token} = args
+    user = AccountManager.get_user_by_session_token(token)
+    AccountManager.update_profile(user, args)
+    {:ok, %{user: user, token: token, expired: false}}
+  end
 end

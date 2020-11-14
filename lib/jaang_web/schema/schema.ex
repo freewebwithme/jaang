@@ -223,6 +223,18 @@ defmodule JaangWeb.Schema do
       resolve(&ProfileResolver.delete_address/3)
     end
 
+    @desc "Update profile information"
+    field :update_profile, :session do
+      arg(:user_token, non_null(:string))
+      arg(:first_name, :string)
+      arg(:last_name, :string)
+      arg(:phone, :string)
+      arg(:photo_url, :string)
+
+      # middleware(Middleware.Authenticate)
+      resolve(&ProfileResolver.update_profile/3)
+    end
+
     @desc "Add item to cart"
     field :add_to_cart, :carts do
       arg(:user_id, non_null(:string))
@@ -322,7 +334,25 @@ defmodule JaangWeb.Schema do
     field :first_name, :string
     field :last_name, :string
     field :photo_url, :string
-    field :phone, :string
+
+    field :phone, :string do
+      resolve(fn parent, _, _ ->
+        phone_number = Map.get(parent, :phone)
+
+        cond do
+          is_nil(phone_number) || phone_number == "" ->
+            {:ok, phone_number}
+
+          true ->
+            area_code = String.slice(phone_number, 0, 3)
+            head = String.slice(phone_number, 3, 3)
+            tail = String.slice(phone_number, 6, 4)
+            formatted = "(#{area_code})#{head}-#{tail}"
+            {:ok, formatted}
+        end
+      end)
+    end
+
     field :store_id, :id
   end
 

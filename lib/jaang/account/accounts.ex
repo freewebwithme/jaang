@@ -63,10 +63,8 @@ defmodule Jaang.Account.Accounts do
   end
 
   def update_profile(user, attrs) do
-    # put profile id to attrs
-    attrs = Map.put(attrs, :id, user.profile.id)
-    user_changeset = user |> Repo.preload(:profile) |> Changeset.change()
-    Changeset.put_assoc(user_changeset, :profile, attrs) |> Repo.update!()
+    profile = user.profile
+    change_profile(profile, attrs) |> Repo.update!()
   end
 
   @doc """

@@ -12,9 +12,8 @@ defmodule JaangWeb.Resolvers.StoreResolver do
   end
 
   def change_store(_, %{token: token, store_id: store_id}, _) do
-    user =
-      AccountManager.get_user_by_session_token(token)
-      |> AccountManager.update_profile(%{store_id: String.to_integer(store_id)})
+    user = AccountManager.get_user_by_session_token(token)
+    AccountManager.update_profile(user, %{store_id: String.to_integer(store_id)})
 
     {:ok, %{user: user, token: token, expired: false}}
   end
