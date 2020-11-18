@@ -63,7 +63,8 @@ defmodule Jaang.MixProject do
       {:bamboo, "~> 1.5"},
       {:recaptcha, "~> 3.0"},
       {:joken, "~> 2.2"},
-      {:joken_jwks, "~> 1.3"}
+      {:joken_jwks, "~> 1.3"},
+      {:stripity_stripe, "~> 2.0"}
     ]
   end
 

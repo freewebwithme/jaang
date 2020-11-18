@@ -4,6 +4,7 @@ defmodule Jaang.Account.User do
 
   schema "users" do
     field :email, :string
+    field :stripe_id, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime

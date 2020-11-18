@@ -13,7 +13,7 @@ config :jaang,
 # Configures the endpoint
 config :jaang, JaangWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "a1yHuHl7ERsUQ7vvodoxAWpwnS74z3jr2zMQcaS7QpTD6FNiQzSfFD98TjskDnAz",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: JaangWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Jaang.PubSub,
   live_view: [signing_salt: "KJsHXRjB"]
@@ -42,6 +42,8 @@ config :recaptcha,
   public_key: {:system, "RECAPTCHA_PUBLIC_KEY"},
   secret: {:system, "RECAPTCHA_PRIVATE_KEY"},
   json_library: Jason
+
+config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET_KEY")
 
 # Configures Elixir's Logger
 config :logger, :console,

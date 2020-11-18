@@ -54,5 +54,9 @@ alias Jaang.Checkout.{Order, LineItem}
 alias Jaang.Checkout
 
 alias ExAws.S3
+alias Stripe
+alias Stripe.{Customer}
+
+alias Jaang.Payment.Stripe.{Customer}
 
 import Ecto.Query

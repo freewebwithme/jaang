@@ -266,6 +266,7 @@ defmodule JaangWeb.Schema do
 
   object :user do
     field :id, :id
+    field :stripe_id, :string
     field :email, :string
     field :confirmed_at, :string
     field :profile, :profile, resolve: dataloader(Accounts)
