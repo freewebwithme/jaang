@@ -7,7 +7,8 @@ defmodule JaangWeb.Schema do
     CategoryResolver,
     AccountResolver,
     CartResolver,
-    ProfileResolver
+    ProfileResolver,
+    PaymentResolver
   }
 
   alias Jaang.Product.Products
@@ -111,6 +112,16 @@ defmodule JaangWeb.Schema do
       arg(:user_id, non_null(:string))
       # middleware(Middleware.Authenticate)
       resolve(&CartResolver.get_all_carts/3)
+    end
+
+    ### * Stripe
+
+    @desc "Get all credit cards for user"
+    field :get_all_credit_cards, list_of(:credit_card) do
+      arg(:user_token, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&PaymentResolver.get_all_cards/3)
     end
   end
 
@@ -233,6 +244,17 @@ defmodule JaangWeb.Schema do
 
       # middleware(Middleware.Authenticate)
       resolve(&ProfileResolver.update_profile/3)
+    end
+
+    ### * Card
+
+    @desc "Attach a payment method to user"
+    field :attach_payment_method, list_of(:credit_card) do
+      arg(:user_token, non_null(:string))
+      arg(:payment_method_id, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&PaymentResolver.attach_payment_method/3)
     end
 
     @desc "Add item to cart"
@@ -467,6 +489,13 @@ defmodule JaangWeb.Schema do
   object :recipe_tag do
     field :id, :id
     field :name, :string
+  end
+
+  object :credit_card do
+    field :brand, :string
+    field :exp_month, :integer
+    field :exp_year, :integer
+    field :last_four, :string
   end
 
   def context(ctx) do

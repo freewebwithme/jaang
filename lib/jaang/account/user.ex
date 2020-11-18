@@ -16,6 +16,11 @@ defmodule Jaang.Account.User do
   end
 
   @doc false
+  def changeset(%Jaang.Account.User{} = user, attrs) do
+    user
+    |> cast(attrs, [:email, :stripe_id])
+  end
+
   def registration_changeset(%Jaang.Account.User{} = user, attrs) do
     user
     |> cast(attrs, [:email, :password])

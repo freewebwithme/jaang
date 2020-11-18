@@ -5,7 +5,7 @@ defmodule Jaang.Payment.Stripe.Customer do
   Create stripe customer using user's email
   and return stripe id.
   """
-  def create_account(email) do
+  def create_customer(email) do
     case Customer.create(%{email: email}) do
       {:ok, %{id: stripe_id}} ->
         # Save stripe id

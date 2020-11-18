@@ -62,6 +62,12 @@ defmodule Jaang.Account.Accounts do
     Profile.changeset(profile, attrs)
   end
 
+  def update_user(%User{} = user, attrs \\ %{}) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update!()
+  end
+
   def update_profile(user, attrs) do
     profile = user.profile
     change_profile(profile, attrs) |> Repo.update!()
