@@ -1,18 +1,38 @@
 defmodule JaangWeb.Resolvers.PaymentResolver do
   alias Jaang.{AccountManager, StripeManager}
 
-  def attach_payment_method(_, %{user_token: token, payment_method_id: payment_method_id}, _) do
+  @doc """
+  Add payment method to Stripe customer and make it default payment method
+  """
+  def attach_payment_method(_, %{user_token: token, card_token: card_token}, _) do
     # Get user
     user = AccountManager.get_user_by_session_token(token)
 
     # if user has stripe id just attach payment method id to stripe account
     case is_nil(user.stripe_id) do
+      # User has stripe id
       false ->
-        # attach payment method id to stripe user using SetupIntent
-        StripeManager.create_setup_intent(user.stripe_id, payment_method_id)
-        {:ok, %Stripe.List{data: cards}} = StripeManager.get_all_cards(user.stripe_id)
+        with {:ok, payment_method_id} <- StripeManager.create_payment_method(card_token),
+             {:ok, %{payment_method: payment_method}} <-
+               StripeManager.create_setup_intent(user.stripe_id, payment_method_id),
+             # Set as default payment source.
+             {:ok, _} <-
+               StripeManager.update_customer(user.stripe_id, %{
+                 invoice_settings: %{default_payment_method: payment_method}
+               }) do
+          # {:ok, %{card: %{brand: brand, exp_month: month, exp_year: year, last4: last_four}}} <-
+          #  StripeManager.retrieve_payment_method(payment_method_id) do
+          {:ok, %Stripe.List{data: cards}} = StripeManager.get_all_cards(user.stripe_id)
 
-        {:ok, build_credit_cards(cards)}
+          # When I add a payment method to a customer
+          # I set it as default uset is as default payment method
+          credit_cards = build_credit_cards(cards, payment_method_id)
+
+          {:ok, credit_cards}
+        else
+          {:error, message} ->
+            {:error, message}
+        end
 
       true ->
         # no stripe account create it
@@ -21,10 +41,28 @@ defmodule JaangWeb.Resolvers.PaymentResolver do
         # Add stripe id to user
         AccountManager.update_user(user, %{stripe_id: stripe_id})
 
-        StripeManager.create_setup_intent(stripe_id, payment_method_id)
-        {:ok, %Stripe.List{data: cards}} = StripeManager.get_all_cards(stripe_id)
+        with {:ok, payment_method_id} <- StripeManager.create_payment_method(card_token),
+             {:ok, %{payment_method: payment_method}} <-
+               StripeManager.create_setup_intent(stripe_id, payment_method_id),
+             # Set as default payment source
+             {:ok, _} <-
+               StripeManager.update_customer(user.stripe_id, %{
+                 invoice_settings: %{default_payment_method: payment_method}
+               }) do
+          # {:ok, %{card: %{brand: brand, exp_month: month, exp_year: year, last4: last_four}}} <-
+          #  StripeManager.retrieve_payment_method(payment_method_id) do
 
-        {:ok, build_credit_cards(cards)}
+          {:ok, %Stripe.List{data: cards}} = StripeManager.get_all_cards(stripe_id)
+
+          # When I add a payment method to a customer
+          # I set it as default uset is as default payment method
+          credit_cards = build_credit_cards(cards, payment_method_id)
+
+          {:ok, credit_cards}
+        else
+          {:error, message} ->
+            {:error, message}
+        end
     end
   end
 
@@ -33,9 +71,13 @@ defmodule JaangWeb.Resolvers.PaymentResolver do
 
     case is_nil(user.stripe_id) do
       false ->
+        # get default payment method from stripe customer
+        {:ok, %{invoice_settings: %{default_payment_method: default_payment_method}}} =
+          StripeManager.retrieve_customer(user.stripe_id)
+
         {:ok, %Stripe.List{data: cards}} = StripeManager.get_all_cards(user.stripe_id)
 
-        credit_cards = build_credit_cards(cards)
+        credit_cards = build_credit_cards(cards, default_payment_method)
 
         {:ok, credit_cards}
 
@@ -48,16 +90,23 @@ defmodule JaangWeb.Resolvers.PaymentResolver do
     end
   end
 
-  defp build_credit_cards(cards) do
+  defp build_credit_cards(cards, default_payment_method) do
     Enum.map(cards, fn %{
                          card: %{
                            brand: brand,
                            exp_month: exp_month,
                            exp_year: exp_year,
                            last4: last_four
-                         }
+                         },
+                         id: payment_method_id
                        } ->
-      %{brand: brand, exp_month: exp_month, exp_year: exp_year, last_four: last_four}
+      %{
+        brand: brand,
+        exp_month: exp_month,
+        exp_year: exp_year,
+        last_four: last_four,
+        default_card: default_payment_method == payment_method_id
+      }
     end)
   end
 end

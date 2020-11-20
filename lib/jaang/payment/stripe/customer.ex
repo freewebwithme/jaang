@@ -15,4 +15,21 @@ defmodule Jaang.Payment.Stripe.Customer do
         {:error, "Can't create a stripe account"}
     end
   end
+
+  @doc """
+  Update Stripe customer information
+  """
+  def update_customer(stripe_id, attrs) do
+    case(Customer.update(stripe_id, attrs)) do
+      {:ok, result} -> {:ok, result}
+      {:error, result} -> {:error, result}
+    end
+  end
+
+  @doc """
+  Retrieve a customer
+  """
+  def retrieve_customer(stripe_id) do
+    Customer.retrieve(stripe_id)
+  end
 end

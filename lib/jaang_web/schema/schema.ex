@@ -251,7 +251,7 @@ defmodule JaangWeb.Schema do
     @desc "Attach a payment method to user"
     field :attach_payment_method, list_of(:credit_card) do
       arg(:user_token, non_null(:string))
-      arg(:payment_method_id, non_null(:string))
+      arg(:card_token, non_null(:string))
 
       # middleware(Middleware.Authenticate)
       resolve(&PaymentResolver.attach_payment_method/3)
@@ -496,6 +496,7 @@ defmodule JaangWeb.Schema do
     field :exp_month, :integer
     field :exp_year, :integer
     field :last_four, :string
+    field :default_card, :boolean
   end
 
   def context(ctx) do

@@ -48,7 +48,16 @@ alias Jaang.{Category, Store, Product}
 alias Jaang.Category.{Categories, SubCategory}
 alias Jaang.Store.Stores
 alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage}
-alias Jaang.{StoreManager, AccountManager, ProductManager, OrderManager, ProfileManager}
+
+alias Jaang.{
+  StoreManager,
+  AccountManager,
+  ProductManager,
+  OrderManager,
+  ProfileManager,
+  StripeManager
+}
+
 alias Jaang.Account.{User, Account, Profile, Address, Addresses}
 alias Jaang.Checkout.{Order, LineItem}
 alias Jaang.Checkout
@@ -57,6 +66,6 @@ alias ExAws.S3
 alias Stripe
 alias Stripe.{Customer}
 
-alias Jaang.Payment.Stripe.{Customer}
+alias Jaang.Payment.Stripe.{Customer, PaymentMethod, SetupIntent}
 
 import Ecto.Query
