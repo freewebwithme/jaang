@@ -69,3 +69,5 @@ alias Stripe.{Customer}
 alias Jaang.Payment.Stripe.{Customer, PaymentMethod, SetupIntent}
 
 import Ecto.Query
+
+stripe_id = "cus_IQ6pa99rGTl2KQ"

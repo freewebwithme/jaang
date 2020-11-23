@@ -11,4 +11,5 @@ defmodule Jaang.StripeManager do
   defdelegate create_payment_method(card_token), to: PaymentMethod
   defdelegate retrieve_payment_method(payment_method_id), to: PaymentMethod
   defdelegate attach_to_customer(payment_method_id, stripe_id), to: PaymentMethod
+  defdelegate delete_payment_method(payment_method_id), to: PaymentMethod
 end

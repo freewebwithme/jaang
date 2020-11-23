@@ -257,6 +257,24 @@ defmodule JaangWeb.Schema do
       resolve(&PaymentResolver.attach_payment_method/3)
     end
 
+    @desc "Change payment method"
+    field :change_payment_method, list_of(:credit_card) do
+      arg(:user_token, non_null(:string))
+      arg(:payment_method_id, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&PaymentResolver.change_payment_method/3)
+    end
+
+    @desc "Delete payment method"
+    field :delete_payment_method, list_of(:credit_card) do
+      arg(:user_token, non_null(:string))
+      arg(:payment_method_id, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&PaymentResolver.delete_payment_method/3)
+    end
+
     @desc "Add item to cart"
     field :add_to_cart, :carts do
       arg(:user_id, non_null(:string))
@@ -496,6 +514,7 @@ defmodule JaangWeb.Schema do
     field :exp_month, :integer
     field :exp_year, :integer
     field :last_four, :string
+    field :payment_method_id, :string
     field :default_card, :boolean
   end
 

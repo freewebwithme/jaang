@@ -28,4 +28,11 @@ defmodule Jaang.Payment.Stripe.PaymentMethod do
         :error
     end
   end
+
+  def delete_payment_method(payment_method_id) do
+    case PaymentMethod.detach(%{payment_method: payment_method_id}, []) do
+      {:ok, payment_method} -> {:ok, payment_method}
+      {:error, error} -> {:error, error}
+    end
+  end
 end
