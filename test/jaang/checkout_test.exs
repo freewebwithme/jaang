@@ -45,6 +45,12 @@ defmodule Jaang.CheckoutTest do
         unit_name: "lb"
       })
 
+    ProductManager.create_product_image(product_1, %{
+      image_url:
+        "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Japchae-Potstickers.jpg",
+      order: 1
+    })
+
     {:ok, product_2} =
       ProductManager.create_product(%{
         name: "Product2",
@@ -57,6 +63,12 @@ defmodule Jaang.CheckoutTest do
         store_id: store_1.id,
         unit_name: "lb"
       })
+
+    ProductManager.create_product_image(product_2, %{
+      image_url:
+        "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Japchae-Potstickers.jpg",
+      order: 1
+    })
 
     {:ok, product_3} =
       ProductManager.create_product(%{
@@ -71,6 +83,12 @@ defmodule Jaang.CheckoutTest do
         unit_name: "pack"
       })
 
+    ProductManager.create_product_image(product_3, %{
+      image_url:
+        "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Japchae-Potstickers.jpg",
+      order: 1
+    })
+
     {:ok, product_4} =
       ProductManager.create_product(%{
         name: "Product4",
@@ -83,6 +101,12 @@ defmodule Jaang.CheckoutTest do
         store_id: store_2.id,
         unit_name: "pack"
       })
+
+    ProductManager.create_product_image(product_4, %{
+      image_url:
+        "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Japchae-Potstickers.jpg",
+      order: 1
+    })
 
     {:ok,
      %{
@@ -136,7 +160,9 @@ defmodule Jaang.CheckoutTest do
     product_2 = context[:product_2]
 
     {:ok, cart} = OrderManager.create_cart(user.id, store_1.id)
-    {:ok, new_cart} = OrderManager.add_to_cart(cart, %{product_id: product_1.id, quantity: 1})
+
+    {:ok, new_cart} =
+      OrderManager.add_to_cart(cart, %{product_id: Integer.to_string(product_1.id), quantity: 1})
 
     # Same cart?
     assert cart.id == new_cart.id
@@ -146,7 +172,10 @@ defmodule Jaang.CheckoutTest do
 
     # Add 1 more item
     {:ok, new_cart2} =
-      OrderManager.add_to_cart(new_cart, %{product_id: product_2.id, quantity: 1})
+      OrderManager.add_to_cart(new_cart, %{
+        product_id: Integer.to_string(product_2.id),
+        quantity: 1
+      })
 
     # has 2 items?
     assert Enum.count(new_cart2.line_items) == 2
@@ -159,10 +188,15 @@ defmodule Jaang.CheckoutTest do
     product_2 = context[:product_2]
 
     {:ok, cart} = OrderManager.create_cart(user.id, store_1.id)
-    {:ok, new_cart} = OrderManager.add_to_cart(cart, %{product_id: product_1.id, quantity: 1})
+
+    {:ok, new_cart} =
+      OrderManager.add_to_cart(cart, %{product_id: Integer.to_string(product_1.id), quantity: 1})
 
     {:ok, new_cart2} =
-      OrderManager.add_to_cart(new_cart, %{product_id: product_1.id, quantity: 1})
+      OrderManager.add_to_cart(new_cart, %{
+        product_id: Integer.to_string(product_1.id),
+        quantity: 1
+      })
 
     assert Enum.count(new_cart2.line_items) == 1
 

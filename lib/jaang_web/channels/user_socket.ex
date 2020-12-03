@@ -2,9 +2,8 @@ defmodule JaangWeb.UserSocket do
   use Phoenix.Socket
   use Absinthe.Phoenix.Socket, schema: JaangWeb.Schema
 
-  alias Jaang.Account.{User, UserAuthMobile, UserToken}
+  alias Jaang.Account.{User, UserAuthMobile}
   alias Jaang.AccountManager
-  alias Jaang.Repo
 
   ## Channels
   # channel "room:*", JaangWeb.RoomChannel

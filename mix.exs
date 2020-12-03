@@ -64,7 +64,8 @@ defmodule Jaang.MixProject do
       {:recaptcha, "~> 3.0"},
       {:joken, "~> 2.2"},
       {:joken_jwks, "~> 1.3"},
-      {:stripity_stripe, "~> 2.0"}
+      {:stripity_stripe, "~> 2.0"},
+      {:google_maps, "~> 0.11.0"}
     ]
   end
 

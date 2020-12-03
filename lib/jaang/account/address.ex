@@ -13,6 +13,7 @@ defmodule Jaang.Account.Address do
     field :default, :boolean, default: false
 
     belongs_to :user, Jaang.Account.User
+    has_one :distance, Jaang.Distance
     timestamps()
   end
 

@@ -39,8 +39,8 @@ defmodule Jaang.AccountsTest do
     user = context[:user]
 
     attrs = %{
-      address_line_1: "777 Good st",
-      address_line_2: "APT 320",
+      address_line_one: "777 Good st",
+      address_line_two: "APT 320",
       business_name: "Good",
       zipcode: "90099",
       city: "Los Angeles",
@@ -50,8 +50,8 @@ defmodule Jaang.AccountsTest do
 
     {:ok, address1} = AccountManager.create_address(user, attrs)
 
-    assert address1.address_line_1 == "777 Good st"
-    assert address1.address_line_2 == "APT 320"
+    assert address1.address_line_one == "777 Good st"
+    assert address1.address_line_two == "APT 320"
     assert address1.business_name == "Good"
     assert address1.zipcode == "90099"
     assert address1.city == "Los Angeles"
@@ -64,8 +64,8 @@ defmodule Jaang.AccountsTest do
     user = context[:user]
 
     attrs1 = %{
-      address_line_1: "777 Good st",
-      address_line_2: "APT 320",
+      address_line_one: "777 Good st",
+      address_line_two: "APT 320",
       business_name: "Good",
       zipcode: "90099",
       city: "Los Angeles",
@@ -74,8 +74,8 @@ defmodule Jaang.AccountsTest do
     }
 
     attrs2 = %{
-      address_line_1: "777 Good st",
-      address_line_2: "APT 320",
+      address_line_one: "777 Good st",
+      address_line_two: "APT 320",
       business_name: "Good",
       zipcode: "90099",
       city: "Los Angeles",

@@ -8,7 +8,8 @@ defmodule JaangWeb.Schema do
     AccountResolver,
     CartResolver,
     ProfileResolver,
-    PaymentResolver
+    PaymentResolver,
+    CheckoutResolver
   }
 
   alias Jaang.Product.Products
@@ -297,6 +298,14 @@ defmodule JaangWeb.Schema do
       # middleware(Middleware.Authenticate)
       resolve(&CartResolver.update_cart/3)
     end
+
+    @desc "Calculate total amonut for checkout screen"
+    field :calculate_total, :total_amount do
+      arg(:driver_tip, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&CheckoutResolver.calculate_total/3)
+    end
   end
 
   object :simple_response do
@@ -516,6 +525,20 @@ defmodule JaangWeb.Schema do
     field :last_four, :string
     field :payment_method_id, :string
     field :default_card, :boolean
+  end
+
+  object :total_amount do
+    field :driver_tip, :string
+    field :sub_totals, list_of(:sub_total)
+    field :delivery_fee, :string
+    field :service_fee, :string
+    field :sales_tax, :string
+    field :total, :string
+  end
+
+  object :sub_total do
+    field :store_name, :string
+    field :sub_total, :string
   end
 
   def context(ctx) do

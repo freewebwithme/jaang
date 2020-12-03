@@ -56,8 +56,6 @@ defmodule Jaang.Checkout.LineItem do
         product = ProductManager.get_product(product_id)
         # get first product images
         [product_image] = Enum.filter(product.product_images, fn pi -> pi.order == 1 end)
-        IO.puts("Printing image url")
-        IO.inspect(product_image.image_url)
 
         changeset
         |> put_change(:image_url, product_image.image_url)

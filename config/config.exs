@@ -43,6 +43,8 @@ config :recaptcha,
   secret: {:system, "RECAPTCHA_PRIVATE_KEY"},
   json_library: Jason
 
+config :google_maps, api_key: System.get_env("GOOGLE_MAP_API")
+
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET_KEY")
 
 # Configures Elixir's Logger

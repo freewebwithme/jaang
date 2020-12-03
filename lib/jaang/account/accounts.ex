@@ -1,14 +1,12 @@
 defmodule Jaang.Account.Accounts do
-  alias Jaang.Repo
+  alias Jaang.{Repo, ProfileManager, EmailManager}
   alias Jaang.Account.{User, UserToken, Address, Profile}
-  alias Jaang.EmailManager
+  alias Jaang.Distance
   alias Ecto.Changeset
   import Ecto.Query
 
   @doc """
-  attrs = %{email: "user@example.com",
-            profile: %{
-              first_name: "John",
+  attrs = %{email: "user@example.com", profile: %{ first_name: "John",
               last_name: "Doe"
               }
             }
@@ -51,7 +49,7 @@ defmodule Jaang.Account.Accounts do
   end
 
   def get_user(id) do
-    Repo.get_by(User, id: id) |> Repo.preload([:profile, :addresses])
+    Repo.get_by(User, id: id) |> Repo.preload([:profile, addresses: [:distance]])
   end
 
   def change_user(%User{} = user, attrs \\ %{}) do
@@ -68,9 +66,65 @@ defmodule Jaang.Account.Accounts do
     |> Repo.update!()
   end
 
+  @doc """
+  if user is changing default store,
+  update distance schema also
+  """
   def update_profile(user, attrs) do
     profile = user.profile
-    change_profile(profile, attrs) |> Repo.update!()
+    changeset = change_profile(profile, attrs)
+    store_id = Changeset.get_change(changeset, :store_id)
+
+    cond do
+      store_id == nil ->
+        changeset |> Repo.update!()
+
+      true ->
+        profile = changeset |> Repo.update!()
+
+        # Default store is changed, check if current user's address
+        # and store address if deilvery is available
+        # Check if distance is already calculated
+        # Get default store
+        store = Jaang.StoreManager.get_store(store_id)
+        # Get user's default address
+        default_address = ProfileManager.get_default_address(user.addresses)
+
+        if(default_address.distance == nil) do
+          # There is no distance schema. create one
+          Distance.create_distance(user.id, default_address)
+        else
+          # There is distance schema, then check if distance
+          # has store info
+          store_distances = default_address.distance.store_distances
+
+          if(Enum.any?(store_distances, &(&1.store_id == store_id))) do
+            # has current store information do nothing
+            nil
+          else
+            # No current store information, put a new store information
+            user_address = ProfileManager.build_address(default_address)
+
+            {distance, delivery_available} =
+              Distance.StoreDistance.delivery_available?(store.address, user_address)
+
+            # Update distance schema adding new store distance information
+            Distance.update_distance(default_address.distance, %{
+              address_id: default_address.id,
+              store_distances: [
+                %{
+                  store_id: store.id,
+                  store_name: store.name,
+                  distance: distance,
+                  delivery_available: delivery_available
+                }
+              ]
+            })
+          end
+        end
+
+        profile
+    end
   end
 
   @doc """

@@ -33,9 +33,7 @@ defmodule Jaang.UserAuthMobileTest do
     token = UserAuthMobile.generate_user_session_token(user)
 
     assert {:ok, %{id: user_id}} =
-             Phoenix.Token.verify(JaangWeb.Endpoint, "jaang mobile token", token,
-               max_age: @max_age
-             )
+             Phoenix.Token.verify(JaangWeb.Endpoint, "jaang token", token, max_age: @max_age)
 
     assert user_id == user.id
   end
