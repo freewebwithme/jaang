@@ -416,6 +416,19 @@ defmodule JaangWeb.Schema do
     field :state, :string
     field :instructions, :string
     field :default, :boolean
+    field :distance, :distance, resolve: dataloader(Accounts)
+  end
+
+  object :distance do
+    field :address_id, :id
+    field :store_distances, list_of(:store_distance)
+  end
+
+  object :store_distance do
+    field :store_name, :string
+    field :store_id, :id
+    field :distance, :float
+    field :delivery_available, :boolean
   end
 
   object :store do

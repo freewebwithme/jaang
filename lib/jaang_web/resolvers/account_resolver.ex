@@ -90,7 +90,7 @@ defmodule JaangWeb.Resolvers.AccountResolver do
 
     # get cart or create new
     # carts = OrderManager.get_all_carts_or_create_new(user)
-
+    IO.inspect(user)
     {:ok, %{user: user, token: token, expired: false}}
   end
 

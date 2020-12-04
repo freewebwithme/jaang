@@ -85,42 +85,10 @@ defmodule Jaang.Account.Accounts do
         # Default store is changed, check if current user's address
         # and store address if deilvery is available
         # Check if distance is already calculated
-        # Get default store
-        store = Jaang.StoreManager.get_store(store_id)
-        # Get user's default address
-        default_address = ProfileManager.get_default_address(user.addresses)
 
-        if(default_address.distance == nil) do
-          # There is no distance schema. create one
-          Distance.create_distance(user.id, default_address)
-        else
-          # There is distance schema, then check if distance
-          # has store info
-          store_distances = default_address.distance.store_distances
-
-          if(Enum.any?(store_distances, &(&1.store_id == store_id))) do
-            # has current store information do nothing
-            nil
-          else
-            # No current store information, put a new store information
-            user_address = ProfileManager.build_address(default_address)
-
-            {distance, delivery_available} =
-              Distance.StoreDistance.delivery_available?(store.address, user_address)
-
-            # Update distance schema adding new store distance information
-            Distance.update_distance(default_address.distance, %{
-              address_id: default_address.id,
-              store_distances: [
-                %{
-                  store_id: store.id,
-                  store_name: store.name,
-                  distance: distance,
-                  delivery_available: delivery_available
-                }
-              ]
-            })
-          end
+        # Check if only user has any address
+        if(!Enum.empty?(ProfileManager.get_all_addresses(user.id))) do
+          Distance.check_and_update_store_distance(user, store_id)
         end
 
         profile
@@ -328,7 +296,7 @@ defmodule Jaang.Account.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query) |> Repo.preload(:profile)
+    Repo.one(query) |> Repo.preload([:profile, addresses: [:distance]])
   end
 
   ## Google Sign in

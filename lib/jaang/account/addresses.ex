@@ -2,6 +2,7 @@ defmodule Jaang.Account.Addresses do
   alias Jaang.Account.Address
   alias Jaang.Repo
   alias Jaang.Distance
+  alias Ecto.Changeset
 
   import Ecto.Query
 
@@ -50,25 +51,35 @@ defmodule Jaang.Account.Addresses do
   Check if new updated address is available to deliver
   """
   def update_address(%Address{} = address, attrs) do
-    new_address =
-      address
-      |> Address.changeset(attrs)
-      |> Repo.update!()
+    address_changeset = Address.changeset(address, attrs)
+    # user is change default address?
+    change_default_address = Changeset.get_change(address_changeset, :default)
 
-    # If user update an address, delete distance information and make new one
-    new_address = get_address(new_address.id)
+    cond do
+      change_default_address == nil ->
+        # user is not changing default address
+        new_address = address_changeset |> Repo.update!()
 
-    if(new_address.distance == nil) do
-      # There is no distance information(schema) so create one
-      Distance.create_distance(new_address.user_id, new_address)
-    else
-      # There is a distance schema, so delete and make new one
-      Distance.delete_distance(new_address.distance)
-      # Create a new one
-      Distance.create_distance(new_address.user_id, new_address)
+        # If user update an address, delete distance information and make new one
+        new_address = get_address(new_address.id)
+
+        if(new_address.distance == nil) do
+          # There is no distance information(schema) so create one
+          Distance.create_distance(new_address.user_id, new_address)
+        else
+          # There is a distance schema, so delete and make new one
+          Distance.delete_distance(new_address.distance)
+          # Create a new one
+          Distance.create_distance(new_address.user_id, new_address)
+        end
+
+        new_address
+
+      true ->
+        # User is changing default address
+        new_address = address_changeset |> Repo.update!()
+        new_address
     end
-
-    new_address
   end
 
   def delete_address(%Address{} = address) do
