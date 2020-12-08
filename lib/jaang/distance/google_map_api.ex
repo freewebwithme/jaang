@@ -13,10 +13,18 @@ defmodule Jaang.Distance.GoogleMapApi do
            }
          ]
        }} ->
-        distance_in_float =
-          Regex.replace(~r/[a-zA-Z]/, distance_in_mile, "") |> String.trim() |> String.to_float()
+        distance_in_string = Regex.replace(~r/[a-zA-Z]/, distance_in_mile, "") |> String.trim()
 
-        {:ok, distance_in_float}
+        distance =
+          cond do
+            String.contains?(distance_in_string, ".") == true ->
+              String.to_float(distance_in_string)
+
+            true ->
+              String.to_integer(distance_in_string)
+          end
+
+        {:ok, distance}
 
       {:error, message} ->
         {:error, message}

@@ -46,6 +46,8 @@ defmodule JaangWeb.CartChannel do
         payload,
         socket
       ) do
+    IO.puts("add_to_cart handle in called")
+
     %{
       "user_id" => user_id,
       "product_id" => product_id,
@@ -71,7 +73,8 @@ defmodule JaangWeb.CartChannel do
 
     # I have to send a reply to client
     # If I don't do this, it will send status: timeout, response: {}
-    {:reply, {:ok, %{message: "add to cart success"}}, socket}
+    # {:reply, {:ok, %{message: "add to cart success"}}, socket}
+    {:noreply, socket}
   end
 
   def handle_in("update_cart", payload, socket) do
@@ -82,6 +85,7 @@ defmodule JaangWeb.CartChannel do
       "quantity" => quantity
     } = payload
 
+    IO.puts("update_cart handle in called")
     user_id = String.to_integer(user_id)
     attrs = %{user_id: user_id, product_id: product_id, store_id: store_id, quantity: quantity}
 
@@ -92,7 +96,13 @@ defmodule JaangWeb.CartChannel do
 
     # I have to send a reply to client
     # If I don't do this, it will send status: timeout, response: {}
-    {:reply, {:ok, %{message: "update cart success"}}, socket}
+    # {:reply, {:ok, %{message: "update cart success"}}, socket}
+    {:noreply, socket}
+  end
+
+  def handle_in("ping", %{"ping" => message} = _payload, socket) do
+    IO.puts("ping handle in: #{message}")
+    {:noreply, socket}
   end
 
   def get_updated_carts(user_id) do
