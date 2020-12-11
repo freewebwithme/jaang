@@ -61,6 +61,8 @@ alias Jaang.{
 alias Jaang.Account.{User, Account, Profile, Address, Addresses}
 alias Jaang.Checkout.{Order, LineItem}
 alias Jaang.Checkout
+alias Jaang.Invoice
+alias Jaang.Invoice.Invoices
 
 alias ExAws.S3
 alias Stripe

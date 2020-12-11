@@ -1,13 +1,15 @@
 defmodule Jaang.Checkout.Calculate do
   @tax_rate 0.095
   @delivery_fee 500
+  @item_adjustment 0.15
+  @service_fee 0.08
 
   @doc """
   Calculate service fee
   params : type %Money{} = total_amount
   """
   def calculate_service_fee(total_amount) do
-    Money.multiply(total_amount, 0.08)
+    Money.multiply(total_amount, @service_fee)
   end
 
   @doc """
@@ -34,6 +36,10 @@ defmodule Jaang.Checkout.Calculate do
     Money.new(@delivery_fee)
   end
 
+  def calculate_item_adjustments(total_amount) do
+    Money.multiply(total_amount, @item_adjustment)
+  end
+
   @doc """
   params: List of %Order{}
   returns: List of %{store_name: "", total: %Money{}}
@@ -44,10 +50,14 @@ defmodule Jaang.Checkout.Calculate do
     end)
   end
 
-  def calculate_final_total(tip, total, delivery_fee, service_fee, tax) do
+  @doc """
+  Sum up every amount
+  """
+  def calculate_final_total(tip, total, delivery_fee, service_fee, tax, item_adjustments) do
     Money.add(tip, total)
     |> Money.add(delivery_fee)
     |> Money.add(service_fee)
     |> Money.add(tax)
+    |> Money.add(item_adjustments)
   end
 end

@@ -176,33 +176,4 @@ defmodule Jaang.Checkout do
     end)
     |> Enum.reduce(Money.new(0), fn price, acc -> Money.add(price, acc) end)
   end
-
-  @doc """
-  Calculate total amount including driver tip, delivery fee and sales tax
-  This value will be displayed in checkout screen
-
-  return driver tip, each store's subtotal, delivery fee, service fee
-  and calculated tax(exempt produce)
-  """
-  def calculate_total_amount(driver_tip, user) do
-    # Get carts for user
-    carts = get_all_carts(user.id)
-    # Get each store's subtotal from cart.
-    store_subtotals =
-      Enum.map(carts, fn cart ->
-        store_name = cart.store_name
-        store_subtotal = cart.total
-        %{store_name: store_name, store_subtotal: store_subtotal}
-      end)
-
-    # Calculate delivery fee
-    delivery_fee = calculate_delivery_fee(user.addresses)
-    # Calculate sales tax
-  end
-
-  def calculate_delivery_fee(addresses) do
-    default_address = Enum.find(addresses, &(&1.default == true))
-
-    # Check if deilvery is available to address
-  end
 end

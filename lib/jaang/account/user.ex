@@ -11,6 +11,7 @@ defmodule Jaang.Account.User do
 
     has_one :profile, Jaang.Account.Profile
     has_many :addresses, Jaang.Account.Address
+    has_many :invoices, Jaang.Invoice
 
     timestamps()
   end

@@ -247,7 +247,7 @@ defmodule JaangWeb.Schema do
       resolve(&ProfileResolver.update_profile/3)
     end
 
-    ### * Card
+    ### * Credit Card
 
     @desc "Attach a payment method to user"
     field :attach_payment_method, list_of(:credit_card) do
@@ -550,6 +550,7 @@ defmodule JaangWeb.Schema do
     field :delivery_fee, :string
     field :service_fee, :string
     field :sales_tax, :string
+    field :item_adjustments, :string
     field :total, :string
   end
 

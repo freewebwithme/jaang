@@ -18,6 +18,7 @@ defmodule Jaang.Checkout.Order do
 
     field :store_id, :id
     field :store_name, :string
+    field :invoice_id, :id
     belongs_to :user, Jaang.Account.User
 
     timestamps()
@@ -26,7 +27,7 @@ defmodule Jaang.Checkout.Order do
   @doc false
   def changeset(%Order{} = order, attrs) do
     order
-    |> cast(attrs, [:status, :total, :user_id, :store_id, :store_name])
+    |> cast(attrs, [:status, :total, :user_id, :store_id, :store_name, :invoice_id])
     |> cast_embed(:line_items, required: true, with: &LineItem.changeset/2)
     |> set_order_total()
     |> validate_required([:status, :total, :user_id])
