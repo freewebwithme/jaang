@@ -11,6 +11,8 @@ defmodule Jaang.Checkout.LineItem do
     field :store_id, :integer
     field :image_url, :string
     field :product_name, :string
+    field :category_name, :string
+    field :sub_category_name, :string
     field :unit_name, :string
     field :quantity, :integer
     field :price, Money.Ecto.Amount.Type
@@ -29,6 +31,8 @@ defmodule Jaang.Checkout.LineItem do
       :image_url,
       :unit_name,
       :quantity,
+      :category_name,
+      :sub_category_name,
       :price,
       :total,
       :inserted_at,
@@ -40,6 +44,8 @@ defmodule Jaang.Checkout.LineItem do
       :product_id,
       :store_id,
       :product_name,
+      :category_name,
+      :sub_category_name,
       :image_url,
       :unit_name,
       :quantity,
@@ -63,6 +69,8 @@ defmodule Jaang.Checkout.LineItem do
         |> put_change(:price, product.regular_price)
         |> put_change(:unit_name, product.unit_name)
         |> put_change(:store_id, product.store_id)
+        |> put_change(:category_name, product.category_name)
+        |> put_change(:sub_category_name, product.sub_category_name)
     end
   end
 

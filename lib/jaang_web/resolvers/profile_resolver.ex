@@ -16,17 +16,9 @@ defmodule JaangWeb.Resolvers.ProfileResolver do
 
     address_id = String.to_integer(address_id)
     user = AccountManager.get_user_by_session_token(token)
-    addresses = ProfileManager.get_all_addresses(user.id)
-
-    Enum.map(addresses, fn address ->
-      cond do
-        address.id == address_id ->
-          ProfileManager.update_address(address, %{default: true})
-
-        true ->
-          ProfileManager.update_address(address, %{default: false})
-      end
-    end)
+    # Get address
+    address = ProfileManager.get_all_addresses(user.id) |> Enum.find(&(&1.id == address_id))
+    ProfileManager.update_address(address, %{default: true})
 
     {:ok, %{user: user, token: token, expired: false}}
   end

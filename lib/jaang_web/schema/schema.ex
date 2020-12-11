@@ -276,6 +276,7 @@ defmodule JaangWeb.Schema do
       resolve(&PaymentResolver.delete_payment_method/3)
     end
 
+    ### * Cart
     @desc "Add item to cart"
     field :add_to_cart, :carts do
       arg(:user_id, non_null(:string))
@@ -299,9 +300,12 @@ defmodule JaangWeb.Schema do
       resolve(&CartResolver.update_cart/3)
     end
 
-    @desc "Calculate total amonut for checkout screen"
-    field :calculate_total, :total_amount do
-      arg(:driver_tip, non_null(:string))
+    ### * Calculate total amount
+
+    @desc "Calculate total amount for checkout screen"
+    field :calculate_total_amount, :total_amount do
+      arg(:tip, :string)
+      arg(:token, :string)
 
       # middleware(Middleware.Authenticate)
       resolve(&CheckoutResolver.calculate_total/3)
@@ -551,7 +555,7 @@ defmodule JaangWeb.Schema do
 
   object :sub_total do
     field :store_name, :string
-    field :sub_total, :string
+    field :total, :string
   end
 
   def context(ctx) do

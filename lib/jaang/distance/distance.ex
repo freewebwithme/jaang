@@ -119,7 +119,11 @@ defmodule Jaang.Distance do
     # Get default store
     store = Jaang.StoreManager.get_store(store_id)
     # Get user's default address
+    IO.puts("Inspecting user's addresses")
+    IO.inspect(user.addresses)
     default_address = ProfileManager.get_default_address(user.addresses)
+    IO.puts("Inspecting default address")
+    IO.inspect(default_address)
 
     if(default_address.distance == nil) do
       # There is no distance schema. create one

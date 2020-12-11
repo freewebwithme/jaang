@@ -2,6 +2,7 @@ defmodule Jaang.Account.Addresses do
   alias Jaang.Account.Address
   alias Jaang.Repo
   alias Jaang.Distance
+  alias Jaang.AccountManager
   alias Ecto.Changeset
 
   import Ecto.Query
@@ -77,7 +78,12 @@ defmodule Jaang.Account.Addresses do
 
       true ->
         # User is changing default address
+        IO.puts("Inspecting address changeset")
+        IO.inspect(address_changeset)
         new_address = address_changeset |> Repo.update!()
+        # Get user and store id to check and update store distance
+        user = AccountManager.get_user(new_address.user_id)
+        Distance.check_and_update_store_distance(user, user.profile.store_id)
         new_address
     end
   end
