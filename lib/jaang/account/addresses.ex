@@ -53,39 +53,43 @@ defmodule Jaang.Account.Addresses do
   """
   def update_address(%Address{} = address, attrs) do
     address_changeset = Address.changeset(address, attrs)
-    # user is change default address?
-    change_default_address = Changeset.get_change(address_changeset, :default)
 
-    cond do
-      change_default_address == nil ->
-        # user is not changing default address
-        new_address = address_changeset |> Repo.update!()
+    new_address = address_changeset |> Repo.update!()
 
-        # If user update an address, delete distance information and make new one
-        new_address = get_address(new_address.id)
+    # If user update an address, delete distance information and make new one
+    new_address = get_address(new_address.id)
 
-        if(new_address.distance == nil) do
-          # There is no distance information(schema) so create one
-          Distance.create_distance(new_address.user_id, new_address)
-        else
-          # There is a distance schema, so delete and make new one
-          Distance.delete_distance(new_address.distance)
-          # Create a new one
-          Distance.create_distance(new_address.user_id, new_address)
-        end
-
-        new_address
-
-      true ->
-        # User is changing default address
-        IO.puts("Inspecting address changeset")
-        IO.inspect(address_changeset)
-        new_address = address_changeset |> Repo.update!()
-        # Get user and store id to check and update store distance
-        user = AccountManager.get_user(new_address.user_id)
-        Distance.check_and_update_store_distance(user, user.profile.store_id)
-        new_address
+    if(new_address.distance == nil) do
+      # There is no distance information(schema) so create one
+      Distance.create_distance(new_address.user_id, new_address)
+    else
+      # There is a distance schema, so delete and make new one
+      Distance.delete_distance(new_address.distance)
+      # Create a new one
+      Distance.create_distance(new_address.user_id, new_address)
     end
+
+    new_address
+  end
+
+  @doc """
+  Change default address for user
+  change default: false for other address
+  """
+  def change_default_address(user, address_id) do
+    query =
+      from a in Address,
+        where: a.id != ^address_id and a.user_id == ^user.id,
+        update: [set: [default: false]]
+
+    query |> Repo.update_all([])
+
+    get_address(address_id)
+    |> Address.changeset(%{default: true})
+    |> Repo.update()
+
+    # Get user and store id to check and update store distance
+    Distance.check_and_update_store_distance(user, user.profile.store_id)
   end
 
   def delete_address(%Address{} = address) do

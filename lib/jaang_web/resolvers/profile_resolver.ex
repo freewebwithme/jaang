@@ -16,9 +16,8 @@ defmodule JaangWeb.Resolvers.ProfileResolver do
 
     address_id = String.to_integer(address_id)
     user = AccountManager.get_user_by_session_token(token)
-    # Get address
-    address = ProfileManager.get_all_addresses(user.id) |> Enum.find(&(&1.id == address_id))
-    ProfileManager.update_address(address, %{default: true})
+
+    ProfileManager.change_default_address(user, address_id)
 
     {:ok, %{user: user, token: token, expired: false}}
   end

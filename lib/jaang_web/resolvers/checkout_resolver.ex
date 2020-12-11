@@ -6,8 +6,14 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
     user = AccountManager.get_user_by_session_token(token)
     carts = OrderManager.get_all_carts(user.id)
 
-    tip = String.to_integer(tip)
-    tip = Money.new(tip)
+    tip =
+      if(tip == "") do
+        String.to_integer("0")
+        |> Money.new()
+      else
+        String.to_integer(tip) |> Money.new()
+      end
+
     # Calculate total price to calculate service fee
     total = OrderManager.calculate_total_price(carts)
     service_fee = Calculate.calculate_service_fee(total)

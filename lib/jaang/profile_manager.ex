@@ -10,4 +10,10 @@ defmodule Jaang.ProfileManager do
   defdelegate update_address(address, attrs), to: Addresses
   defdelegate delete_address(address), to: Addresses
   defdelegate build_address(addresss), to: Addresses
+
+  @doc """
+  Change default address for user
+  change default: false for other address
+  """
+  defdelegate change_default_address(user, address_id), to: Addresses
 end
