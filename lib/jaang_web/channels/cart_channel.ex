@@ -1,6 +1,6 @@
 defmodule JaangWeb.CartChannel do
   use Phoenix.Channel
-  alias Jaang.OrderManager
+  alias Jaang.{OrderManager, InvoiceManager}
 
   def join("cart:" <> user_id, _params, %{assigns: %{current_user: user}} = socket) do
     # check if current user match client user
@@ -57,10 +57,14 @@ defmodule JaangWeb.CartChannel do
 
     user_id = String.to_integer(user_id)
 
+    # Get a cart for store id
     case OrderManager.get_cart(user_id, store_id) do
       nil ->
-        # There is no cart for store.  Create initial carts
-        {:ok, cart} = OrderManager.create_cart(user_id, store_id)
+        # Get an invoice
+        invoice = InvoiceManager.get_or_create_invoice(user_id)
+        # There is no cart(order) for this store.  Create initial carts
+        {:ok, cart} = OrderManager.create_cart(user_id, store_id, invoice.id)
+
         # Add item to cart
         OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity})
 

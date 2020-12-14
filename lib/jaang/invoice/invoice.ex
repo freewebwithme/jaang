@@ -4,15 +4,16 @@ defmodule Jaang.Invoice do
   alias Jaang.Invoice
 
   schema "invoices" do
-    field :subtotal, :string
-    field :driver_tip, :string
-    field :delivery_fee, :string
-    field :service_fee, :string
-    field :sales_tax, :string
-    field :total, :string
+    field :subtotal, Money.Ecto.Amount.Type
+    field :driver_tip, Money.Ecto.Amount.Type
+    field :delivery_fee, Money.Ecto.Amount.Type
+    field :service_fee, Money.Ecto.Amount.Type
+    field :sales_tax, Money.Ecto.Amount.Type
+    field :total, Money.Ecto.Amount.Type
 
     field :payment_method, :string
-    field :status, Ecto.Enum, values: [:cart, :refund, :completed, :delivered]
+    field :pm_intent_id, :string
+    field :status, Ecto.Enum, values: [:cart, :refunded, :completed, :delivered]
 
     field :address_id, :id
     has_many :orders, Jaang.Checkout.Order
@@ -32,7 +33,8 @@ defmodule Jaang.Invoice do
       :total,
       :payment_method,
       :user_id,
-      :address_id
+      :address_id,
+      :status
     ]
 
     invoice

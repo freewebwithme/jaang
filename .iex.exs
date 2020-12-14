@@ -55,12 +55,12 @@ alias Jaang.{
   ProductManager,
   OrderManager,
   ProfileManager,
-  StripeManager
+  StripeManager,
+  InvoiceManager
 }
 
 alias Jaang.Account.{User, Account, Profile, Address, Addresses}
-alias Jaang.Checkout.{Order, LineItem}
-alias Jaang.Checkout
+alias Jaang.Checkout.{Carts, Order, LineItem}
 alias Jaang.Invoice
 alias Jaang.Invoice.Invoices
 
@@ -68,7 +68,7 @@ alias ExAws.S3
 alias Stripe
 alias Stripe.{Customer}
 
-alias Jaang.Payment.Stripe.{Customer, PaymentMethod, SetupIntent}
+alias Jaang.Payment.Stripe.{Customer, PaymentMethod, SetupIntent, PaymentIntent}
 
 import Ecto.Query
 

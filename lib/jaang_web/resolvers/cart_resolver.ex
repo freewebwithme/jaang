@@ -1,4 +1,8 @@
 defmodule JaangWeb.Resolvers.CartResolver do
+  @moduledoc """
+  This resolver is not being used
+  Instead I use CartChannel
+  """
   alias Jaang.OrderManager
 
   def get_all_carts(_, %{user_id: user_id}, _) do

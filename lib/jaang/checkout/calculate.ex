@@ -50,6 +50,12 @@ defmodule Jaang.Checkout.Calculate do
     end)
   end
 
+  def calculate_subtotals(carts) do
+    Enum.reduce(carts, Money.new(0), fn cart, acc ->
+      Money.add(acc, cart.total)
+    end)
+  end
+
   @doc """
   Sum up every amount
   """

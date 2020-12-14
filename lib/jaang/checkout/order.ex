@@ -12,7 +12,7 @@ defmodule Jaang.Checkout.Order do
   end
 
   schema "orders" do
-    field :status, Ecto.Enum, values: [:cart, :confirmd]
+    field :status, Ecto.Enum, values: [:cart, :confirmed]
     field :total, Money.Ecto.Amount.Type
     embeds_many :line_items, LineItem, on_replace: :delete
 

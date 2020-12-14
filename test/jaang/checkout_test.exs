@@ -1,6 +1,6 @@
 defmodule Jaang.CheckoutTest do
   use Jaang.DataCase, async: true
-  alias Jaang.{AccountManager, StoreManager, ProductManager, OrderManager}
+  alias Jaang.{AccountManager, StoreManager, ProductManager, OrderManager, InvoiceManager}
 
   setup do
     attrs = %{
@@ -42,7 +42,9 @@ defmodule Jaang.CheckoutTest do
         published: true,
         barcode: "123",
         store_id: store_1.id,
-        unit_name: "lb"
+        unit_name: "lb",
+        category_name: "Produce",
+        sub_category_name: "Vegetable"
       })
 
     ProductManager.create_product_image(product_1, %{
@@ -61,7 +63,9 @@ defmodule Jaang.CheckoutTest do
         published: true,
         barcode: "123",
         store_id: store_1.id,
-        unit_name: "lb"
+        unit_name: "lb",
+        category_name: "Drink",
+        sub_category_name: "Soda"
       })
 
     ProductManager.create_product_image(product_2, %{
@@ -80,7 +84,9 @@ defmodule Jaang.CheckoutTest do
         published: true,
         barcode: "1234534",
         store_id: store_2.id,
-        unit_name: "pack"
+        unit_name: "pack",
+        category_name: "Dairy",
+        sub_category_name: "Egg"
       })
 
     ProductManager.create_product_image(product_3, %{
@@ -99,7 +105,9 @@ defmodule Jaang.CheckoutTest do
         published: true,
         barcode: "1234534",
         store_id: store_2.id,
-        unit_name: "pack"
+        unit_name: "pack",
+        category_name: "Dairy",
+        sub_category_name: "Milk"
       })
 
     ProductManager.create_product_image(product_4, %{
@@ -107,6 +115,9 @@ defmodule Jaang.CheckoutTest do
         "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Japchae-Potstickers.jpg",
       order: 1
     })
+
+    # Create an invoice
+    invoice = InvoiceManager.get_or_create_invoice(user.id)
 
     {:ok,
      %{
@@ -116,7 +127,8 @@ defmodule Jaang.CheckoutTest do
        product_1: product_1,
        product_2: product_2,
        product_3: product_3,
-       product_4: product_4
+       product_4: product_4,
+       invoice: invoice
      }}
   end
 
@@ -124,9 +136,10 @@ defmodule Jaang.CheckoutTest do
     user = context[:user]
     store_1 = context[:store_1]
     store_2 = context[:store_2]
+    invoice = context[:invoice]
 
-    {:ok, cart_1} = OrderManager.create_cart(user.id, store_1.id)
-    {:ok, cart_2} = OrderManager.create_cart(user.id, store_2.id)
+    {:ok, cart_1} = OrderManager.create_cart(user.id, store_1.id, invoice.id)
+    {:ok, cart_2} = OrderManager.create_cart(user.id, store_2.id, invoice.id)
 
     assert cart_1.status == :cart
     assert cart_1.store_id == store_1.id
@@ -139,9 +152,10 @@ defmodule Jaang.CheckoutTest do
     user = context[:user]
     store_1 = context[:store_1]
     store_2 = context[:store_2]
+    invoice = context[:invoice]
 
-    {:ok, cart_1} = OrderManager.create_cart(user.id, store_1.id)
-    {:ok, cart_2} = OrderManager.create_cart(user.id, store_2.id)
+    {:ok, cart_1} = OrderManager.create_cart(user.id, store_1.id, invoice.id)
+    {:ok, cart_2} = OrderManager.create_cart(user.id, store_2.id, invoice.id)
 
     saved_cart_1 = OrderManager.get_cart(user.id, store_1.id)
     saved_cart_2 = OrderManager.get_cart(user.id, store_2.id)
@@ -158,8 +172,9 @@ defmodule Jaang.CheckoutTest do
     store_1 = context[:store_1]
     product_1 = context[:product_1]
     product_2 = context[:product_2]
+    invoice = context[:invoice]
 
-    {:ok, cart} = OrderManager.create_cart(user.id, store_1.id)
+    {:ok, cart} = OrderManager.create_cart(user.id, store_1.id, invoice.id)
 
     {:ok, new_cart} =
       OrderManager.add_to_cart(cart, %{product_id: Integer.to_string(product_1.id), quantity: 1})
@@ -186,8 +201,9 @@ defmodule Jaang.CheckoutTest do
     store_1 = context[:store_1]
     product_1 = context[:product_1]
     product_2 = context[:product_2]
+    invoice = context[:invoice]
 
-    {:ok, cart} = OrderManager.create_cart(user.id, store_1.id)
+    {:ok, cart} = OrderManager.create_cart(user.id, store_1.id, invoice.id)
 
     {:ok, new_cart} =
       OrderManager.add_to_cart(cart, %{product_id: Integer.to_string(product_1.id), quantity: 1})

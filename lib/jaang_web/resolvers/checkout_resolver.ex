@@ -1,11 +1,11 @@
 defmodule JaangWeb.Resolvers.CheckoutResolver do
-  alias Jaang.{AccountManager, OrderManager}
+  alias Jaang.{AccountManager, OrderManager, InvoiceManager}
   alias Jaang.Checkout.Calculate
   alias Jaang.Invoice.TotalAmount
 
   @doc """
   Calculate final total amount
-  and Update invoice total amount
+  and Update invoice total amount and invoice schema
   """
   def calculate_total(_, %{tip: tip, token: token}, _) do
     user = AccountManager.get_user_by_session_token(token)
@@ -25,7 +25,10 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
 
     tax = Calculate.calculate_sales_tax(carts)
     delivery_fee = Calculate.calculate_delivery_fee()
+
+    # %{store_name: "", total: %Money{}}
     sub_totals = Calculate.get_sub_totals_for_order(carts)
+
     item_adjustments = Calculate.calculate_item_adjustments(total)
 
     final_total_amount =
@@ -38,6 +41,20 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
         item_adjustments
       )
 
+    sub_totals_amount = Calculate.calculate_subtotals(carts)
+
+    # Get an invoice schema
+    invoice = InvoiceManager.get_invoice_in_cart(user.id)
+    # Update an invoice schema
+    InvoiceManager.update_invoice(invoice, %{
+      delivery_fee: delivery_fee,
+      driver_tip: tip,
+      sales_tax: tax,
+      service_fee: service_fee,
+      subtotal: sub_totals_amount,
+      total: final_total_amount
+    })
+
     total_amount = %TotalAmount{
       driver_tip: tip,
       sub_totals: sub_totals,
@@ -47,9 +64,6 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
       item_adjustments: item_adjustments,
       total: final_total_amount
     }
-
-    # Check if already created an invoice for this cart
-    # if not create a new invoice and update total amount
 
     {:ok, total_amount}
   end

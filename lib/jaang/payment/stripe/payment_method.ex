@@ -1,5 +1,6 @@
 defmodule Jaang.Payment.Stripe.PaymentMethod do
   alias Stripe.PaymentMethod
+  alias Jaang.Payment.Stripe.Customer
 
   def get_all_cards(stripe_id) do
     PaymentMethod.list(%{customer: stripe_id, type: "card"})
@@ -34,5 +35,16 @@ defmodule Jaang.Payment.Stripe.PaymentMethod do
       {:ok, payment_method} -> {:ok, payment_method}
       {:error, error} -> {:error, error}
     end
+  end
+
+  @doc """
+  Return payment method id
+  """
+  def get_default_payment_method(stripe_id) do
+    # Get a customer from stripe
+    {:ok, %{invoice_settings: %{default_payment_method: default_payment_method}}} =
+      Customer.retrieve_customer(stripe_id)
+
+    default_payment_method
   end
 end
