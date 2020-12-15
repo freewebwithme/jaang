@@ -14,6 +14,7 @@ defmodule JaangWeb.Schema do
 
   alias Jaang.Product.Products
   alias Jaang.Account.Accounts
+  alias Jaang.Checkout.Carts
   alias JaangWeb.Schema.Middleware
 
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
@@ -310,6 +311,29 @@ defmodule JaangWeb.Schema do
       # middleware(Middleware.Authenticate)
       resolve(&CheckoutResolver.calculate_total/3)
     end
+
+    @desc "Place an order"
+    field :place_order, :invoice do
+      arg(:token, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&CheckoutResolver.place_an_order/3)
+    end
+  end
+
+  object :invoice do
+    field :subtotal, :string
+    field :driver_tip, :string
+    field :delivery_fee, :string
+    field :service_fee, :string
+    field :sales_tax, :string
+    field :total, :string
+    field :payment_method, :string
+    field :pm_intent_id, :string
+    field :status, :string
+    field :address_id, :id
+    field :user_id, :id
+    field :orders, list_of(:order), resolve: dataloader(Carts)
   end
 
   object :simple_response do
@@ -564,6 +588,7 @@ defmodule JaangWeb.Schema do
       Dataloader.new()
       |> Dataloader.add_source(Products, Products.data())
       |> Dataloader.add_source(Accounts, Accounts.data())
+      |> Dataloader.add_source(Carts, Carts.data())
 
     Map.put(ctx, :loader, loader)
   end

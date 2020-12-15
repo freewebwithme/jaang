@@ -109,6 +109,11 @@ defmodule JaangWeb.CartChannel do
     {:noreply, socket}
   end
 
+  def handle_in("get_cart", _payload, socket) do
+    send(self(), {:send_cart, "get_cart"})
+    {:noreply, socket}
+  end
+
   def get_updated_carts(user_id) do
     carts = OrderManager.get_all_carts(user_id)
 

@@ -67,4 +67,16 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
 
     {:ok, total_amount}
   end
+
+  def place_an_order(_, %{token: token}, _) do
+    user = AccountManager.get_user_by_session_token(token)
+
+    case OrderManager.place_an_order(user) do
+      {:ok, invoice} ->
+        {:ok, invoice}
+
+      {:error, message} ->
+        {:error, nil}
+    end
+  end
 end

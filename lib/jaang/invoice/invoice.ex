@@ -34,7 +34,8 @@ defmodule Jaang.Invoice do
       :payment_method,
       :user_id,
       :address_id,
-      :status
+      :status,
+      :pm_intent_id
     ]
 
     invoice

@@ -180,4 +180,12 @@ defmodule Jaang.Checkout.Carts do
     end)
     |> Enum.reduce(Money.new(0), fn price, acc -> Money.add(price, acc) end)
   end
+
+  def data() do
+    Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
+  end
 end

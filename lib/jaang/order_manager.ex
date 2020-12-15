@@ -1,5 +1,5 @@
 defmodule Jaang.OrderManager do
-  alias Jaang.Checkout.Carts
+  alias Jaang.Checkout.{Carts, Checkout}
 
   @doc """
   Create an cart(order) and attach to the invoice
@@ -14,4 +14,10 @@ defmodule Jaang.OrderManager do
 
   defdelegate count_total_item(carts), to: Carts
   defdelegate calculate_total_price(carts), to: Carts
+
+  @doc """
+  This function places an order using currently saved
+  invoice schema, default address, phone number, default payment method.
+  """
+  defdelegate place_an_order(user), to: Checkout
 end

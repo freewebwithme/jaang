@@ -20,27 +20,30 @@ defmodule Jaang.Checkout.Checkout do
     # Send a payment to stripe backend
     # Place a hold on a card
     case StripeManager.create_payment_intent(
-           invoice.total,
+           invoice.total.amount,
            user.stripe_id,
            default_payment_method_id
          ) do
       {:ok, payment_intent} ->
+        IO.inspect(payment_intent.id)
         # Mark order as "confirmed"
         Enum.map(invoice.orders, fn order ->
           OrderManager.update_cart(order, %{status: :confirmed})
         end)
 
         # Update an invoice
-        InvoiceManager.update_invoice(invoice, %{
-          pm_intent_id: payment_intent.id,
-          address_id: address.id,
-          payment_method: "Ending with #{last4}",
-          status: :completed
-        })
+        invoice =
+          InvoiceManager.update_invoice(invoice, %{
+            pm_intent_id: payment_intent.id,
+            address_id: address.id,
+            payment_method: "Ending with #{last4}",
+            status: :completed
+          })
 
-        {:ok, "Your order is submitted."}
+        {:ok, invoice}
 
-      {:error, _error} ->
+      {:error, error} ->
+        IO.inspect(error)
         {:error, "Can't process a payment. Please try again later."}
     end
   end
