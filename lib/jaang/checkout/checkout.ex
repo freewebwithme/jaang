@@ -31,13 +31,16 @@ defmodule Jaang.Checkout.Checkout do
           OrderManager.update_cart(order, %{status: :confirmed})
         end)
 
+        # Calculate total items
+        total_items = OrderManager.count_total_item(invoice.orders)
         # Update an invoice
         invoice =
           InvoiceManager.update_invoice(invoice, %{
             pm_intent_id: payment_intent.id,
             address_id: address.id,
             payment_method: "Ending with #{last4}",
-            status: :completed
+            status: :completed,
+            total_items: total_items
           })
 
         {:ok, invoice}

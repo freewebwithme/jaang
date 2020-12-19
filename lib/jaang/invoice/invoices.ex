@@ -7,12 +7,14 @@ defmodule Jaang.Invoice.Invoices do
   """
   def create_invoice(user_id) do
     attrs = %{
+      invoice_number: UUID.uuid1(),
       delivery_fee: Money.new(0),
       driver_tip: Money.new(0),
       sales_tax: Money.new(0),
       service_fee: Money.new(0),
       subtotal: Money.new(0),
       total: Money.new(0),
+      total_items: 0,
       status: :cart,
       user_id: user_id
     }
@@ -41,5 +43,13 @@ defmodule Jaang.Invoice.Invoices do
     invoice
     |> Invoice.changeset(attrs)
     |> Repo.update!()
+  end
+
+  @doc """
+  Get all invoices excluding :cart status
+  """
+  def get_invoices(user_id) do
+    query = from i in Invoice, where: i.user_id == ^user_id and i.status != :cart
+    Repo.all(query)
   end
 end

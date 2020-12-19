@@ -1,5 +1,6 @@
 defmodule JaangWeb.Schema do
   use Absinthe.Schema
+  alias Timex
 
   alias JaangWeb.Resolvers.{
     StoreResolver,
@@ -9,7 +10,8 @@ defmodule JaangWeb.Schema do
     CartResolver,
     ProfileResolver,
     PaymentResolver,
-    CheckoutResolver
+    CheckoutResolver,
+    OrderResolver
   }
 
   alias Jaang.Product.Products
@@ -124,6 +126,16 @@ defmodule JaangWeb.Schema do
 
       # middleware(Middleware.Authenticate)
       resolve(&PaymentResolver.get_all_cards/3)
+    end
+
+    ### * Invoices
+
+    @desc "Fetch user's invoices for orders screen"
+    field :fetch_invoices, list_of(:invoice) do
+      arg(:token, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&OrderResolver.fetch_invoices/3)
     end
   end
 
@@ -322,6 +334,8 @@ defmodule JaangWeb.Schema do
   end
 
   object :invoice do
+    field :id, :id
+    field :invoice_number, :string
     field :subtotal, :string
     field :driver_tip, :string
     field :delivery_fee, :string
@@ -333,7 +347,15 @@ defmodule JaangWeb.Schema do
     field :status, :string
     field :address_id, :id
     field :user_id, :id
+    field :total_items, :integer
     field :orders, list_of(:order), resolve: dataloader(Carts)
+
+    field :updated_at, :string do
+      resolve(fn parent, _, _ ->
+        updated_at = Map.get(parent, :updated_at)
+        Timex.format(updated_at, "{0M}-{D}-{YYYY}")
+      end)
+    end
   end
 
   object :simple_response do

@@ -65,7 +65,9 @@ defmodule Jaang.MixProject do
       {:joken, "~> 2.2"},
       {:joken_jwks, "~> 1.3"},
       {:stripity_stripe, "~> 2.0"},
-      {:google_maps, "~> 0.11.0"}
+      {:google_maps, "~> 0.11.0"},
+      {:uuid, "~> 1.1"},
+      {:timex, "~> 3.6"}
     ]
   end
 
