@@ -16,7 +16,16 @@ defmodule Jaang.Invoice do
     field :pm_intent_id, :string
     field :status, Ecto.Enum, values: [:cart, :refunded, :completed, :delivered]
 
-    field :address_id, :id
+    # Embed address information
+    field :recipient, :string
+    field :address_line_one, :string
+    field :address_line_two, :string
+    field :business_name, :string
+    field :zipcode, :string
+    field :city, :string
+    field :state, :string
+    field :instructions, :string
+
     has_many :orders, Jaang.Checkout.Order
     belongs_to :user, Jaang.Account.User
 
@@ -34,11 +43,18 @@ defmodule Jaang.Invoice do
       :total,
       :payment_method,
       :user_id,
-      :address_id,
       :status,
       :pm_intent_id,
       :invoice_number,
-      :total_items
+      :total_items,
+      :recipient,
+      :address_line_one,
+      :address_line_two,
+      :business_name,
+      :zipcode,
+      :city,
+      :state,
+      :instructions
     ]
 
     invoice

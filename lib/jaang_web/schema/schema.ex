@@ -202,6 +202,7 @@ defmodule JaangWeb.Schema do
     @desc "Update address"
     field :update_address, :session do
       arg(:user_token, non_null(:string))
+      arg(:recipient, non_null(:string))
       arg(:address_id, non_null(:string))
       arg(:address_line_one, :string)
       arg(:address_line_two, :string)
@@ -227,6 +228,7 @@ defmodule JaangWeb.Schema do
     @desc "Add a new address"
     field :add_address, :session do
       arg(:user_token, non_null(:string))
+      arg(:recipient, non_null(:string))
       arg(:address_line_one, non_null(:string))
       arg(:address_line_two, :string)
       arg(:business_name, :string)
@@ -345,9 +347,18 @@ defmodule JaangWeb.Schema do
     field :payment_method, :string
     field :pm_intent_id, :string
     field :status, :string
-    field :address_id, :id
     field :user_id, :id
     field :total_items, :integer
+    # Add delivery address information
+    field :recipient, :string
+    field :address_line_one, :string
+    field :address_line_two, :string
+    field :business_name, :string
+    field :zipcode, :string
+    field :city, :string
+    field :state, :string
+    field :instructions, :string
+    # Orders
     field :orders, list_of(:order), resolve: dataloader(Carts)
 
     field :updated_at, :string do
@@ -458,6 +469,7 @@ defmodule JaangWeb.Schema do
 
   object :address do
     field :id, :id
+    field :recipient, :string
     field :address_line_one, :string
     field :address_line_two, :string
     field :business_name, :string

@@ -75,7 +75,7 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
       {:ok, invoice} ->
         {:ok, invoice}
 
-      {:error, message} ->
+      {:error, _message} ->
         {:error, nil}
     end
   end

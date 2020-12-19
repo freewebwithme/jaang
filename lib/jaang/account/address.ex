@@ -3,6 +3,7 @@ defmodule Jaang.Account.Address do
   import Ecto.Changeset
 
   schema "addresses" do
+    field :recipient, :string
     field :address_line_one, :string
     field :address_line_two, :string
     field :business_name, :string
@@ -20,6 +21,7 @@ defmodule Jaang.Account.Address do
   @doc false
   def changeset(%Jaang.Account.Address{} = address, attrs) do
     required_fields = [
+      :recipient,
       :address_line_one,
       :zipcode,
       :city,
