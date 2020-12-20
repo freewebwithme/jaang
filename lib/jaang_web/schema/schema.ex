@@ -358,6 +358,8 @@ defmodule JaangWeb.Schema do
     field :city, :string
     field :state, :string
     field :instructions, :string
+
+    field :phone_number, :string
     # Orders
     field :orders, list_of(:order), resolve: dataloader(Carts)
 

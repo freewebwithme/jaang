@@ -38,7 +38,7 @@ defmodule Jaang.Checkout.Checkout do
           InvoiceManager.update_invoice(invoice, %{
             pm_intent_id: payment_intent.id,
             payment_method: "Ending with #{last4}",
-            status: :completed,
+            status: :confirmed,
             total_items: total_items,
             # Add delivery address info
             recipient: address.recipient,
@@ -48,7 +48,8 @@ defmodule Jaang.Checkout.Checkout do
             zipcode: address.zipcode,
             city: address.city,
             state: address.state,
-            instructions: address.instructions
+            instructions: address.instructions,
+            phone_number: user.profile.phone
           })
 
         {:ok, invoice}
