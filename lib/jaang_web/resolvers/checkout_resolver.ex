@@ -52,7 +52,8 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
       sales_tax: tax,
       service_fee: service_fee,
       subtotal: sub_totals_amount,
-      total: final_total_amount
+      total: final_total_amount,
+      item_adjustment: item_adjustments
     })
 
     total_amount = %TotalAmount{

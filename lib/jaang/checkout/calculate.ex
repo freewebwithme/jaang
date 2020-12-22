@@ -1,6 +1,6 @@
 defmodule Jaang.Checkout.Calculate do
   @tax_rate 0.095
-  @delivery_fee 500
+  @delivery_fee 499
   @item_adjustment 0.15
   @service_fee 0.08
 

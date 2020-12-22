@@ -49,7 +49,11 @@ defmodule Jaang.Invoice.Invoices do
   Get all invoices excluding :cart status
   """
   def get_invoices(user_id) do
-    query = from i in Invoice, where: i.user_id == ^user_id and i.status != :cart
+    query =
+      from i in Invoice,
+        where: i.user_id == ^user_id and i.status != :cart,
+        order_by: [desc: i.inserted_at]
+
     Repo.all(query)
   end
 end

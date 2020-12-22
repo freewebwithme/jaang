@@ -5,7 +5,7 @@ defmodule Jaang.Product.RecipeTag do
   schema "recipe_tags" do
     field :name, :string
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

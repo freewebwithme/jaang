@@ -5,6 +5,6 @@ defmodule Jaang.Product.ProductRecipeTags do
     belongs_to :product, Jaang.Product
     belongs_to :recipe_tag, Jaang.Product.Tag
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

@@ -18,7 +18,7 @@ defmodule Jaang.Checkout.LineItem do
     field :price, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

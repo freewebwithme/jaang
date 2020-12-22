@@ -4,6 +4,6 @@ defmodule Jaang.Product.ProductTags do
   schema "product_tags" do
     belongs_to :product, Jaang.Product
     belongs_to :tag, Jaang.Product.Tag
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

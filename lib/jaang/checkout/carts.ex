@@ -18,7 +18,8 @@ defmodule Jaang.Checkout.Carts do
       status: :cart,
       store_id: store_id,
       store_name: store.name,
-      invoice_id: invoice_id
+      invoice_id: invoice_id,
+      available_checkout: false
     }
     |> Repo.insert()
   end
@@ -57,6 +58,8 @@ defmodule Jaang.Checkout.Carts do
   end
 
   def update_cart(%Order{} = order, attrs) do
+    IO.puts("Updating cart")
+
     order
     |> Order.changeset(attrs)
     |> Repo.update()

@@ -8,7 +8,7 @@ defmodule Jaang.Category do
     has_many :products, Jaang.Product
     has_many :sub_categories, Jaang.Category.SubCategory
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

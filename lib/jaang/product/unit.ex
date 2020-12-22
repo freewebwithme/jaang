@@ -7,7 +7,7 @@ defmodule Jaang.Product.Unit do
     field :name, :string
     has_many :products, Jaang.Product
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

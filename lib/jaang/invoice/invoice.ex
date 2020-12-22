@@ -10,6 +10,7 @@ defmodule Jaang.Invoice do
     field :delivery_fee, Money.Ecto.Amount.Type
     field :service_fee, Money.Ecto.Amount.Type
     field :sales_tax, Money.Ecto.Amount.Type
+    field :item_adjustment, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
     field :total_items, :integer
     field :payment_method, :string
@@ -31,13 +32,14 @@ defmodule Jaang.Invoice do
     has_many :orders, Jaang.Checkout.Order
     belongs_to :user, Jaang.Account.User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
   def changeset(%Invoice{} = invoice, attrs) do
     fields = [
       :subtotal,
+      :item_adjustment,
       :driver_tip,
       :delivery_fee,
       :service_fee,

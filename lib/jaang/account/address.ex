@@ -15,7 +15,7 @@ defmodule Jaang.Account.Address do
 
     belongs_to :user, Jaang.Account.User
     has_one :distance, Jaang.Distance
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

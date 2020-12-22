@@ -36,7 +36,7 @@ defmodule Jaang.Product do
     belongs_to :category, Jaang.Category
     belongs_to :sub_category, Jaang.Category.SubCategory
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
@@ -81,7 +81,7 @@ defmodule Jaang.Product do
   defp insert_and_get_all([]), do: []
 
   defp insert_and_get_all(names) do
-    timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
     maps = Enum.map(names, &%{name: &1, inserted_at: timestamp, updated_at: timestamp})
     Repo.insert_all(Jaang.Product.Tag, maps, on_conflict: :nothing)
     Repo.all(from(t in Jaang.Product.Tag, where: t.name in ^names))
@@ -100,7 +100,7 @@ defmodule Jaang.Product do
   defp insert_and_get_all_recipe_tags([]), do: []
 
   defp insert_and_get_all_recipe_tags(names) do
-    timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
     maps = Enum.map(names, &%{name: &1, inserted_at: timestamp, updated_at: timestamp})
     Repo.insert_all(Jaang.Product.RecipeTag, maps, on_conflict: :nothing)
     Repo.all(from(t in Jaang.Product.RecipeTag, where: t.name in ^names))

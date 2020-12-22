@@ -14,6 +14,8 @@ defmodule JaangWeb.Schema do
     OrderResolver
   }
 
+  alias Jaang.Utility
+
   alias Jaang.Product.Products
   alias Jaang.Account.Accounts
   alias Jaang.Checkout.Carts
@@ -343,6 +345,7 @@ defmodule JaangWeb.Schema do
     field :delivery_fee, :string
     field :service_fee, :string
     field :sales_tax, :string
+    field :item_adjustment, :string
     field :total, :string
     field :payment_method, :string
     field :pm_intent_id, :string
@@ -366,7 +369,7 @@ defmodule JaangWeb.Schema do
     field :updated_at, :string do
       resolve(fn parent, _, _ ->
         updated_at = Map.get(parent, :updated_at)
-        Timex.format(updated_at, "{0M}-{D}-{YYYY}")
+        Utility.convert_and_format_datetime(updated_at)
       end)
     end
   end
@@ -409,6 +412,8 @@ defmodule JaangWeb.Schema do
     field :store_name, :string
     field :user_id, :id
     field :status, :string
+    field :available_checkout, :boolean, default_value: false
+    field :required_amount, :string
 
     field :total, :string do
       resolve(fn parent, _, _ ->

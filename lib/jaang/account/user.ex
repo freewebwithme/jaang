@@ -7,13 +7,13 @@ defmodule Jaang.Account.User do
     field :stripe_id, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
-    field :confirmed_at, :naive_datetime
+    field :confirmed_at, :utc_datetime
 
     has_one :profile, Jaang.Account.Profile
     has_many :addresses, Jaang.Account.Address
     has_many :invoices, Jaang.Invoice
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
@@ -105,7 +105,7 @@ defmodule Jaang.Account.User do
   Confirms the account by setting `comfirmed_at`.
   """
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
     change(user, confirmed_at: now)
   end
 

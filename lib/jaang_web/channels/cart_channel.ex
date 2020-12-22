@@ -27,6 +27,8 @@ defmodule JaangWeb.CartChannel do
 
   def handle_info({:send_cart, event}, %{assigns: %{current_user: user}} = socket) do
     {carts, total_items, total_price} = get_updated_carts(user.id)
+    IO.puts("Calling handle_info")
+    IO.inspect(carts)
 
     broadcast!(socket, event, %{
       orders: carts,
@@ -119,9 +121,12 @@ defmodule JaangWeb.CartChannel do
 
     # Extract line items and sort by inserted at
     sorted_carts =
-      Enum.map(carts, fn %{line_items: line_items, total: total} = cart ->
+      Enum.map(carts, fn %{line_items: line_items, total: total, required_amount: required_amount} =
+                           cart ->
         total = Money.to_string(total)
         cart = Map.put(cart, :total, total)
+        required_amount = Money.to_string(required_amount)
+        cart = Map.put(cart, :required_amount, required_amount)
         # Sort the line item by inserted at
         line_items = Enum.sort(line_items, &(&1.inserted_at <= &2.inserted_at))
 

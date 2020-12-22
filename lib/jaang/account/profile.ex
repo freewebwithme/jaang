@@ -10,7 +10,7 @@ defmodule Jaang.Account.Profile do
     field :store_id, :id, default: nil
 
     belongs_to :user, Jaang.Account.User
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

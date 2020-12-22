@@ -7,7 +7,7 @@ defmodule Jaang.Product.ProductImage do
     field :order, :integer
 
     belongs_to :product, Jaang.Product
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(%Jaang.Product.ProductImage{} = product_image, attrs) do
