@@ -135,6 +135,8 @@ defmodule JaangWeb.Schema do
     @desc "Fetch user's invoices for orders screen"
     field :fetch_invoices, list_of(:invoice) do
       arg(:token, non_null(:string))
+      arg(:limit, :integer, default_value: 5)
+      arg(:offset, :integer, default_value: 0)
 
       # middleware(Middleware.Authenticate)
       resolve(&OrderResolver.fetch_invoices/3)

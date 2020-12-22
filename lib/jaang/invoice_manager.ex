@@ -9,5 +9,5 @@ defmodule Jaang.InvoiceManager do
   @doc """
    Get confirmed invocies
   """
-  defdelegate get_invoices(user_id), to: Invoices
+  defdelegate get_invoices(user_id, limit, offset), to: Invoices
 end
