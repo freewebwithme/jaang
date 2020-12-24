@@ -24,6 +24,8 @@ defmodule JaangWeb.Schema do
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
   query do
+    ### * Stores
+
     @desc "get stores"
     field :get_stores, list_of(:store) do
       middleware(Middleware.Authenticate)
@@ -36,6 +38,8 @@ defmodule JaangWeb.Schema do
       middleware(Middleware.Authenticate)
       resolve(&StoreResolver.get_store/3)
     end
+
+    ### * Products
 
     @desc "get product"
     field :get_product, :product do
@@ -112,6 +116,17 @@ defmodule JaangWeb.Schema do
       resolve(&ProductResolver.get_often_bought_with_products/3)
     end
 
+    ### * Product search
+
+    @desc "Search products"
+    field :search_products, list_of(:product) do
+      arg(:terms, non_null(:string))
+      arg(:token, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&ProductResolver.search_products/3)
+    end
+
     ### * Carts
     @desc "Get all carts that has not been checked out"
     field :get_all_carts, :carts do
@@ -135,7 +150,7 @@ defmodule JaangWeb.Schema do
     @desc "Fetch user's invoices for orders screen"
     field :fetch_invoices, list_of(:invoice) do
       arg(:token, non_null(:string))
-      arg(:limit, :integer, default_value: 5)
+      arg(:limit, :integer, default_value: 10)
       arg(:offset, :integer, default_value: 0)
 
       # middleware(Middleware.Authenticate)

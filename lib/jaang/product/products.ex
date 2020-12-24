@@ -86,6 +86,37 @@ defmodule Jaang.Product.Products do
     Repo.all(query)
   end
 
+  @doc """
+  Search product in selected store
+  TODO: Improve search function using postgresql full text search
+  """
+  def search(term, store_id) when is_binary(term) do
+    # In case of multiple search term provided,
+    # split term by space
+
+    search_terms =
+      term
+      |> String.replace(~r/[,.!@#$%^&*(){}]/, "")
+      |> String.split(" ")
+
+    # Get first search term
+    [first_term] = Enum.slice(search_terms, 0, 1)
+    rest_terms = Enum.slice(search_terms, 1, 100)
+
+    first_pattern = "%#{first_term}%"
+
+    query =
+      from p in Product, where: p.store_id == ^store_id, where: ilike(p.name, ^first_pattern)
+
+    Enum.reduce(rest_terms, query, fn search_term, query ->
+      pattern = "%#{search_term}%"
+      from p in query, or_where: ilike(p.name, ^pattern)
+    end)
+    |> Repo.all()
+  end
+
+  def search(_term, _store_id), do: []
+
   def data() do
     Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
   end
