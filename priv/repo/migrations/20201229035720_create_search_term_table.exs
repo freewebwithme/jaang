@@ -11,6 +11,6 @@ defmodule Jaang.Repo.Migrations.CreateSearchTermTable do
       timestamps(type: :timestamptz)
     end
 
-    create unique_index("search_terms", [:term])
+    create index("search_terms", [:term])
   end
 end

@@ -15,7 +15,6 @@ defmodule Jaang.Search.SearchTerm do
   def changeset(%Jaang.Search.SearchTerm{} = search_term, attrs) do
     search_term
     |> cast(attrs, [:term, :counter, :store_id])
-    |> unique_constraint(:term)
     |> validate_length(:term, min: 3)
   end
 end

@@ -26,6 +26,10 @@ defmodule Jaang.Category.Categories do
     Repo.get(Category, id)
   end
 
+  def list_categories() do
+    Repo.all(Category)
+  end
+
   # TODO: Add limit to products(Pagination)
   def get_products_by_category(category_id, store_id) do
     cat_query = from c in Category, where: c.id == ^category_id

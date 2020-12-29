@@ -11,7 +11,8 @@ defmodule JaangWeb.Schema do
     ProfileResolver,
     PaymentResolver,
     CheckoutResolver,
-    OrderResolver
+    OrderResolver,
+    SearchResolver
   }
 
   alias Jaang.Utility
@@ -52,7 +53,7 @@ defmodule JaangWeb.Schema do
     @desc "get all products in category"
     field :get_all_products, list_of(:product) do
       arg(:category_id, :id)
-      middleware(Middleware.Authenticate)
+      # middleware(Middleware.Authenticate)
 
       resolve(&ProductResolver.get_all_products/3)
     end
@@ -116,6 +117,12 @@ defmodule JaangWeb.Schema do
       resolve(&ProductResolver.get_often_bought_with_products/3)
     end
 
+    ### * Category
+    @desc "Get all categories"
+    field :list_categories, list_of(:category) do
+      resolve(&ProductResolver.list_categories/3)
+    end
+
     ### * Product search
 
     @desc "Search products"
@@ -124,7 +131,15 @@ defmodule JaangWeb.Schema do
       arg(:token, non_null(:string))
 
       # middleware(Middleware.Authenticate)
-      resolve(&ProductResolver.search_products/3)
+      resolve(&SearchResolver.search_products/3)
+    end
+
+    @desc "Return suggest search term"
+    field :suggest_search, list_of(:search_term) do
+      arg(:token, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&SearchResolver.get_suggest_search/3)
     end
 
     ### * Carts
@@ -639,6 +654,12 @@ defmodule JaangWeb.Schema do
   object :sub_total do
     field :store_name, :string
     field :total, :string
+  end
+
+  object :search_term do
+    field :term, :string
+    field :counter, :integer
+    field :store_id, :id
   end
 
   def context(ctx) do

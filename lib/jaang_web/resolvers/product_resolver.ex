@@ -1,5 +1,5 @@
 defmodule JaangWeb.Resolvers.ProductResolver do
-  alias Jaang.{ProductManager, AccountManager}
+  alias Jaang.ProductManager
 
   def get_product(_, %{id: id}, _) do
     IO.puts("calling product resolver")
@@ -28,9 +28,7 @@ defmodule JaangWeb.Resolvers.ProductResolver do
     {:ok, products}
   end
 
-  def search_products(_, %{terms: terms, token: token}, _) do
-    user = AccountManager.get_user_by_session_token(token)
-    IO.inspect(user.profile.store_id)
-    {:ok, ProductManager.search(terms, user.profile.store_id)}
+  def list_categories(_, _, _) do
+    {:ok, ProductManager.list_categories()}
   end
 end
