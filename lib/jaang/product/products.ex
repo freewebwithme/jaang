@@ -2,12 +2,13 @@ defmodule Jaang.Product.Products do
   @moduledoc """
    Function module for Product
   """
-  alias Jaang.Product
-  alias Jaang.Product.{Unit, ProductImage, ProductTags, ProductRecipeTags}
-  alias Jaang.SearchManager
-  alias Jaang.Repo
-  alias Jaang.Search.SearchTerm
+  alias Jaang.{Product, Repo}
+  alias Jaang.Product.{Unit, ProductImage, ProductTags, ProductRecipeTags, ProductPrice}
   import Ecto.Query
+
+  def product_published_query() do
+    from p in Product, where: p.published == true
+  end
 
   def create_product(attrs) do
     %Product{}
@@ -30,7 +31,25 @@ defmodule Jaang.Product.Products do
   end
 
   def get_product(id) do
-    Repo.get(Product, id) |> Repo.preload(:product_images)
+    # get current time to compare with product price end date
+    now = Timex.now()
+
+    published_query = product_published_query()
+    id_filter_query = from p in published_query, where: p.id == ^id
+
+    product_images_query =
+      from p in id_filter_query,
+        join: pi in assoc(p, :product_images),
+        preload: [product_images: pi]
+
+    product_price_query =
+      from p in product_images_query,
+        join: pp in assoc(p, :product_prices),
+        where: ^now < pp.end_date,
+        preload: [product_prices: pp]
+
+    Repo.one(product_price_query)
+    # Repo.get(Product, id) |> Repo.preload([:product_images])
   end
 
   def get_all_products(category_id) do

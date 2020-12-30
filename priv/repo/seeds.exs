@@ -10,18 +10,20 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Jaang.{Store, Category, Product}
+alias Jaang.{Store, Category, Product, SearchManager}
 alias Jaang.Category.{SubCategory, Categories}
 alias Jaang.Store.Stores
 alias Jaang.Category.Categories
 alias Jaang.Product.Products
+alias Jaang.Product.ProductPrice
 alias Jaang.Repo
 import Ecto.Query
 
 # Create a stores
 {:ok, store1} =
   Stores.create_store(%{
-    name: "LA Mart",
+    name: "Costco",
+    store_logo: "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/store-logos/costco.png",
     description: "Best market available in Los Angeles",
     price_info: "Online prices may be higher than store's price",
     available_hours: "11am - 7pm",
@@ -31,7 +33,8 @@ import Ecto.Query
 
 {:ok, store2} =
   Stores.create_store(%{
-    name: "California Mart",
+    name: "Gelson",
+    store_logo: "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/store-logos/gelson.png",
     description: "Best market available in Los Angeles",
     price_info: "Online prices may be higher than store's price",
     available_hours: "11am - 7pm",
@@ -41,7 +44,9 @@ import Ecto.Query
 
 {:ok, store3} =
   Stores.create_store(%{
-    name: "HanIn Mart",
+    name: "Smart & Final",
+    store_logo:
+      "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/store-logos/smartfinal.png",
     description: "Best market available in Los Angeles",
     price_info: "Online prices may be higher than store's price",
     available_hours: "11am - 7pm",
@@ -104,7 +109,11 @@ prices = [
   999,
   1099,
   599,
-  1499
+  1499,
+  1599,
+  2999,
+  799,
+  899
 ]
 
 product_image_urls = [
@@ -204,8 +213,30 @@ recipe_tags = [
   "bibimbap"
 ]
 
+product_names = [
+  "kimchi soup",
+  "daenjang soup",
+  "bulgogi",
+  "korean bbq",
+  "egg sandwich",
+  "dduk Bok i",
+  "udon soup",
+  "korean pizza",
+  "rice cake",
+  "bibimbap",
+  "kimchi",
+  "tofu",
+  "beef",
+  "mushroom",
+  "onion",
+  "yogurt",
+  "dumpling",
+  "seaweed",
+  "ramen"
+]
+
 # Create Products for store 1
-for x <- 0..299 do
+for x <- 0..2999 do
   store = store1
   category = Enum.random(categories)
   # get sub category
@@ -214,7 +245,7 @@ for x <- 0..299 do
   unit = Enum.random(units)
 
   attrs = %{
-    name: "#{x} Product name should be long for detail for product",
+    name: Enum.random(product_names),
     description:
       "This is nice product. #{x}.  Aut laboriosam illo adipisci quibusdam sapiente. Dignissimos mollitia ut eos. Voluptas omnis qui temporibus tempora quis officia. Porro dolorum architecto officia omnis quae maxime dolorem quas. Aut neque esse magnam sint temporibus delectus necessitatibus ratione.",
     ingredients:
@@ -256,11 +287,42 @@ for x <- 0..299 do
       order: 3
     })
 
+  # create product prrices
+  attrs1 = %{
+    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs1)
+
+  attrs2 = %{
+    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs2)
+
+  attrs3 = %{
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs3)
+
   # Creating tags
 end
 
 # Create Products for store 2
-for x <- 0..299 do
+for x <- 0..2999 do
   store = store2
   category = Enum.random(categories)
   # get sub category
@@ -269,7 +331,7 @@ for x <- 0..299 do
   unit = Enum.random(units)
 
   attrs = %{
-    name: "#{x} Product name should be long for detail for product",
+    name: Enum.random(product_names),
     description:
       "This is nice product. #{x}.  Aut laboriosam illo adipisci quibusdam sapiente. Dignissimos mollitia ut eos. Voluptas omnis qui temporibus tempora quis officia. Porro dolorum architecto officia omnis quae maxime dolorem quas. Aut neque esse magnam sint temporibus delectus necessitatibus ratione.",
     ingredients:
@@ -311,11 +373,41 @@ for x <- 0..299 do
       order: 3
     })
 
+  # create product prrices
+  attrs1 = %{
+    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs1)
+
+  attrs2 = %{
+    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs2)
+
+  attrs3 = %{
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs3)
   # Creating tags
 end
 
 # Create Products for store 3
-for x <- 0..299 do
+for x <- 0..2999 do
   store = store3
   category = Enum.random(categories)
   # get sub category
@@ -324,7 +416,7 @@ for x <- 0..299 do
   unit = Enum.random(units)
 
   attrs = %{
-    name: "#{x} Product name should be long for detail for product",
+    name: Enum.random(product_names),
     description:
       "This is nice product. #{x}.  Aut laboriosam illo adipisci quibusdam sapiente. Dignissimos mollitia ut eos. Voluptas omnis qui temporibus tempora quis officia. Porro dolorum architecto officia omnis quae maxime dolorem quas. Aut neque esse magnam sint temporibus delectus necessitatibus ratione.",
     ingredients:
@@ -366,5 +458,68 @@ for x <- 0..299 do
       order: 3
     })
 
+  # create product prrices
+  attrs1 = %{
+    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs1)
+
+  attrs2 = %{
+    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs2)
+
+  attrs3 = %{
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}),
+    on_sale: false,
+    original_price: Money.new(Enum.random(prices), :USD),
+    sale_price: Money.new(0, :USD)
+  }
+
+  ProductPrice.create_product_price(product, attrs3)
   # Creating tags
 end
+
+SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "tofu", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "rice", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "ramen", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "mushroom", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "beef", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "rice cake", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 1})
+SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 1})
+
+SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "tofu", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "rice", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "ramen", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "mushroom", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "beef", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "rice cake", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 2})
+SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 2})
+
+SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "tofu", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "rice", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "ramen", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "mushroom", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "beef", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "rice cake", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 3})
+SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 3})

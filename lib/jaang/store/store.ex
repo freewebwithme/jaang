@@ -9,6 +9,7 @@ defmodule Jaang.Store do
     field :available_hours, :string
     field :address, :string
     field :phone_number, :string
+    field :store_logo, :string
 
     has_many :products, Jaang.Product
     timestamps(type: :utc_datetime)
@@ -17,6 +18,14 @@ defmodule Jaang.Store do
   @doc false
   def changeset(%Jaang.Store{} = store, attrs) do
     store
-    |> cast(attrs, [:name, :description, :price_info, :available_hours, :address, :phone_number])
+    |> cast(attrs, [
+      :name,
+      :description,
+      :price_info,
+      :available_hours,
+      :address,
+      :phone_number,
+      :store_logo
+    ])
   end
 end
