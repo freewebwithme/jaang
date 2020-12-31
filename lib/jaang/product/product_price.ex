@@ -87,8 +87,13 @@ defmodule Jaang.Product.ProductPrice do
   Return not on sale, regular price
   """
   def get_product_price(product_id) do
-    now = Timex.now()
-    Repo.one(from pp in ProductPrice, where: pp.product_id == ^product_id and ^now < pp.end_date)
+    query =
+      from pp in ProductPrice,
+        where:
+          pp.product_id == ^product_id and
+            fragment("now() between ? and ?", pp.start_date, pp.end_date)
+
+    Repo.one(query)
   end
 
   # @timezone "America/Los_Angeles"

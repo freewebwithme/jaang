@@ -3,6 +3,7 @@ defmodule Jaang.Store.Stores do
   Function module for Store
   """
   alias Jaang.{Repo, Store, Product, Category}
+  alias Jaang.Product.ProductPrice
 
   def create_store(attrs) do
     %Store{}
@@ -24,7 +25,11 @@ defmodule Jaang.Store.Stores do
     raw_query =
       "SELECT * FROM categories c LEFT JOIN LATERAL (SELECT p.* FROM products p WHERE c.id = p.category_id AND p.store_id = #{
         store_id
-      } LIMIT #{limit}) p ON 1=1"
+      } LIMIT #{limit}) p ON 1=1
+      INNER JOIN product_prices
+      ON p.id = product_prices.product_id
+      WHERE NOW() BETWEEN product_prices.start_date AND product_prices.end_date
+      "
 
     {:ok, result} = Repo.query(raw_query)
 
@@ -44,7 +49,19 @@ defmodule Jaang.Store.Stores do
     product_rows = Enum.map(query_result.rows, &Enum.slice(&1, 3, 21))
     products = Enum.map(product_rows, &Repo.load(Product, {product_cols, &1}))
 
-    grouped_products = Enum.group_by(products, & &1.category_id)
+    # Build ProductPrice
+    pp_cols = Enum.slice(query_result.columns, 25, 10)
+    pp_rows = Enum.map(query_result.rows, &Enum.slice(&1, 25, 10))
+    product_prices = Enum.map(pp_rows, &Repo.load(ProductPrice, {pp_cols, &1}))
+
+    grouped_pp = Enum.group_by(product_prices, & &1.product_id)
+
+    grouped_products =
+      products
+      |> Enum.map(&%{&1 | product_prices: Map.get(grouped_pp, &1.id)})
+      |> Enum.group_by(& &1.category_id)
+
+    # grouped_products = Enum.group_by(products, & &1.category_id)
 
     categories_ready =
       categories
