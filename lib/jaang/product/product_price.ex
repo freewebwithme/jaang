@@ -57,10 +57,10 @@ defmodule Jaang.Product.ProductPrice do
     end
   end
 
-  def create_product_price(product, attrs) do
+  def create_product_price(product_id, attrs) do
     %ProductPrice{}
     |> changeset(attrs)
-    |> put_change(:product_id, product.id)
+    |> put_change(:product_id, product_id)
     |> Repo.insert()
   end
 
@@ -81,5 +81,64 @@ defmodule Jaang.Product.ProductPrice do
   def price_valid?(start_date, end_date) do
     interval = Timex.Interval.new(from: start_date, until: end_date)
     Timex.now() in interval
+  end
+
+  @doc """
+  Return not on sale, regular price
+  """
+  def get_product_price(product_id) do
+    now = Timex.now()
+    Repo.one(from pp in ProductPrice, where: pp.product_id == ^product_id and ^now < pp.end_date)
+  end
+
+  # @timezone "America/Los_Angeles"
+
+  @doc """
+  Creating sale price for product needs 3 steps
+  1. Get original price from current price and Update current product price's end date to sales
+     start date before 1 seccond so as soon as current end date expired, start sales.
+  2. Create new ProductPrice with start and end date with sales price
+  3. Create new ProductPrice for after sales event expired.
+
+  params:
+  product_id
+  sale_price = %Money{}
+  start_date and end_date = Timex.to_datetime({{2020, 12, 30}, {8, 30, 00}}, "America/Los_Angeles")
+  """
+  def create_on_sale_price(product_id, sale_price, start_date, end_date) do
+    # get product price to obtain regular price and update end_date to sale's start date
+    old_pp = get_product_price(product_id)
+    IO.inspect(old_pp)
+    original_price = old_pp.original_price
+    # Update old product price end_date
+    update_attrs = %{
+      end_date: Timex.subtract(start_date, Timex.Duration.from_seconds(1))
+    }
+
+    update_product_price(old_pp, update_attrs)
+
+    # create new on sale price
+    sales_attrs = %{
+      # Timex.to_datetime({{2020, 12, 30}, {8, 30, 00}}, @timezone),
+      start_date: start_date,
+      # Timex.to_datetime({{2020, 12, 30}, {8, 32, 00}}, @timezone),
+      end_date: end_date,
+      on_sale: true,
+      original_price: original_price,
+      sale_price: sale_price
+    }
+
+    create_product_price(product_id, sales_attrs)
+
+    # create regular price. This will be used after sales expired.
+    attrs = %{
+      start_date: Timex.add(end_date, Timex.Duration.from_seconds(1)),
+      end_date: Timex.add(end_date, Timex.Duration.from_days(7300)),
+      on_sale: false,
+      sale_price: Money.new(0),
+      original_price: original_price
+    }
+
+    create_product_price(product_id, attrs)
   end
 end

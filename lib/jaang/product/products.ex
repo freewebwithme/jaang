@@ -31,25 +31,13 @@ defmodule Jaang.Product.Products do
   end
 
   def get_product(id) do
-    # get current time to compare with product price end date
-    now = Timex.now()
+    query = product_published_query()
+    query = from p in query, where: p.id == ^id, preload: :product_images
 
-    published_query = product_published_query()
-    id_filter_query = from p in published_query, where: p.id == ^id
+    product = Repo.one(query)
+    product_price = ProductPrice.get_product_price(id)
 
-    product_images_query =
-      from p in id_filter_query,
-        join: pi in assoc(p, :product_images),
-        preload: [product_images: pi]
-
-    product_price_query =
-      from p in product_images_query,
-        join: pp in assoc(p, :product_prices),
-        where: ^now < pp.end_date,
-        preload: [product_prices: pp]
-
-    Repo.one(product_price_query)
-    # Repo.get(Product, id) |> Repo.preload([:product_images])
+    Map.put(product, :product_prices, [product_price])
   end
 
   def get_all_products(category_id) do

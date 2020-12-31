@@ -1,34 +1,9 @@
-alias Jaang.SearchManager
+alias Jaang.Product.ProductPrice
 
-SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "tofu", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "rice", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "ramen", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "mushroom", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "beef", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "rice cake", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 1})
-SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 1})
+@timezone "America/Los_Angeles"
 
-SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "tofu", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "rice", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "ramen", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "mushroom", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "beef", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "rice cake", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 2})
-SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 2})
-
-SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "tofu", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "rice", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "ramen", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "mushroom", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "beef", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "rice cake", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 3})
-SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 3})
+attrs = %{
+  on_sale: true,
+  start_date: Timex.to_datetime({{2020, 12, 30}, {0, 0, 0}}, @timezone),
+  end_date: Timex.to_datetime({{2020, 12, 31}, {19, 0, 0}}, @timezone)
+}

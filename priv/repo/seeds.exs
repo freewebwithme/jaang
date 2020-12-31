@@ -19,6 +19,8 @@ alias Jaang.Product.ProductPrice
 alias Jaang.Repo
 import Ecto.Query
 
+@timezone "America/Los_Angeles"
+
 # Create a stores
 {:ok, store1} =
   Stores.create_store(%{
@@ -289,34 +291,34 @@ for x <- 0..2999 do
 
   # create product prrices
   attrs1 = %{
-    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs1)
+  ProductPrice.create_product_price(product.id, attrs1)
 
   attrs2 = %{
-    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs2)
+  ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
-    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs3)
+  ProductPrice.create_product_price(product.id, attrs3)
 
   # Creating tags
 end
@@ -375,34 +377,34 @@ for x <- 0..2999 do
 
   # create product prrices
   attrs1 = %{
-    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs1)
+  ProductPrice.create_product_price(product.id, attrs1)
 
   attrs2 = %{
-    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs2)
+  ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
-    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs3)
+  ProductPrice.create_product_price(product.id, attrs3)
   # Creating tags
 end
 
@@ -460,34 +462,34 @@ for x <- 0..2999 do
 
   # create product prrices
   attrs1 = %{
-    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs1)
+  ProductPrice.create_product_price(product.id, attrs1)
 
   attrs2 = %{
-    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs2)
+  ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
-    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}),
-    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}),
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, @timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product, attrs3)
+  ProductPrice.create_product_price(product.id, attrs3)
   # Creating tags
 end
 
