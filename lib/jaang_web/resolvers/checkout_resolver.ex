@@ -21,7 +21,7 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
 
     # Calculate total price to calculate service fee
     total = OrderManager.calculate_total_price(carts)
-    service_fee = Calculate.calculate_service_fee(total)
+    # service_fee = Calculate.calculate_service_fee(total)
 
     tax = Calculate.calculate_sales_tax(carts)
     delivery_fee = Calculate.calculate_delivery_fee()
@@ -36,7 +36,6 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
         tip,
         total,
         delivery_fee,
-        service_fee,
         tax,
         item_adjustments
       )
@@ -50,7 +49,6 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
       delivery_fee: delivery_fee,
       driver_tip: tip,
       sales_tax: tax,
-      service_fee: service_fee,
       subtotal: sub_totals_amount,
       total: final_total_amount,
       item_adjustment: item_adjustments
@@ -60,7 +58,6 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
       driver_tip: tip,
       sub_totals: sub_totals,
       delivery_fee: delivery_fee,
-      service_fee: service_fee,
       sales_tax: tax,
       item_adjustments: item_adjustments,
       total: final_total_amount

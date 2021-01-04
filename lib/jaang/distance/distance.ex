@@ -58,7 +58,7 @@ defmodule Jaang.Distance do
         %Distance{}
         |> changeset(%{
           address_id: address.id,
-          store_distance: [
+          store_distances: [
             %{
               store_id: default_store.id,
               store_name: default_store.name,

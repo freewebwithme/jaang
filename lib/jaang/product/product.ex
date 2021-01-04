@@ -11,8 +11,6 @@ defmodule Jaang.Product do
     field :ingredients, :string
     field :directions, :string
     field :warnings, :string
-    field :regular_price, Money.Ecto.Amount.Type
-    field :sale_price, Money.Ecto.Amount.Type
     field :vendor, :string
     field :published, :boolean
     field :barcode, :string
@@ -49,8 +47,6 @@ defmodule Jaang.Product do
       :ingredients,
       :directions,
       :warnings,
-      :regular_price,
-      :sale_price,
       :vendor,
       :published,
       :barcode,

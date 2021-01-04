@@ -8,10 +8,6 @@ defmodule Jaang.Product.Products do
 
   @timezone "America/Los_Angeles"
 
-  def product_published_query() do
-    from p in Product, where: p.published == true
-  end
-
   def create_product(attrs) do
     {:ok, product} =
       %Product{}
@@ -20,6 +16,7 @@ defmodule Jaang.Product.Products do
 
     %{original_price: original_price} = attrs
 
+    # When creating product, create also product_price with end date 20 years after.
     pp_attrs = %{
       start_date: Timex.now(@timezone),
       end_date: Timex.add(Timex.now(@timezone), Timex.Duration.from_days(7300)),
@@ -50,8 +47,8 @@ defmodule Jaang.Product.Products do
   Get product along with product price manually loading
   """
   def get_product(id) do
-    query = product_published_query()
-    query = from p in query, where: p.id == ^id, preload: :product_images
+    query =
+      from p in Product, where: p.id == ^id and p.published == true, preload: :product_images
 
     product = Repo.one(query)
     product_price = ProductPrice.get_product_price(id)
@@ -66,7 +63,7 @@ defmodule Jaang.Product.Products do
   end
 
   def get_all_products(category_id) do
-    query = from p in Product, where: p.category_id == ^category_id
+    query = from p in Product, where: p.category_id == ^category_id and p.published == true
     Repo.all(query)
   end
 
@@ -120,7 +117,7 @@ defmodule Jaang.Product.Products do
   def get_products_by_ids(ids, store_id) do
     query =
       from p in Product,
-        where: p.id in ^ids and p.store_id == ^store_id,
+        where: p.id in ^ids and p.store_id == ^store_id and p.published == true,
         join: pp in assoc(p, :product_prices),
         on: pp.product_id == p.id,
         where: fragment("now() between ? and ?", pp.start_date, pp.end_date),

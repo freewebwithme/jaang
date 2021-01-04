@@ -59,10 +59,9 @@ defmodule Jaang.Checkout.Calculate do
   @doc """
   Sum up every amount
   """
-  def calculate_final_total(tip, total, delivery_fee, service_fee, tax, item_adjustments) do
+  def calculate_final_total(tip, total, delivery_fee, tax, item_adjustments) do
     Money.add(tip, total)
     |> Money.add(delivery_fee)
-    |> Money.add(service_fee)
     |> Money.add(tax)
     |> Money.add(item_adjustments)
   end

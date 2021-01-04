@@ -18,6 +18,7 @@ defmodule Jaang.Checkout.Carts do
       status: :cart,
       store_id: store_id,
       store_name: store.name,
+      store_logo: store.store_logo,
       invoice_id: invoice_id,
       available_checkout: false
     }

@@ -13,6 +13,7 @@ defmodule Jaang.Checkout.Order do
              :line_items,
              :store_id,
              :store_name,
+             :store_logo,
              :user_id,
              :available_checkout,
              :required_amount
@@ -28,6 +29,7 @@ defmodule Jaang.Checkout.Order do
 
     field :store_id, :id
     field :store_name, :string
+    field :store_logo, :string
     field :invoice_id, :id
     field :available_checkout, :boolean, default: false
     # Minimum acount must be over $35
@@ -46,6 +48,7 @@ defmodule Jaang.Checkout.Order do
       :user_id,
       :store_id,
       :store_name,
+      :store_logo,
       :invoice_id,
       :available_checkout,
       :required_amount

@@ -45,13 +45,13 @@ defmodule Jaang.Store.Stores do
 
     # TODO: If category or product schema changes, correct this slice number
     # Build products
-    product_cols = Enum.slice(query_result.columns, 3, 21)
-    product_rows = Enum.map(query_result.rows, &Enum.slice(&1, 3, 21))
+    product_cols = Enum.slice(query_result.columns, 3, 19)
+    product_rows = Enum.map(query_result.rows, &Enum.slice(&1, 3, 19))
     products = Enum.map(product_rows, &Repo.load(Product, {product_cols, &1}))
 
     # Build ProductPrice
-    pp_cols = Enum.slice(query_result.columns, 25, 10)
-    pp_rows = Enum.map(query_result.rows, &Enum.slice(&1, 25, 10))
+    pp_cols = Enum.slice(query_result.columns, 23, 10)
+    pp_rows = Enum.map(query_result.rows, &Enum.slice(&1, 23, 10))
     product_prices = Enum.map(pp_rows, &Repo.load(ProductPrice, {pp_cols, &1}))
 
     grouped_pp = Enum.group_by(product_prices, & &1.product_id)

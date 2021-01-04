@@ -63,10 +63,21 @@ defmodule Jaang.Checkout.LineItem do
         # get first product images
         [product_image] = Enum.filter(product.product_images, fn pi -> pi.order == 1 end)
 
+        # get available product price
+        # check if current product is on sale
+        [product_price] = product.product_prices
+
+        current_price =
+          if(product_price.on_sale) do
+            product_price.sale_price
+          else
+            product_price.original_price
+          end
+
         changeset
         |> put_change(:image_url, product_image.image_url)
         |> put_change(:product_name, product.name)
-        |> put_change(:price, product.regular_price)
+        |> put_change(:price, current_price)
         |> put_change(:unit_name, product.unit_name)
         |> put_change(:store_id, product.store_id)
         |> put_change(:category_name, product.category_name)

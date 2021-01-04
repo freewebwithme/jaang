@@ -45,7 +45,7 @@ defmodule JaangWeb.Schema do
     @desc "get product"
     field :get_product, :product do
       arg(:id, :id)
-      middleware(Middleware.Authenticate)
+      # middleware(Middleware.Authenticate)
 
       resolve(&ProductResolver.get_product/3)
     end
@@ -58,10 +58,12 @@ defmodule JaangWeb.Schema do
       resolve(&ProductResolver.get_all_products/3)
     end
 
+    # TODO: Not using this function
     @desc "Get products by category"
-    field :get_products_by_category, :category do
+    field :get_products_by_category, list_of(:product) do
       arg(:category_id, :string)
       arg(:store_id, :integer)
+      arg(:limit, :integer, default_value: 5)
       # middleware(Middleware.Authenticate)
       resolve(&CategoryResolver.get_products_by_category/3)
     end
@@ -442,17 +444,13 @@ defmodule JaangWeb.Schema do
     field :id, :id
     field :store_id, :id
     field :store_name, :string
+    field :store_logo, :string
     field :user_id, :id
     field :status, :string
     field :available_checkout, :boolean, default_value: false
     field :required_amount, :string
 
-    field :total, :string do
-      resolve(fn parent, _, _ ->
-        money = Map.get(parent, :total)
-        {:ok, Money.to_string(money)}
-      end)
-    end
+    field :total, :string
 
     field :line_items, list_of(:line_item)
   end
@@ -535,6 +533,7 @@ defmodule JaangWeb.Schema do
   object :store do
     field :id, :id
     field :name, :string
+    field :store_logo, :string
     field :description, :string
     field :price_info, :string
     field :phone_number, :string
@@ -565,7 +564,12 @@ defmodule JaangWeb.Schema do
   object :sub_category do
     field :name, :string
     field :id, :id
-    field :products, list_of(:product)
+
+    field :products, list_of(:product) do
+      resolve(fn parent, _, _ ->
+        {:ok, parent.products}
+      end)
+    end
   end
 
   object :sub_category_product do
@@ -582,24 +586,7 @@ defmodule JaangWeb.Schema do
     field :directions, :string
     field :warnings, :string
 
-    field :regular_price, :string do
-      resolve(fn parent, _, _ ->
-        money = Map.get(parent, :regular_price)
-        {:ok, Money.to_string(money)}
-      end)
-    end
-
-    field :sale_price, :string do
-      resolve(fn parent, _, _ ->
-        case Map.get(parent, :sale_price) do
-          nil ->
-            {:ok, nil}
-
-          money ->
-            {:ok, Money.to_string(money)}
-        end
-      end)
-    end
+    field :product_prices, list_of(:product_price)
 
     field :vendor, :string
     field :published, :boolean
@@ -615,6 +602,16 @@ defmodule JaangWeb.Schema do
     field :product_images, list_of(:product_image), resolve: dataloader(Products)
     field :tags, list_of(:tag), resolve: dataloader(Products)
     field :recipe_tags, list_of(:recipe_tag), resolve: dataloader(Products)
+  end
+
+  object :product_price do
+    field :start_date, :string
+    field :end_date, :string
+    field :discount_percentage, :string
+    field :on_sale, :boolean
+    field :original_price, :string
+    field :sale_price, :string
+    field :product_id, :id
   end
 
   object :product_image do
@@ -645,7 +642,7 @@ defmodule JaangWeb.Schema do
     field :driver_tip, :string
     field :sub_totals, list_of(:sub_total)
     field :delivery_fee, :string
-    field :service_fee, :string
+    # field :service_fee, :string
     field :sales_tax, :string
     field :item_adjustments, :string
     field :total, :string
