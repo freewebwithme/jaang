@@ -154,6 +154,17 @@ defmodule JaangWeb.Schema do
       resolve(&CartResolver.get_all_carts/3)
     end
 
+    ### * Savings / Discounts products
+    @desc "Get all on Sale products in store"
+    field :get_all_sale_products, list_of(:product) do
+      arg(:token, non_null(:string))
+      arg(:limit, :integer, default_value: 24)
+      arg(:offset, :integer, default_value: 0)
+      # middleware(Middleware.Authenticate)
+
+      resolve(&ProductResolver.get_all_sale_products/3)
+    end
+
     ### * Stripe
 
     @desc "Get all credit cards for user"

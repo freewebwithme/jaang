@@ -66,9 +66,27 @@ defmodule Jaang.Product.Products do
         join: pp in assoc(p, :product_prices),
         on: pp.product_id == p.id,
         where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
-        preload: [product_prices: pp]
+        join: pi in assoc(p, :product_images),
+        on: pi.product_id == p.id,
+        preload: [product_images: pi, product_prices: pp]
 
     Repo.one(query)
+  end
+
+  def get_sales_products(store_id, limit, offset) do
+    query = from p in Product, where: p.store_id == ^store_id, limit: ^limit, offset: ^offset
+
+    join_query =
+      from p in query,
+        join: pp in assoc(p, :product_prices),
+        on: pp.product_id == p.id,
+        where: pp.on_sale == true,
+        where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
+        preload: [product_prices: pp]
+
+    # preload: [:product_images] preloading from Dataloader in schema.ex
+
+    Repo.all(join_query)
   end
 
   def get_all_products(category_id) do

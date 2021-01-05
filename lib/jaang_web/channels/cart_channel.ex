@@ -27,8 +27,6 @@ defmodule JaangWeb.CartChannel do
 
   def handle_info({:send_cart, event}, %{assigns: %{current_user: user}} = socket) do
     {carts, total_items, total_price} = get_updated_carts(user.id)
-    IO.puts("Calling handle_info")
-    IO.inspect(carts)
 
     broadcast!(socket, event, %{
       orders: carts,
@@ -103,11 +101,6 @@ defmodule JaangWeb.CartChannel do
     # I have to send a reply to client
     # If I don't do this, it will send status: timeout, response: {}
     # {:reply, {:ok, %{message: "update cart success"}}, socket}
-    {:noreply, socket}
-  end
-
-  def handle_in("ping", %{"ping" => message} = _payload, socket) do
-    IO.puts("ping handle in: #{message}")
     {:noreply, socket}
   end
 

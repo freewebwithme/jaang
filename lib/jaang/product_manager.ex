@@ -7,7 +7,7 @@ defmodule Jaang.ProductManager do
   defdelegate create_product_image(product, attrs), to: Products
   defdelegate get_product(id), to: Products
   defdelegate get_all_products(category_id), to: Products
-
+  defdelegate get_sales_products(store_id, limit, offset), to: Products
   # Related products
   defdelegate get_related_products(product_id, tag_id, limit, store_id), to: Products
   defdelegate get_often_bought_with_products(product_id, tag_id, limit, store_id), to: Products
