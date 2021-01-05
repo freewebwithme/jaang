@@ -9,7 +9,7 @@ defmodule Jaang.Search do
   Search product in selected store
   TODO: Improve search function using postgresql full text search
   """
-  def search(term, store_id) when is_binary(term) do
+  def search(term, store_id, limit, offset) when is_binary(term) do
     # In case of multiple search term provided,
     # split term by space
 
@@ -38,13 +38,32 @@ defmodule Jaang.Search do
     first_pattern = "%#{first_term}%"
 
     query =
-      from p in Product, where: p.store_id == ^store_id, where: ilike(p.name, ^first_pattern)
+      from p in Product,
+        where: p.store_id == ^store_id,
+        where: ilike(p.name, ^first_pattern)
 
-    Enum.reduce(rest_terms, query, fn search_term, query ->
-      pattern = "%#{search_term}%"
-      from p in query, or_where: ilike(p.name, ^pattern)
-    end)
-    |> Repo.all()
+    # join: pp in assoc(p, :product_prices),
+    # on: p.id == pp.product_id,
+    # where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
+    # preload: [product_prices: pp]
+
+    search_query =
+      Enum.reduce(rest_terms, query, fn search_term, query ->
+        pattern = "%#{search_term}%"
+        from p in query, or_where: ilike(p.name, ^pattern)
+      end)
+
+    join_product_price_query =
+      from p in search_query,
+        join: pp in assoc(p, :product_prices),
+        on: p.id == pp.product_id,
+        where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
+        preload: [product_prices: pp],
+        limit: ^limit,
+        offset: ^offset
+
+    IO.inspect(join_product_price_query)
+    Repo.all(join_product_price_query)
   end
 
   def search(_term, _store_id), do: []

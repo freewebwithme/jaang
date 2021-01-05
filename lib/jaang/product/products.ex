@@ -47,19 +47,28 @@ defmodule Jaang.Product.Products do
   Get product along with product price manually loading
   """
   def get_product(id) do
+    #  query =
+    #    from p in Product, where: p.id == ^id and p.published == true, preload: :product_images
+
+    #  product = Repo.one(query)
+    #  product_price = ProductPrice.get_product_price(id)
+
+    #  cond do
+    #    is_nil(product_price) ->
+    #      Map.put(product, :product_prices, [])
+
+    #    true ->
+    #      Map.put(product, :product_prices, [product_price])
+    #  end
     query =
-      from p in Product, where: p.id == ^id and p.published == true, preload: :product_images
+      from p in Product,
+        where: p.id == ^id and p.published == true,
+        join: pp in assoc(p, :product_prices),
+        on: pp.product_id == p.id,
+        where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
+        preload: [product_prices: pp]
 
-    product = Repo.one(query)
-    product_price = ProductPrice.get_product_price(id)
-
-    cond do
-      is_nil(product_price) ->
-        Map.put(product, :product_prices, [])
-
-      true ->
-        Map.put(product, :product_prices, [product_price])
-    end
+    Repo.one(query)
   end
 
   def get_all_products(category_id) do

@@ -131,6 +131,8 @@ defmodule JaangWeb.Schema do
     field :search_products, list_of(:product) do
       arg(:terms, non_null(:string))
       arg(:token, non_null(:string))
+      arg(:limit, :integer, default_value: 12)
+      arg(:offset, :integer, default_value: 0)
 
       # middleware(Middleware.Authenticate)
       resolve(&SearchResolver.search_products/3)

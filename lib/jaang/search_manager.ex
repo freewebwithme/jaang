@@ -2,7 +2,7 @@ defmodule Jaang.SearchManager do
   alias Jaang.Search.{SearchTerms}
   alias Jaang.Search
 
-  defdelegate search(term, store_id), to: Search
+  defdelegate search(term, store_id, limit, offset), to: Search
 
   defdelegate get_search_term(store_id, term), to: SearchTerms
   defdelegate create_search_term(attrs), to: SearchTerms
