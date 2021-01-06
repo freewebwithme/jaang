@@ -1,10 +1,10 @@
 alias Jaang.Product.ProductPrice
 
-start_date = Timex.to_datetime({{2021, 1, 5}, {14, 0, 0}}, "America/Los_Angeles")
-end_date = Timex.to_datetime({{2021, 1, 5}, {19, 0, 0}}, "America/Los_Angeles")
+start_date = Timex.to_datetime({{2021, 1, 6}, {10, 15, 0}}, "America/Los_Angeles")
+end_date = Timex.to_datetime({{2021, 1, 6}, {13, 0, 0}}, "America/Los_Angeles")
 
 # Create sales product price
-for x <- 0..99 do
+for x <- 0..149 do
   product_id = Enum.random(0..8999)
   product_price = ProductPrice.get_product_price(product_id)
 

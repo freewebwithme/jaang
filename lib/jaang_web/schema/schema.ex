@@ -558,6 +558,7 @@ defmodule JaangWeb.Schema do
   object :category do
     field :id, :id
     field :name, :string
+    field :description, :string
     field :sub_categories, list_of(:sub_category), resolve: dataloader(Products)
     field :products, list_of(:product), resolve: dataloader(Products)
   end

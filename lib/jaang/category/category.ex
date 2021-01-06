@@ -4,6 +4,7 @@ defmodule Jaang.Category do
 
   schema "categories" do
     field :name, :string
+    field :description, :string
 
     has_many :products, Jaang.Product
     has_many :sub_categories, Jaang.Category.SubCategory
@@ -14,6 +15,6 @@ defmodule Jaang.Category do
   @doc false
   def changeset(%Jaang.Category{} = category, attrs) do
     category
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :description])
   end
 end
