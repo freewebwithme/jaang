@@ -110,8 +110,9 @@ defmodule JaangWeb.CartChannel do
   end
 
   def get_updated_carts(user_id) do
+    # Refresh product price in carts
+    OrderManager.get_all_carts(user_id) |> OrderManager.refresh_product_price()
     carts = OrderManager.get_all_carts(user_id)
-
     # Extract line items and sort by inserted at
     sorted_carts =
       Enum.map(carts, fn %{line_items: line_items, total: total, required_amount: required_amount} =
@@ -120,16 +121,36 @@ defmodule JaangWeb.CartChannel do
         cart = Map.put(cart, :total, total)
         required_amount = Money.to_string(required_amount)
         cart = Map.put(cart, :required_amount, required_amount)
+
         # Sort the line item by inserted at
         line_items = Enum.sort(line_items, &(&1.inserted_at <= &2.inserted_at))
 
         # convert %Money{} to string "$13.00"
         line_items =
           Enum.map(line_items, fn line_item ->
-            %{price: price, total: total} = line_item
+            # Get Money.Ecto.Amount.Type from line item and
+            # convert to string before sending to client
+
+            %{
+              price: price,
+              total: total,
+              original_price: original_price,
+              original_total: original_total
+            } = line_item
+
+            IO.puts("Printing original price")
+            IO.inspect(original_price)
             price = Money.to_string(price)
             total = Money.to_string(total)
-            line_item = Map.put(line_item, :price, price) |> Map.put(:total, total)
+            original_price = Money.to_string(original_price)
+            original_total = Money.to_string(original_total)
+
+            line_item =
+              Map.put(line_item, :price, price)
+              |> Map.put(:total, total)
+              |> Map.put(:original_price, original_price)
+              |> Map.put(:original_total, original_total)
+
             line_item
           end)
 

@@ -1,6 +1,7 @@
 defmodule Jaang.Checkout.Carts do
   alias Jaang.{StoreManager, InvoiceManager}
   alias Jaang.Checkout.Order
+  alias Jaang.Product
   alias Jaang.Repo
   import Ecto.Query
 
@@ -183,6 +184,65 @@ defmodule Jaang.Checkout.Carts do
       end)
     end)
     |> Enum.reduce(Money.new(0), fn price, acc -> Money.add(price, acc) end)
+  end
+
+  @doc """
+  This function is called whenever fetch carts(orders).
+  I need to check current product price to update line_item
+  because price could be changed due to sale.
+  If product is on sale, show sale price
+  if not show original price
+  params: List of %Order{}
+  """
+  def refresh_product_price(carts) do
+    # Get product_ids from current line item in the cart
+    product_ids =
+      Enum.map(carts, fn %{line_items: line_items} ->
+        Enum.reduce(line_items, [], fn %{product_id: product_id}, acc ->
+          [product_id | acc]
+        end)
+      end)
+      |> Enum.flat_map(fn x -> x end)
+
+    # Get all products in carts
+    query =
+      from p in Product,
+        where: p.id in ^product_ids and p.published == true,
+        join: pp in assoc(p, :product_prices),
+        # on: pp.product_id == p.id,
+        where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
+        # join: pi in assoc(p, :product_images),
+        # on: pi.product_id == p.id,
+        preload: [product_prices: pp]
+
+    grouped_products = Repo.all(query) |> Enum.group_by(& &1.id)
+
+    Enum.map(carts, fn %{line_items: line_items} = order ->
+      new_line_items = Enum.map(line_items, fn line_item -> Map.from_struct(line_item) end)
+
+      updated_line_items =
+        Enum.map(new_line_items, fn line_item ->
+          # Get product information from grouped products
+          [product] = Map.get(grouped_products, line_item.product_id)
+          [product_price] = product.product_prices
+          # Just check if product is still on sale or not.
+          if(product_price.on_sale == line_item.on_sale) do
+            # I don't need a change
+            line_item
+          else
+            line_item
+            |> Map.update!(:on_sale, fn _value -> product_price.on_sale end)
+            |> Map.update!(:discount_percentage, fn _value -> nil end)
+            |> Map.update!(:price, fn _value -> product_price.original_price end)
+            |> Map.update!(:total, fn _value ->
+              Money.multiply(product_price.original_price, line_item.quantity)
+            end)
+          end
+        end)
+
+      attrs = %{line_items: updated_line_items}
+      update_cart(order, attrs)
+    end)
   end
 
   def data() do

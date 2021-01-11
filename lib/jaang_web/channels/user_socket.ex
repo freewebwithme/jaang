@@ -6,7 +6,6 @@ defmodule JaangWeb.UserSocket do
   alias Jaang.AccountManager
 
   ## Channels
-  # channel "room:*", JaangWeb.RoomChannel
   channel "cart:*", JaangWeb.CartChannel
 
   # Socket params are passed from the client and can

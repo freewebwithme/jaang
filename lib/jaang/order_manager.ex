@@ -12,6 +12,16 @@ defmodule Jaang.OrderManager do
   defdelegate add_to_cart(cart, cart_attrs), to: Carts
   defdelegate change_quantity_from_cart(cart, cart_attrs), to: Carts
 
+  @doc """
+  This function is called whenever fetch carts(orders).
+  I need to check current product price to update line_item
+  because price could be changed due to sale.
+  If product is on sale, show sale price
+  if not show original price
+  params: List of %Order{}
+  """
+  defdelegate refresh_product_price(carts), to: Carts
+
   defdelegate count_total_item(carts), to: Carts
   defdelegate calculate_total_price(carts), to: Carts
 

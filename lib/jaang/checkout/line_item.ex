@@ -2,8 +2,11 @@ defmodule Jaang.Checkout.LineItem do
   use Ecto.Schema
   alias Jaang.Checkout.LineItem
   alias Jaang.ProductManager
+  alias Jaang.Product
+  alias Jaang.Repo
 
   import Ecto.Changeset
+  import Ecto.Query
 
   @derive Jason.Encoder
   embedded_schema do
@@ -14,6 +17,10 @@ defmodule Jaang.Checkout.LineItem do
     field :category_name, :string
     field :sub_category_name, :string
     field :unit_name, :string
+    field :on_sale, :boolean
+    field :original_price, Money.Ecto.Amount.Type
+    field :original_total, Money.Ecto.Amount.Type
+    field :discount_percentage, :string
     field :quantity, :integer
     field :price, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
@@ -23,6 +30,8 @@ defmodule Jaang.Checkout.LineItem do
 
   @doc false
   def changeset(%LineItem{} = line_item, attrs) do
+    IO.puts("Calling LineItem Changeset")
+
     line_item
     |> cast(attrs, [
       :product_id,
@@ -30,6 +39,10 @@ defmodule Jaang.Checkout.LineItem do
       :product_name,
       :image_url,
       :unit_name,
+      :on_sale,
+      :original_price,
+      :original_total,
+      :discount_percentage,
       :quantity,
       :category_name,
       :sub_category_name,
@@ -67,6 +80,7 @@ defmodule Jaang.Checkout.LineItem do
         # check if current product is on sale
         [product_price] = product.product_prices
 
+        # Set price depends on on_sale value
         current_price =
           if(product_price.on_sale) do
             product_price.sale_price
@@ -82,6 +96,11 @@ defmodule Jaang.Checkout.LineItem do
         |> put_change(:store_id, product.store_id)
         |> put_change(:category_name, product.category_name)
         |> put_change(:sub_category_name, product.sub_category_name)
+        |> put_change(:on_sale, product_price.on_sale)
+        # In case product is on sale, I will display original price in the client.
+        # that is why I keep original_price
+        |> put_change(:original_price, product_price.original_price)
+        |> put_change(:discount_percentage, product_price.discount_percentage)
     end
   end
 
@@ -90,7 +109,11 @@ defmodule Jaang.Checkout.LineItem do
     price = get_field(changeset, :price)
     total = Money.multiply(price, quantity)
 
+    original_price = get_field(changeset, :original_price)
+    original_total = Money.multiply(original_price, quantity)
+
     changeset
     |> put_change(:total, total)
+    |> put_change(:original_total, original_total)
   end
 end
