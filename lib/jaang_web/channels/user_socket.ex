@@ -7,6 +7,7 @@ defmodule JaangWeb.UserSocket do
 
   ## Channels
   channel "cart:*", JaangWeb.CartChannel
+  #  channel "order:*", JaangWeb.OrderChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

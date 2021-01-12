@@ -1,6 +1,6 @@
 defmodule JaangWeb.CartChannel do
   use Phoenix.Channel
-  alias Jaang.{OrderManager, InvoiceManager}
+  alias Jaang.{AccountManager, OrderManager, InvoiceManager}
 
   def join("cart:" <> user_id, _params, %{assigns: %{current_user: user}} = socket) do
     # check if current user match client user
@@ -28,7 +28,12 @@ defmodule JaangWeb.CartChannel do
   def handle_info({:send_cart, event}, %{assigns: %{current_user: user}} = socket) do
     {carts, total_items, total_price} = get_updated_carts(user.id)
 
-    broadcast!(socket, event, %{
+    # broadcast!(socket, event, %{
+    #  orders: carts,
+    #  total_items: total_items,
+    #  total_price: total_price
+    # })
+    push(socket, event, %{
       orders: carts,
       total_items: total_items,
       total_price: total_price
@@ -66,19 +71,27 @@ defmodule JaangWeb.CartChannel do
         {:ok, cart} = OrderManager.create_cart(user_id, store_id, invoice.id)
 
         # Add item to cart
-        OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity})
+        case OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity}) do
+          {:ok, _order} ->
+            send(self(), {:send_cart, "add_to_cart"})
+            {:reply, :ok, socket}
+
+          {:error, _changeset} ->
+            {:reply, :error, socket}
+        end
 
       cart ->
         # Add item to cart
-        OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity})
+        case OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity}) do
+          {:ok, _order} ->
+            # Send updated cart
+            send(self(), {:send_cart, "add_to_cart"})
+            {:reply, :ok, socket}
+
+          {:error, _changeset} ->
+            {:reply, :error, socket}
+        end
     end
-
-    send(self(), {:send_cart, "add_to_cart"})
-
-    # I have to send a reply to client
-    # If I don't do this, it will send status: timeout, response: {}
-    # {:reply, {:ok, %{message: "add to cart success"}}, socket}
-    {:noreply, socket}
   end
 
   def handle_in("update_cart", payload, socket) do
@@ -94,19 +107,47 @@ defmodule JaangWeb.CartChannel do
     attrs = %{user_id: user_id, product_id: product_id, store_id: store_id, quantity: quantity}
 
     cart = OrderManager.get_cart(user_id, store_id)
-    OrderManager.change_quantity_from_cart(cart, attrs)
 
-    send(self(), {:send_cart, "update_cart"})
+    case OrderManager.change_quantity_from_cart(cart, attrs) do
+      {:ok, _order} ->
+        # Send updated cart
+        send(self(), {:send_cart, "update_cart"})
+        {:reply, :ok, socket}
 
-    # I have to send a reply to client
-    # If I don't do this, it will send status: timeout, response: {}
-    # {:reply, {:ok, %{message: "update cart success"}}, socket}
-    {:noreply, socket}
+      {:error, _changeset} ->
+        {:reply, :error, socket}
+    end
   end
 
   def handle_in("get_cart", _payload, socket) do
     send(self(), {:send_cart, "get_cart"})
     {:noreply, socket}
+  end
+
+  ### * Place an Order
+
+  def handle_in("place_an_order", payload, %{assigns: %{current_user: user}} = socket) do
+    %{
+      "token" => token
+    } = payload
+
+    IO.puts("Placing an order in Cart channel")
+    fetched_user = AccountManager.get_user_by_session_token(token)
+
+    if(user.id == fetched_user.id) do
+      # user matches, go ahead process an order
+      case OrderManager.place_an_order(fetched_user) do
+        {:ok, _invoice} ->
+          # Send empty cart
+          send(self(), {:send_cart, "order_placed"})
+          {:reply, :ok, socket}
+
+        {:error, _message} ->
+          {:reply, :error, socket}
+      end
+    else
+      {:reply, :error, socket}
+    end
   end
 
   def get_updated_carts(user_id) do
@@ -138,8 +179,6 @@ defmodule JaangWeb.CartChannel do
               original_total: original_total
             } = line_item
 
-            IO.puts("Printing original price")
-            IO.inspect(original_price)
             price = Money.to_string(price)
             total = Money.to_string(total)
             original_price = Money.to_string(original_price)

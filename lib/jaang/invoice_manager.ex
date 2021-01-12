@@ -3,6 +3,7 @@ defmodule Jaang.InvoiceManager do
 
   defdelegate create_invoice(user_id), to: Invoices
   defdelegate get_invoice_in_cart(user_id), to: Invoices
+  defdelegate get_invoice_by_id(invoice_id), to: Invoices
   defdelegate get_or_create_invoice(user_id), to: Invoices
   defdelegate update_invoice(invoice, attrs), to: Invoices
 

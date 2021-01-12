@@ -28,6 +28,10 @@ defmodule Jaang.Invoice.Invoices do
     Repo.one(query) |> Repo.preload(:orders)
   end
 
+  def get_invoice_by_id(invoice_id) do
+    Repo.get_by(Invoice, id: invoice_id)
+  end
+
   def get_or_create_invoice(user_id) do
     case get_invoice_in_cart(user_id) do
       nil ->

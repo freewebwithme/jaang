@@ -30,8 +30,6 @@ defmodule Jaang.Checkout.LineItem do
 
   @doc false
   def changeset(%LineItem{} = line_item, attrs) do
-    IO.puts("Calling LineItem Changeset")
-
     line_item
     |> cast(attrs, [
       :product_id,

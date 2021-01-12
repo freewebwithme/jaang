@@ -3,6 +3,7 @@ defmodule Jaang.Invoice do
   import Ecto.Changeset
   alias Jaang.Invoice
 
+  @derive {Jason.Encoder, except: [:__meta__]}
   schema "invoices" do
     field :invoice_number, :string
     field :subtotal, Money.Ecto.Amount.Type
