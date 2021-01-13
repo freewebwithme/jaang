@@ -57,13 +57,38 @@ import Ecto.Query
   })
 
 # Create categories
-{:ok, produce} = Categories.create_category(%{name: "Produce"})
-{:ok, meat_seafood} = Categories.create_category(%{name: "Meat & Seafood"})
-{:ok, frozen} = Categories.create_category(%{name: "Frozen"})
-{:ok, snacks} = Categories.create_category(%{name: "Snacks"})
-{:ok, dairy_eggs} = Categories.create_category(%{name: "Dairy & Eggs"})
-{:ok, deli} = Categories.create_category(%{name: "Deli"})
-{:ok, beverages} = Categories.create_category(%{name: "Beverages"})
+{:ok, produce} =
+  Categories.create_category(%{
+    name: "Produce",
+    description: "farm-produced crops, including fruits and vegetables"
+  })
+
+{:ok, meat_seafood} =
+  Categories.create_category(%{
+    name: "Meat & Seafood",
+    description: "wild caught or farm-raised meat and seafood"
+  })
+
+{:ok, frozen} =
+  Categories.create_category(%{
+    name: "Frozen",
+    description: "frozen dumpling, frozen pizza or hot dog etc"
+  })
+
+{:ok, snacks} =
+  Categories.create_category(%{name: "Snacks", description: "cookies, biscuit or chips"})
+
+{:ok, dairy_eggs} =
+  Categories.create_category(%{name: "Dairy & Eggs", description: "milk, eggs and cheese"})
+
+{:ok, deli} =
+  Categories.create_category(%{
+    name: "Deli",
+    description: "a selection of fine, unusual, or foreign prepared foods"
+  })
+
+{:ok, beverages} =
+  Categories.create_category(%{name: "Beverages", description: "soda, soft drinks and juice"})
 
 # Create sub-categories
 # Produce
@@ -238,7 +263,7 @@ product_names = [
 ]
 
 # Create Products for store 1
-for x <- 0..2999 do
+for x <- 0..99 do
   store = store1
   category = Enum.random(categories)
   # get sub category
@@ -290,25 +315,25 @@ for x <- 0..2999 do
     })
 
   # create product prrices
-  attrs1 = %{
-    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
-    on_sale: false,
-    original_price: Money.new(Enum.random(prices), :USD),
-    sale_price: Money.new(0, :USD)
-  }
-
-  ProductPrice.create_product_price(product.id, attrs1)
-
-  attrs2 = %{
-    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
-    on_sale: false,
-    original_price: Money.new(Enum.random(prices), :USD),
-    sale_price: Money.new(0, :USD)
-  }
-
-  ProductPrice.create_product_price(product.id, attrs2)
+  #  attrs1 = %{
+  #    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
+  #    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
+  #    on_sale: false,
+  #    original_price: Money.new(Enum.random(prices), :USD),
+  #    sale_price: Money.new(0, :USD)
+  #  }
+  #
+  #  ProductPrice.create_product_price(product.id, attrs1)
+  #
+  #  attrs2 = %{
+  #    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
+  #    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
+  #    on_sale: false,
+  #    original_price: Money.new(Enum.random(prices), :USD),
+  #    sale_price: Money.new(0, :USD)
+  #  }
+  #
+  #  ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
     start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
@@ -324,7 +349,7 @@ for x <- 0..2999 do
 end
 
 # Create Products for store 2
-for x <- 0..2999 do
+for x <- 0..99 do
   store = store2
   category = Enum.random(categories)
   # get sub category
@@ -376,25 +401,25 @@ for x <- 0..2999 do
     })
 
   # create product prrices
-  attrs1 = %{
-    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
-    on_sale: false,
-    original_price: Money.new(Enum.random(prices), :USD),
-    sale_price: Money.new(0, :USD)
-  }
+  # attrs1 = %{
+  #  start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
+  #  end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
+  #  on_sale: false,
+  #  original_price: Money.new(Enum.random(prices), :USD),
+  #  sale_price: Money.new(0, :USD)
+  # }
 
-  ProductPrice.create_product_price(product.id, attrs1)
+  # ProductPrice.create_product_price(product.id, attrs1)
 
-  attrs2 = %{
-    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
-    on_sale: false,
-    original_price: Money.new(Enum.random(prices), :USD),
-    sale_price: Money.new(0, :USD)
-  }
+  # attrs2 = %{
+  #  start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
+  #  end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
+  #  on_sale: false,
+  #  original_price: Money.new(Enum.random(prices), :USD),
+  #  sale_price: Money.new(0, :USD)
+  # }
 
-  ProductPrice.create_product_price(product.id, attrs2)
+  # ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
     start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
@@ -409,7 +434,7 @@ for x <- 0..2999 do
 end
 
 # Create Products for store 3
-for x <- 0..2999 do
+for x <- 0..99 do
   store = store3
   category = Enum.random(categories)
   # get sub category
@@ -461,25 +486,25 @@ for x <- 0..2999 do
     })
 
   # create product prrices
-  attrs1 = %{
-    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
-    on_sale: false,
-    original_price: Money.new(Enum.random(prices), :USD),
-    sale_price: Money.new(0, :USD)
-  }
+  # attrs1 = %{
+  #  start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
+  #  end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
+  #  on_sale: false,
+  #  original_price: Money.new(Enum.random(prices), :USD),
+  #  sale_price: Money.new(0, :USD)
+  # }
 
-  ProductPrice.create_product_price(product.id, attrs1)
+  # ProductPrice.create_product_price(product.id, attrs1)
 
-  attrs2 = %{
-    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
-    on_sale: false,
-    original_price: Money.new(Enum.random(prices), :USD),
-    sale_price: Money.new(0, :USD)
-  }
+  # attrs2 = %{
+  #  start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
+  #  end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
+  #  on_sale: false,
+  #  original_price: Money.new(Enum.random(prices), :USD),
+  #  sale_price: Money.new(0, :USD)
+  # }
 
-  ProductPrice.create_product_price(product.id, attrs2)
+  # ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
     start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
