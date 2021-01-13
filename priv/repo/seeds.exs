@@ -19,7 +19,7 @@ alias Jaang.Product.ProductPrice
 alias Jaang.Repo
 import Ecto.Query
 
-@timezone "America/Los_Angeles"
+timezone = "America/Los_Angeles"
 
 # Create a stores
 {:ok, store1} =
@@ -336,8 +336,8 @@ for x <- 0..99 do
   #  ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
-    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, @timezone),
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, timezone),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
@@ -422,8 +422,8 @@ for x <- 0..99 do
   # ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
-    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, @timezone),
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, timezone),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
@@ -507,8 +507,8 @@ for x <- 0..99 do
   # ProductPrice.create_product_price(product.id, attrs2)
 
   attrs3 = %{
-    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, @timezone),
-    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, @timezone),
+    start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, timezone),
+    end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, timezone),
     on_sale: false,
     original_price: Money.new(Enum.random(prices), :USD),
     sale_price: Money.new(0, :USD)
