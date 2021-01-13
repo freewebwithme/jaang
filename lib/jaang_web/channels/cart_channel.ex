@@ -26,6 +26,8 @@ defmodule JaangWeb.CartChannel do
   end
 
   def handle_info({:send_cart, event}, %{assigns: %{current_user: user}} = socket) do
+    IO.puts("Calling :send_cart from cart_channel")
+
     {carts, total_items, total_price} = get_updated_carts(user.id)
 
     # broadcast!(socket, event, %{
@@ -65,6 +67,7 @@ defmodule JaangWeb.CartChannel do
     # Get a cart for store id
     case OrderManager.get_cart(user_id, store_id) do
       nil ->
+        IO.puts("Cant' find a cart. Create a cart with invoice")
         # Get an invoice
         invoice = InvoiceManager.get_or_create_invoice(user_id)
         # There is no cart(order) for this store.  Create initial carts
@@ -73,20 +76,28 @@ defmodule JaangWeb.CartChannel do
         # Add item to cart
         case OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity}) do
           {:ok, _order} ->
-            send(self(), {:send_cart, "add_to_cart"})
-            {:reply, :ok, socket}
+            {carts, total_items, total_price} = get_updated_carts(user_id)
+
+            {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
+             socket}
+
+          # {:reply, :ok, socket}
 
           {:error, _changeset} ->
             {:reply, :error, socket}
         end
 
       cart ->
+        IO.puts("Found a cart, add a product to a cart")
         # Add item to cart
         case OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity}) do
           {:ok, _order} ->
-            # Send updated cart
-            send(self(), {:send_cart, "add_to_cart"})
-            {:reply, :ok, socket}
+            {carts, total_items, total_price} = get_updated_carts(user_id)
+
+            {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
+             socket}
+
+          # {:reply, :ok, socket}
 
           {:error, _changeset} ->
             {:reply, :error, socket}
@@ -111,8 +122,10 @@ defmodule JaangWeb.CartChannel do
     case OrderManager.change_quantity_from_cart(cart, attrs) do
       {:ok, _order} ->
         # Send updated cart
-        send(self(), {:send_cart, "update_cart"})
-        {:reply, :ok, socket}
+        {carts, total_items, total_price} = get_updated_carts(user_id)
+
+        {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
+         socket}
 
       {:error, _changeset} ->
         {:reply, :error, socket}
@@ -139,8 +152,10 @@ defmodule JaangWeb.CartChannel do
       case OrderManager.place_an_order(fetched_user) do
         {:ok, _invoice} ->
           # Send empty cart
-          send(self(), {:send_cart, "order_placed"})
-          {:reply, :ok, socket}
+          {carts, total_items, total_price} = get_updated_carts(user.id)
+
+          {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
+           socket}
 
         {:error, _message} ->
           {:reply, :error, socket}
