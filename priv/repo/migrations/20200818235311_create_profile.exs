@@ -7,9 +7,12 @@ defmodule Jaang.Repo.Migrations.CreateProfile do
       add :last_name, :string
       add :phone, :string
 
+      add :photo_url, :string
+
+      add :store_id, :id, default: nil
       add :user_id, references(:users, on_delete: :delete_all)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
   end
 end

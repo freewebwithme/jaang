@@ -5,7 +5,7 @@ defmodule Jaang.Repo.Migrations.CreateUnit do
     create table("units") do
       add :name, :string
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
     create unique_index("units", [:name])

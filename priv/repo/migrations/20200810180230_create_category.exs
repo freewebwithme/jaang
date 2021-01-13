@@ -4,8 +4,9 @@ defmodule Jaang.Repo.Migrations.CreateCategory do
   def change do
     create table("categories") do
       add :name, :string
+      add :description, :text
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
   end
 end

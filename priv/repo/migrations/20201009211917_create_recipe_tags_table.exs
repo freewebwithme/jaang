@@ -3,9 +3,11 @@ defmodule Jaang.Repo.Migrations.CreateRecipeTagsTable do
 
   def change do
     create table("recipe_tags") do
-      add :product_id, references(:products)
-      add :tag_id, references(:tags)
-      timestamps()
+      add :name, :string
+
+      timestamps(type: :timestamptz)
     end
+
+    create unique_index("recipe_tags", [:name])
   end
 end
