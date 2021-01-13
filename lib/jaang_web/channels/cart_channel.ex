@@ -127,6 +127,13 @@ defmodule JaangWeb.CartChannel do
         {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
          socket}
 
+      # When user delete last line item, I just delete cart and return %Order{}
+      %Jaang.Checkout.Order{} = _order ->
+        {carts, total_items, total_price} = get_updated_carts(user_id)
+
+        {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
+         socket}
+
       {:error, _changeset} ->
         {:reply, :error, socket}
     end
