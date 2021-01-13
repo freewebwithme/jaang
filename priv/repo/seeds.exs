@@ -294,7 +294,7 @@ for x <- 0..99 do
     recipe_tags: Enum.random(recipe_tags)
   }
 
-  {:ok, product} = Products.create_product(attrs)
+  {:ok, product} = Products.create_product_for_seeds(attrs)
 
   product_images =
     Products.create_product_image(product, %{
@@ -380,7 +380,7 @@ for x <- 0..99 do
     recipe_tags: Enum.random(recipe_tags)
   }
 
-  {:ok, product} = Products.create_product(attrs)
+  {:ok, product} = Products.create_product_for_seeds(attrs)
 
   product_images =
     Products.create_product_image(product, %{
@@ -465,7 +465,7 @@ for x <- 0..99 do
     recipe_tags: Enum.random(recipe_tags)
   }
 
-  {:ok, product} = Products.create_product(attrs)
+  {:ok, product} = Products.create_product_for_seeds(attrs)
 
   product_images =
     Products.create_product_image(product, %{

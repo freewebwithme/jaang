@@ -8,6 +8,12 @@ defmodule Jaang.Product.Products do
 
   @timezone "America/Los_Angeles"
 
+  def create_product_for_seeds(attrs) do
+    %Product{}
+    |> Product.changeset(attrs)
+    |> Repo.insert()
+  end
+
   def create_product(attrs) do
     {:ok, product} =
       %Product{}
