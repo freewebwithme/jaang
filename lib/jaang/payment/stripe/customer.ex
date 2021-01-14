@@ -11,8 +11,10 @@ defmodule Jaang.Payment.Stripe.Customer do
         # Save stripe id
         {:ok, stripe_id}
 
-      {:error, _stripe} ->
-        {:error, "Can't create a stripe account"}
+      {:error, error} ->
+        IO.puts("Inspecting create customer error message")
+        IO.inspect(error)
+        {:error, error}
     end
   end
 

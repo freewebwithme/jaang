@@ -67,6 +67,9 @@ channel
   })
   .receive("error", (resp) => {
     console.log("Unable to join", resp);
+    if (resp["reason"] == "unauthenticated") {
+      channel.leave();
+    }
   });
 
 export default socket;
