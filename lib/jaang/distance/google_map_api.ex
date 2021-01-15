@@ -26,8 +26,8 @@ defmodule Jaang.Distance.GoogleMapApi do
 
         {:ok, distance}
 
-      {:error, message} ->
-        {:error, message}
+      {:error, reason, message} ->
+        {:error, reason, message}
     end
   end
 end

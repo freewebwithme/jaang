@@ -35,6 +35,7 @@ defmodule JaangWeb.CartChannel do
     #  total_items: total_items,
     #  total_price: total_price
     # })
+
     push(socket, event, %{
       orders: carts,
       total_items: total_items,
@@ -78,30 +79,38 @@ defmodule JaangWeb.CartChannel do
           {:ok, _order} ->
             {carts, total_items, total_price} = get_updated_carts(user_id)
 
+            broadcast_cart(carts, total_items, total_price, socket)
+
             {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
              socket}
 
-          # {:reply, :ok, socket}
-
           {:error, _changeset} ->
+            {:reply, :error, socket}
+
+          _ ->
             {:reply, :error, socket}
         end
 
-      cart ->
+      cart = %Jaang.Checkout.Order{} ->
         IO.puts("Found a cart, add a product to a cart")
         # Add item to cart
         case OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity}) do
           {:ok, _order} ->
             {carts, total_items, total_price} = get_updated_carts(user_id)
+            broadcast_cart(carts, total_items, total_price, socket)
 
             {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
              socket}
 
-          # {:reply, :ok, socket}
-
           {:error, _changeset} ->
             {:reply, :error, socket}
+
+          _ ->
+            {:reply, :error, socket}
         end
+
+      _ ->
+        {:reply, :error, socket}
     end
   end
 
@@ -124,12 +133,16 @@ defmodule JaangWeb.CartChannel do
         # Send updated cart
         {carts, total_items, total_price} = get_updated_carts(user_id)
 
+        broadcast_cart(carts, total_items, total_price, socket)
+
         {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
          socket}
 
       # When user delete last line item, I just delete cart and return %Order{}
       %Jaang.Checkout.Order{} = _order ->
         {carts, total_items, total_price} = get_updated_carts(user_id)
+
+        broadcast_cart(carts, total_items, total_price, socket)
 
         {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
          socket}
@@ -170,6 +183,14 @@ defmodule JaangWeb.CartChannel do
     else
       {:reply, :error, socket}
     end
+  end
+
+  defp broadcast_cart(carts, total_items, total_price, socket) do
+    broadcast_from(socket, "cart_updated", %{
+      orders: carts,
+      total_items: total_items,
+      total_price: total_price
+    })
   end
 
   def get_updated_carts(user_id) do
