@@ -30,7 +30,10 @@ defmodule Jaang.Distance.StoreDistance do
           {distance, true}
         end
 
-      {:error, _message} ->
+      {:error, reason, message} ->
+        IO.puts("Google map api error")
+        IO.inspect(reason)
+        IO.inspect(message)
         {nil, false}
     end
   end
