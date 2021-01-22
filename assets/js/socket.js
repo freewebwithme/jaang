@@ -8,7 +8,9 @@
 // from the params if you are not using authentication.
 import { Socket } from "phoenix";
 
-let socket = new Socket("/socket", { params: { web_token: window.userToken } });
+let socket = new Socket("/socket", {
+  params: { web_token: window.userToken ?? window.adminUserToken },
+});
 
 console.log("Printing userToken:", window.userToken);
 // When you connect, you'll often need to authenticate the client.

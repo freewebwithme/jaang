@@ -52,6 +52,15 @@ defmodule JaangWeb do
     end
   end
 
+  def dashboard_live_view do
+    quote do
+      use Phoenix.LiveView,
+        layout: {JaangWeb.LayoutView, "dashboard_live.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

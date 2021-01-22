@@ -2,6 +2,7 @@ defmodule JaangWeb.Router do
   use JaangWeb, :router
 
   import JaangWeb.UserAuth
+  import JaangWeb.Admin.AdminUserAuth, only: [fetch_admin_user: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -18,6 +19,23 @@ defmodule JaangWeb.Router do
     plug JaangWeb.Plugs.SetCurrentUser
   end
 
+  pipeline :dashboard do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {JaangWeb.LayoutView, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug :fetch_admin_user
+    plug JaangWeb.Plugs.AuthorizeAdmin
+  end
+
+  scope "/admin", JaangWeb.Admin do
+    pipe_through :dashboard
+
+    live "/", HomeLive
+  end
+
   scope "/", JaangWeb do
     pipe_through :browser
 
@@ -28,6 +46,10 @@ defmodule JaangWeb.Router do
     get "/account/confirm", AccountConfirmationController, :new
     post "/account/confirm", AccountConfirmationController, :create
     get "/account/confirm/:token", AccountConfirmationController, :confirm
+
+    # Staff login
+    live "/staff-login", Admin.StaffLoginLive
+    post "/staff-login", Admin.AdminAuthController, :log_in
   end
 
   scope "/store", JaangWeb do

@@ -1,41 +1,28 @@
-defmodule Jaang.Account.User do
+defmodule Jaang.Admin.Account.AdminUser do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Jaang.Admin.Account.AdminUser
 
-  schema "users" do
+  schema "admin_users" do
     field :email, :string
-    field :stripe_id, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :confirmed_at, :utc_datetime
-
-    has_one :profile, Jaang.Account.Profile
-    has_many :addresses, Jaang.Account.Address
-    has_many :invoices, Jaang.Invoice
 
     timestamps(type: :utc_datetime)
   end
 
   @doc false
-  def changeset(%Jaang.Account.User{} = user, attrs) do
-    user
-    |> cast(attrs, [:email, :stripe_id])
+  def changeset(%AdminUser{} = admin_user, attrs \\ %{}) do
+    admin_user
+    |> cast(attrs, [:email, :password])
   end
 
-  def registration_changeset(%Jaang.Account.User{} = user, attrs) do
-    user
+  def registration_changeset(%AdminUser{} = admin_user, attrs \\ %{}) do
+    admin_user
     |> cast(attrs, [:email, :password])
     |> validate_email()
     |> validate_password()
-    |> cast_assoc(:profile, with: &Jaang.Account.Profile.changeset/2)
-  end
-
-  def google_changeset(%Jaang.Account.User{} = user, attrs) do
-    user
-    |> cast(attrs, [:email, :password])
-    |> validate_email()
-    |> generate_password()
-    |> cast_assoc(:profile)
   end
 
   def validate_email(changeset) do
@@ -47,22 +34,11 @@ defmodule Jaang.Account.User do
     |> unique_constraint(:email)
   end
 
-  # This function will generate random password for google sign in.
-  # Because password field is not nullable, we need to generate a password.
-  defp generate_password(changeset) do
-    random_password = :base64.encode(:crypto.strong_rand_bytes(30))
-
-    changeset
-    |> put_change(:password, random_password)
-    # hash password
-    |> prepare_changes(&hash_password/1)
-  end
-
   def validate_password(changeset) do
     changeset
     |> validate_required([:password])
     |> validate_length(:password, min: 12, max: 80)
-    |> validate_confirmation(:password, message: "does not match password", required: true)
+    #    |> validate_confirmation(:password, message: "does not match password", required: true)
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
     # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
@@ -78,12 +54,12 @@ defmodule Jaang.Account.User do
   end
 
   @doc """
-  A user changeset for changing the email.
+  A admin_user changeset for changing the email.
 
   It requires the e-mail to change otherwise an error is added.
   """
-  def email_changeset(user, attrs) do
-    user
+  def email_changeset(admin_user, attrs) do
+    admin_user
     |> cast(attrs, [:email])
     |> validate_email()
     |> case do
@@ -93,10 +69,10 @@ defmodule Jaang.Account.User do
   end
 
   @doc """
-  A user changeset for changing the password.
+  A admin_user changeset for changing the password.
   """
-  def password_changeset(user, attrs) do
-    user
+  def password_changeset(admin_user, attrs) do
+    admin_user
     |> cast(attrs, [:password])
     |> validate_password()
   end
@@ -104,9 +80,9 @@ defmodule Jaang.Account.User do
   @doc """
   Confirms the account by setting `comfirmed_at`.
   """
-  def confirm_changeset(user) do
+  def confirm_changeset(admin_user) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
-    change(user, confirmed_at: now)
+    change(admin_user, confirmed_at: now)
   end
 
   @doc """
@@ -115,7 +91,7 @@ defmodule Jaang.Account.User do
   If there is no user or the user doesn't have a passowrd, we call
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
-  def valid_password?(%Jaang.Account.User{hashed_password: hashed_password}, password)
+  def valid_password?(%AdminUser{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end

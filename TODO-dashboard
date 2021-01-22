@@ -1,0 +1,7 @@
+[[[[   TODOs for Dashboard(Admin web interface)   ]]]]
+
+  - Design basich admin dashboard(use Tailwind UI)
+  - Display orders(confirmed, shopping, on_the_way, delivered orders)
+  - Display orders by store.
+  - Display drivers
+  - Assign orders to drivers.

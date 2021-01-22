@@ -1,11 +1,12 @@
-defmodule JaangWeb.UserAuth do
+defmodule JaangWeb.Admin.AdminUserAuth do
   @moduledoc """
   User authentication module for web client(Phoenix)
   """
   import Plug.Conn
   import Phoenix.Controller
 
-  alias Jaang.AccountManager
+  alias Jaang.Admin.Account.AdminAccounts
+  alias JaangWeb.Admin.HomeLive
   alias JaangWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
@@ -27,22 +28,19 @@ defmodule JaangWeb.UserAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_user(conn, user, params \\ %{}) do
-    token = AccountManager.generate_user_session_token(user)
-
-    IO.puts("Inspecting user token when log in ")
-    IO.inspect(token)
+  def log_in_user(conn, admin_user, params \\ %{}) do
+    token = AdminAccounts.generate_user_session_token(admin_user)
+    user_return_to = get_session(conn, :user_return_to)
+    IO.puts("INspecting user_return_to #{user_return_to}")
 
     conn
     |> renew_session()
-    |> assign(:user_token, token)
-    |> assign(:user_id, user.id)
-    |> put_session(:user_token, token)
+    |> assign(:admin_user_token, token)
+    |> assign(:admin_id, admin_user.id)
+    |> put_session(:admin_user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
     |> maybe_write_remember_me_cookies(token, params)
-    |> redirect(to: Routes.main_store_path(conn, :index))
-
-    # |> redirect(to: Routes.live_path(conn, JaangWeb.MainLive))
+    |> redirect(to: user_return_to || Routes.live_path(conn, HomeLive))
   end
 
   defp maybe_write_remember_me_cookies(conn, token, %{"remember_me" => "true"}) do
@@ -81,7 +79,7 @@ defmodule JaangWeb.UserAuth do
   """
   def log_out_user(conn) do
     user_token = get_session(conn, :user_token)
-    user_token && AccountManager.delete_session_token(user_token)
+    user_token && AdminAccounts.delete_session_token(user_token)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
       JaangWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
@@ -97,23 +95,17 @@ defmodule JaangWeb.UserAuth do
   Authenticates the user by looking into the session
   and remember me token.
   """
-  def fetch_current_user(conn, _opts) do
+  def fetch_admin_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
-    IO.puts("Inspecting user_token")
-    IO.inspect(user_token)
 
     if(user_token == nil) do
       conn
     else
-      user = AccountManager.get_user_by_session_token(user_token)
+      admin_user = AdminAccounts.get_user_by_session_token(user_token)
 
-      if(user == nil) do
-        conn
-      else
-        assign(conn, :current_user, user)
-        |> assign(:user_token, user_token)
-        |> assign(:user_id, user.id)
-      end
+      assign(conn, :admin_user, admin_user)
+      |> assign(:user_token, user_token)
+      |> assign(:admin_id, admin_user.id)
     end
   end
 
@@ -135,9 +127,9 @@ defmodule JaangWeb.UserAuth do
   Used for routes that require the user to not be authenticated
   """
   def redirect_if_user_is_authenticated(conn, _opts) do
-    if conn.assigns[:current_user] do
+    if conn.assigns[:admin_user] do
       conn
-      |> redirect(to: "/store")
+      |> redirect(to: "/admin")
       |> halt()
     else
       conn
@@ -151,12 +143,12 @@ defmodule JaangWeb.UserAuth do
   they use the application at all, here would be a good place.
   """
   def require_authenticated_user(conn, _opts) do
-    if conn.assigns[:current_user] do
+    if conn.assigns[:admin_user] do
       conn
     else
       conn
       |> put_flash(:error, "You must log in to access this page")
-      |> redirect(to: Routes.auth_path(conn, :request, "identity"))
+      |> redirect(to: Routes.live_path(conn, JaangWeb.Admin.StaffLoginLive))
       |> halt()
     end
   end
