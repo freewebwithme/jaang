@@ -18,13 +18,13 @@ defmodule JaangWeb.Plugs.AuthorizeAdmin do
     else
       true ->
         conn
-        |> put_flash(:error, "You are not allowed")
+        |> put_flash(:error, "You are not allowed to access")
         |> redirect(to: Routes.live_path(conn, JaangWeb.Admin.StaffLoginLive))
         |> halt()
 
       nil ->
         conn
-        |> put_flash(:error, "You are not allowed")
+        |> put_flash(:error, "You are not allowed to access")
         |> redirect(to: Routes.live_path(conn, JaangWeb.Admin.StaffLoginLive))
         |> halt()
     end

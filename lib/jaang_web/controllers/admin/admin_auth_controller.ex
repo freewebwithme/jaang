@@ -13,4 +13,9 @@ defmodule JaangWeb.Admin.AdminAuthController do
       live_render(conn, JaangWeb.Admin.StaffLoginLive)
     end
   end
+
+  def log_out(conn, _params) do
+    conn
+    |> AdminUserAuth.log_out_user()
+  end
 end

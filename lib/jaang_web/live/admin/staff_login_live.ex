@@ -2,11 +2,10 @@ defmodule JaangWeb.Admin.StaffLoginLive do
   use JaangWeb, :live_view
   alias Jaang.Admin.Account.{AdminUser, AdminAccounts}
   alias JaangWeb.Router.Helpers, as: Routes
-  alias Ecto.Changeset
 
   def mount(_params, _session, socket) do
     changeset = AdminUser.changeset(%AdminUser{})
-    {:ok, assign(socket, changeset: changeset, trigger_submit: false)}
+    {:ok, assign(socket, changeset: changeset, trigger_submit: false, error_message: nil)}
   end
 
   def handle_event("save", %{"admin_user" => params}, socket) do
@@ -14,18 +13,14 @@ defmodule JaangWeb.Admin.StaffLoginLive do
 
     case AdminAccounts.get_user_by_email_and_password(email, password) do
       nil ->
-        changeset =
-          AdminUser.changeset(%AdminUser{}, %{email: email, password: password})
-          |> Changeset.add_error(:email, "information is not correct")
-          |> Changeset.add_error(:password, "information is not correct")
-
-        IO.inspect(changeset)
+        changeset = AdminUser.changeset(%AdminUser{}, %{email: email, password: password})
 
         {:noreply,
          assign(
            socket,
            changeset: changeset,
-           trigger_submit: false
+           trigger_submit: false,
+           error_message: "Failed to login"
          )}
 
       %AdminUser{} = _admin_user ->
@@ -35,7 +30,8 @@ defmodule JaangWeb.Admin.StaffLoginLive do
          assign(
            socket,
            changeset: changeset,
-           trigger_submit: true
+           trigger_submit: true,
+           error_message: nil
          )}
     end
   end

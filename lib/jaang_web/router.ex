@@ -50,6 +50,7 @@ defmodule JaangWeb.Router do
     # Staff login
     live "/staff-login", Admin.StaffLoginLive
     post "/staff-login", Admin.AdminAuthController, :log_in
+    post "/staff-logout", Admin.AdminAuthController, :log_out
   end
 
   scope "/store", JaangWeb do

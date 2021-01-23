@@ -31,7 +31,6 @@ defmodule JaangWeb.Admin.AdminUserAuth do
   def log_in_user(conn, admin_user, params \\ %{}) do
     token = AdminAccounts.generate_user_session_token(admin_user)
     user_return_to = get_session(conn, :user_return_to)
-    IO.puts("INspecting user_return_to #{user_return_to}")
 
     conn
     |> renew_session()
@@ -40,6 +39,7 @@ defmodule JaangWeb.Admin.AdminUserAuth do
     |> put_session(:admin_user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
     |> maybe_write_remember_me_cookies(token, params)
+    |> put_flash(:info, "You've successfully logged in")
     |> redirect(to: user_return_to || Routes.live_path(conn, HomeLive))
   end
 
@@ -78,7 +78,7 @@ defmodule JaangWeb.Admin.AdminUserAuth do
   It clears all session data for safety.  See renew_session
   """
   def log_out_user(conn) do
-    user_token = get_session(conn, :user_token)
+    user_token = get_session(conn, :admin_user_token)
     user_token && AdminAccounts.delete_session_token(user_token)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
@@ -88,6 +88,7 @@ defmodule JaangWeb.Admin.AdminUserAuth do
     conn
     |> renew_session()
     |> delete_resp_cookie(@remember_me_cookie)
+    |> put_flash(:info, "You are logged out")
     |> redirect(to: "/")
   end
 

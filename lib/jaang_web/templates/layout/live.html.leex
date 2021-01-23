@@ -1,21 +1,25 @@
 <main role="main" class="antialiased text-gray-900">
-  <p
-    class="alert alert-info"
-    role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"
-  >
-    <%= live_flash(@flash, :info) %>
-  </p>
+  <div class="rounded-md bg-yellow-50">
+    <p
+      class="text-yellow-700 text-center text-xl "
+      role="alert"
+      phx-click="lv:clear-flash"
+      phx-value-key="info"
+    >
+      <%= live_flash(@flash, :info) %>
+    </p>
 
-  <p
-    class="alert alert-danger"
-    role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"
-  >
-    <%= live_flash(@flash, :error) %>
-  </p>
+  </div>
 
+  <div class="rounded-md bg-red-50 ">
+    <p
+      class="text-red-700 text-center text-xl "
+      role="alert"
+      phx-click="lv:clear-flash"
+      phx-value-key="error"
+    >
+      <%= live_flash(@flash, :error) %>
+    </p>
+  </div>
   <%= @inner_content %>
 </main>
