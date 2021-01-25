@@ -49,6 +49,8 @@ defmodule JaangWeb.CartChannel do
     {:noreply, socket}
   end
 
+  ### *** Add to cart event ***
+
   def handle_in(
         "add_to_cart",
         payload,
@@ -114,6 +116,8 @@ defmodule JaangWeb.CartChannel do
     end
   end
 
+  ### *** Update cart event ***
+
   def handle_in("update_cart", payload, socket) do
     %{
       "user_id" => user_id,
@@ -157,11 +161,12 @@ defmodule JaangWeb.CartChannel do
     {:noreply, socket}
   end
 
-  ### * Place an Order
+  ### *** Place an Order ***
 
   def handle_in("place_an_order", payload, %{assigns: %{current_user: user}} = socket) do
     %{
-      "token" => token
+      "token" => token,
+      "delivery_time" => delivery_time
     } = payload
 
     IO.puts("Placing an order in Cart channel")
@@ -169,7 +174,7 @@ defmodule JaangWeb.CartChannel do
 
     if(user.id == fetched_user.id) do
       # user matches, go ahead process an order
-      case OrderManager.place_an_order(fetched_user) do
+      case OrderManager.place_an_order(fetched_user, delivery_time) do
         {:ok, _invoice} ->
           # Send empty cart
           {carts, total_items, total_price} = get_updated_carts(user.id)

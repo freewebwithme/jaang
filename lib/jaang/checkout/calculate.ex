@@ -32,8 +32,9 @@ defmodule Jaang.Checkout.Calculate do
     Money.multiply(total_excluding_produce, @tax_rate)
   end
 
-  def calculate_delivery_fee() do
-    Money.new(@delivery_fee)
+  def calculate_delivery_fee(carts) do
+    store_count = Enum.count(carts)
+    Money.multiply(Money.new(@delivery_fee), store_count)
   end
 
   def calculate_item_adjustments(total_amount) do

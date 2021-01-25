@@ -7,7 +7,7 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
   Calculate final total amount
   and Update invoice total amount and invoice schema
   """
-  def calculate_total(_, %{tip: tip, token: token}, _) do
+  def calculate_total(_, %{tip: tip, token: token, delivery_time: delivery_time}, _) do
     user = AccountManager.get_user_by_session_token(token)
     carts = OrderManager.get_all_carts(user.id)
 
@@ -24,7 +24,7 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
     # service_fee = Calculate.calculate_service_fee(total)
 
     tax = Calculate.calculate_sales_tax(carts)
-    delivery_fee = Calculate.calculate_delivery_fee()
+    delivery_fee = Calculate.calculate_delivery_fee(carts)
 
     # %{store_name: "", total: %Money{}}
     sub_totals = Calculate.get_sub_totals_for_order(carts)
@@ -51,7 +51,8 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
       sales_tax: tax,
       subtotal: sub_totals_amount,
       total: final_total_amount,
-      item_adjustment: item_adjustments
+      item_adjustment: item_adjustments,
+      delivery_time: delivery_time
     })
 
     total_amount = %TotalAmount{

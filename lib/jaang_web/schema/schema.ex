@@ -370,6 +370,7 @@ defmodule JaangWeb.Schema do
     field :calculate_total_amount, :total_amount do
       arg(:tip, :string)
       arg(:token, :string)
+      arg(:delivery_time, :string)
 
       # middleware(Middleware.Authenticate)
       resolve(&CheckoutResolver.calculate_total/3)

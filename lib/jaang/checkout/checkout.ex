@@ -4,8 +4,9 @@ defmodule Jaang.Checkout.Checkout do
   @doc """
   This function places an order using currently saved
   invoice schema, default address, phone number, default payment method.
+  Get delivery time from client.
   """
-  def place_an_order(user) do
+  def place_an_order(user, delivery_time) do
     # Get a default address
     address = ProfileManager.get_default_address(user.addresses)
     # Get an invoice
@@ -26,9 +27,9 @@ defmodule Jaang.Checkout.Checkout do
          ) do
       {:ok, payment_intent} ->
         IO.inspect(payment_intent.id)
-        # Mark order as "confirmed"
+        # Mark order as "submitted"
         Enum.map(invoice.orders, fn order ->
-          OrderManager.update_cart(order, %{status: :confirmed})
+          OrderManager.update_cart(order, %{status: :submitted})
         end)
 
         # Calculate total items
@@ -38,7 +39,7 @@ defmodule Jaang.Checkout.Checkout do
           InvoiceManager.update_invoice(invoice, %{
             pm_intent_id: payment_intent.id,
             payment_method: "Ending with #{last4}",
-            status: :confirmed,
+            status: :submitted,
             total_items: total_items,
             # Add delivery address info
             recipient: address.recipient,
@@ -49,7 +50,9 @@ defmodule Jaang.Checkout.Checkout do
             city: address.city,
             state: address.state,
             instructions: address.instructions,
-            phone_number: user.profile.phone
+            phone_number: user.profile.phone,
+            # Add delivery time
+            delivery_time: delivery_time
           })
 
         {:ok, invoice}

@@ -29,5 +29,5 @@ defmodule Jaang.OrderManager do
   This function places an order using currently saved
   invoice schema, default address, phone number, default payment method.
   """
-  defdelegate place_an_order(user), to: Checkout
+  defdelegate place_an_order(user, delivery_time), to: Checkout
 end

@@ -8,7 +8,7 @@ defmodule Jaang.InvoiceManager do
   defdelegate update_invoice(invoice, attrs), to: Invoices
 
   @doc """
-   Get confirmed invocies
+   Get all invoices except :cart invocies
   """
   defdelegate get_invoices(user_id, limit, offset), to: Invoices
 end

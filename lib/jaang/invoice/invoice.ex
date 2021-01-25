@@ -16,7 +16,8 @@ defmodule Jaang.Invoice do
     field :total_items, :integer
     field :payment_method, :string
     field :pm_intent_id, :string
-    field :status, Ecto.Enum, values: [:cart, :refunded, :confirmed, :delivered]
+    field :status, Ecto.Enum, values: [:cart, :refunded, :submitted, :packed, :delivered]
+    field :delivery_time, :string
 
     # Embed address information
     field :recipient, :string
@@ -60,7 +61,8 @@ defmodule Jaang.Invoice do
       :city,
       :state,
       :instructions,
-      :phone_number
+      :phone_number,
+      :delivery_time
     ]
 
     invoice
