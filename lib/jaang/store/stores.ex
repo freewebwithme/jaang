@@ -29,44 +29,123 @@ defmodule Jaang.Store.Stores do
     "7 pm to 9 pm"
   ]
 
-  # 1 Define available hours in datetime format
+  @doc """
+  Return available delivery datetime
+  """
   def get_available_delivery_datetime() do
     # Get current local date time
-    today = Timex.local()
+    now = Timex.local()
     # Check if today is available to delivery.
-    # cut off time is 8 pm
+    # 9 am to 7 pm to take an order
     start_hour =
       Timex.to_datetime(
-        {{today.year, today.month, today.day}, {9, 00, 00}},
+        {{now.year, now.month, now.day}, {9, 00, 00}},
         "America/Los_Angeles"
       )
 
     close_hour =
       Timex.to_datetime(
-        {{today.year, today.month, today.day}, {19, 00, 00}},
+        {{now.year, now.month, now.day}, {19, 00, 00}},
         "America/Los_Angeles"
       )
 
-    case Timex.between?(today, start_hour, close_hour) do
-      true ->
-        # Delivery available today, filter delivery hours
-        IO.puts("Delivery today is available")
+    if(Timex.before?(now, start_hour)) do
+      # Delivery available now, filter delivery hours
+      IO.puts("Delivery today is available")
+      return_available_delivery_datetime(now)
+    else
+      case Timex.between?(now, start_hour, close_hour) do
+        true ->
+          # Delivery available now, filter delivery hours
+          IO.puts("Delivery today is available")
+          return_available_delivery_datetime(now)
 
-      _ ->
-        # Not available today, return next 4 days for available datetime
-        for x <- 1..3 do
-          next_day = Timex.add(today, Timex.Duration.from_days(x))
-          {:ok, month} = next_day |> Timex.format("{Mshort}")
-          {:ok, name_of_day} = next_day |> Timex.format("%a", :strftime)
+        _ ->
+          # Not available today, return next 4 days for available datetime
+          return_future_delivery_datetime(now)
+      end
+    end
+  end
 
-          %Jaang.Store.DeliveryDateTime{
-            # 요일
-            delivery_day: name_of_day,
-            delivery_date: next_day.day,
-            delivery_month: month,
-            available_hours: @available_hours
-          }
-        end
+  ### Return available Delivery DateTime
+  ### params: now = Timex.local()
+
+  defp return_available_delivery_datetime(now) do
+    delivery_datetimes = return_future_delivery_datetime(now)
+
+    # Filter delivery hours for today.
+    # Exclude current time + 2 hours
+    if(now.minute > 0) do
+      # Add 3 hours
+      available_start_hour = Timex.add(now, Timex.Duration.from_hours(3))
+
+      today_delivery_date_time = return_today_delivery_datetime(available_start_hour, now)
+      [today_delivery_date_time | delivery_datetimes]
+    else
+      available_start_hour = Timex.add(now, Timex.Duration.from_hours(2))
+
+      today_delivery_date_time = return_today_delivery_datetime(available_start_hour, now)
+      [today_delivery_date_time | delivery_datetimes]
+    end
+  end
+
+  ### return delivery datetime for today
+  ### Filter out delivery time
+  ### params: available_start_hour = DateTime
+  ### now = Timex.local()
+
+  def return_today_delivery_datetime(available_start_hour, now) do
+    # If available_start_hour is even(2, 4, 6, 8, 10 am or pm)
+    # make it odd hour(3, 5, 7, 9, 11)
+    # Because available hours timelines have odd number hour
+
+    {:ok, available_start_hour} =
+      if(rem(available_start_hour.hour, 2) == 0) do
+        IO.puts("even number")
+        IO.inspect(available_start_hour)
+
+        Timex.add(available_start_hour, Timex.Duration.from_hours(1))
+        |> Timex.format("{h12} {am}")
+      else
+        IO.puts("odd number")
+        IO.inspect(available_start_hour)
+        available_start_hour |> Timex.format("{h12} {am}")
+      end
+
+    IO.puts("Printing available_start_hour")
+    IO.inspect(available_start_hour)
+    # Get index
+    index =
+      Enum.find_index(@available_hours, fn hour ->
+        String.starts_with?(hour, available_start_hour)
+      end)
+
+    available_hours = Enum.slice(@available_hours, index, Enum.count(@available_hours))
+    {:ok, month} = now |> Timex.format("{Mshort}")
+
+    %DeliveryDateTime{
+      delivery_day: "Today",
+      delivery_date: now.day,
+      delivery_month: month,
+      available_hours: available_hours
+    }
+  end
+
+  ### return delivery datetime including 3 days after
+
+  defp return_future_delivery_datetime(now) do
+    for x <- 1..3 do
+      next_day = Timex.add(now, Timex.Duration.from_days(x))
+      {:ok, month} = next_day |> Timex.format("{Mshort}")
+      {:ok, name_of_day} = next_day |> Timex.format("%a", :strftime)
+
+      %Jaang.Store.DeliveryDateTime{
+        # 요일
+        delivery_day: name_of_day,
+        delivery_date: next_day.day,
+        delivery_month: month,
+        available_hours: @available_hours
+      }
     end
   end
 

@@ -23,4 +23,8 @@ defmodule JaangWeb.Resolvers.StoreResolver do
     # IO.inspect(categories)
     {:ok, categories}
   end
+
+  def get_delivery_datetime(_, _, _) do
+    {:ok, StoreManager.get_available_delivery_datetime()}
+  end
 end

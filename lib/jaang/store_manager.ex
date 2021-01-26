@@ -7,6 +7,7 @@ defmodule Jaang.StoreManager do
   defdelegate get_store(id), to: Stores
   defdelegate create_store(attrs), to: Stores
   defdelegate get_products_for_homescreen(limit, store_id), to: Stores
+  defdelegate get_available_delivery_datetime(), to: Stores
 
   # Categories
   defdelegate create_category(attrs), to: Categories

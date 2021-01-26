@@ -40,6 +40,12 @@ defmodule JaangWeb.Schema do
       resolve(&StoreResolver.get_store/3)
     end
 
+    @desc "Get available delivery datetime for stores"
+    field :get_delivery_datetime, list_of(:delivery_datetime) do
+      # middleware(Middleware.Authenticate)
+      resolve(&StoreResolver.get_delivery_datetime/3)
+    end
+
     ### * Products
 
     @desc "get product"
@@ -385,6 +391,13 @@ defmodule JaangWeb.Schema do
     end
   end
 
+  object :delivery_datetime do
+    field :delivery_day, :string
+    field :delivery_date, :string
+    field :delivery_month, :string
+    field :available_hours, list_of(:string)
+  end
+
   object :invoice do
     field :id, :id
     field :invoice_number, :string
@@ -411,6 +424,7 @@ defmodule JaangWeb.Schema do
     field :instructions, :string
 
     field :phone_number, :string
+    field :delivery_time, :string
     # Orders
     field :orders, list_of(:order), resolve: dataloader(Carts)
 
