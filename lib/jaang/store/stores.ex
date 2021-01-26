@@ -34,7 +34,7 @@ defmodule Jaang.Store.Stores do
   """
   def get_available_delivery_datetime() do
     # Get current local date time
-    now = Timex.local()
+    now = Timex.now("America/Los_Angeles")
     # Check if today is available to delivery.
     # 9 am to 7 pm to take an order
     start_hour =
