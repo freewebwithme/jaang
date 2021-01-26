@@ -8,8 +8,8 @@ defmodule JaangWeb.Plugs.AuthorizeAdmin do
 
   def call(conn, _opts) do
     admin_user_token = get_session(conn, :admin_user_token)
-    IO.puts("Inspecting admin_user_token from Plugs")
-    IO.inspect(admin_user_token)
+    # IO.puts("Inspecting admin_user_token from Plugs")
+    # IO.inspect(admin_user_token)
 
     with false <- is_nil(admin_user_token),
          %AdminUser{} = _admin <-
