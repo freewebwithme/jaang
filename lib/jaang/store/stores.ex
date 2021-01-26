@@ -4,6 +4,7 @@ defmodule Jaang.Store.Stores do
   """
   alias Jaang.{Repo, Store, Product, Category}
   alias Jaang.Product.ProductPrice
+  alias Jaang.Store.DeliveryDateTime
 
   def create_store(attrs) do
     %Store{}
@@ -17,6 +18,56 @@ defmodule Jaang.Store.Stores do
 
   def get_all_stores() do
     Repo.all(Store)
+  end
+
+  @available_hours [
+    "9 am to 11 am",
+    "11 am to 1 pm",
+    "1 pm to 3 pm",
+    "3 pm to 5 pm",
+    "5 pm to 7 pm",
+    "7 pm to 9 pm"
+  ]
+
+  # 1 Define available hours in datetime format
+  def get_available_delivery_datetime() do
+    # Get current local date time
+    today = Timex.local()
+    # Check if today is available to delivery.
+    # cut off time is 8 pm
+    start_hour =
+      Timex.to_datetime(
+        {{today.year, today.month, today.day}, {9, 00, 00}},
+        "America/Los_Angeles"
+      )
+
+    close_hour =
+      Timex.to_datetime(
+        {{today.year, today.month, today.day}, {19, 00, 00}},
+        "America/Los_Angeles"
+      )
+
+    case Timex.between?(today, start_hour, close_hour) do
+      true ->
+        # Delivery available today, filter delivery hours
+        IO.puts("Delivery today is available")
+
+      _ ->
+        # Not available today, return next 4 days for available datetime
+        for x <- 1..3 do
+          next_day = Timex.add(today, Timex.Duration.from_days(x))
+          {:ok, month} = next_day |> Timex.format("{Mshort}")
+          {:ok, name_of_day} = next_day |> Timex.format("%a", :strftime)
+
+          %Jaang.Store.DeliveryDateTime{
+            # 요일
+            delivery_day: name_of_day,
+            delivery_date: next_day.day,
+            delivery_month: month,
+            available_hours: @available_hours
+          }
+        end
+    end
   end
 
   # * Create function that returns
