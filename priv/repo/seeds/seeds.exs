@@ -126,9 +126,9 @@ timezone = "America/Los_Angeles"
 {:ok, juice} = Categories.create_subcategory(beverages, %{name: "Juice & Nectars"})
 
 # Create Unit
-{:ok, lb} = Products.create_unit(%{name: "gram"})
-{:ok, each} = Products.create_unit(%{name: "bundle"})
-{:ok, pack} = Products.create_unit(%{name: "ct"})
+{:ok, lb} = Products.create_unit(%{name: "grams"})
+{:ok, each} = Products.create_unit(%{name: "bundles"})
+{:ok, pack} = Products.create_unit(%{name: "cts"})
 
 prices = [
   300,
