@@ -15,5 +15,5 @@ mix phx.digest
 MIX_ENV=prod mix release --overwrite
 
 # Run migrations
-_build/prod/rel/jaang/bin/jaang eval "jaang.release.migrate"
+_build/prod/rel/jaang/bin/jaang eval "Jaang.Release.migrate"
 _build/prod/rel/jaang/bin/jaang eval "Application.ensure_all_started(:timex)"
