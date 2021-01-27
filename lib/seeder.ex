@@ -5,8 +5,7 @@ defmodule Jaang.Release.Seeder do
 
   #  And then for the release:
   #
-  #  bin/my_app eval 'MyApp.Release.Seeder.seed(Elixir.MyApp.Repo, "seed.exs")
-
+  # _build/prod/rel/jaang/bin/jaang eval 'Jaang.Release.Seeder.seed(Elixir.Jaang.Repo, "seeds.exs")'
   require Logger
 
   @app :jaang
