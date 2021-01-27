@@ -49,21 +49,20 @@ defmodule Jaang.Store.Stores do
         "America/Los_Angeles"
       )
 
-    if(Timex.before?(now, start_hour)) do
-      # Delivery available now, filter delivery hours
-      IO.puts("Delivery today is available")
-      return_available_delivery_datetime(now)
-    else
-      case Timex.between?(now, start_hour, close_hour) do
-        true ->
-          # Delivery available now, filter delivery hours
-          IO.puts("Delivery today is available")
-          return_available_delivery_datetime(now)
+    case Timex.between?(now, start_hour, close_hour) do
+      true ->
+        # Delivery available now, filter delivery hours
+        IO.puts("Delivery today is available")
+        return_available_delivery_datetime(now)
 
-        _ ->
-          # Not available today, return next 4 days for available datetime
+      false ->
+        if(Timex.before?(now, start_hour)) do
+          # Delivery available now, filter delivery hours
+          IO.puts("Delivery today is not available")
+          return_available_delivery_datetime(now)
+        else
           return_future_delivery_datetime(now)
-      end
+        end
     end
   end
 
@@ -116,9 +115,15 @@ defmodule Jaang.Store.Stores do
     IO.inspect(available_start_hour)
     # Get index
     index =
-      Enum.find_index(@available_hours, fn hour ->
-        String.starts_with?(hour, available_start_hour)
-      end)
+      if(available_start_hour == "9 pm") do
+        Enum.find_index(@available_hours, fn hour ->
+          String.ends_with?(hour, available_start_hour)
+        end)
+      else
+        Enum.find_index(@available_hours, fn hour ->
+          String.starts_with?(hour, available_start_hour)
+        end)
+      end
 
     available_hours = Enum.slice(@available_hours, index, Enum.count(@available_hours))
     {:ok, month} = now |> Timex.format("{Mshort}")

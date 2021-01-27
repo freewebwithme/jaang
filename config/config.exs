@@ -48,7 +48,7 @@ config :google_maps, api_key: System.get_env("GOOGLE_MAP_API")
 
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET_KEY")
 
-config :tzdata, :data_dir, "/etc/elixir_tzdata_data/"
+config :tzdata, :data_dir, "etc/elixir_tzdata_data"
 
 # Configures Elixir's Logger
 config :logger, :console,
