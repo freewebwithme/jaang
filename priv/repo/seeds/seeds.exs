@@ -19,6 +19,8 @@ alias Jaang.Product.ProductPrice
 alias Jaang.Repo
 import Ecto.Query
 
+Application.ensure_all_started(:timex)
+
 timezone = "America/Los_Angeles"
 
 # Create a stores
@@ -126,9 +128,9 @@ timezone = "America/Los_Angeles"
 {:ok, juice} = Categories.create_subcategory(beverages, %{name: "Juice & Nectars"})
 
 # Create Unit
-{:ok, lb} = Products.create_unit(%{name: "kg"})
-{:ok, each} = Products.create_unit(%{name: "bunch"})
-{:ok, pack} = Products.create_unit(%{name: "oz"})
+{:ok, lb} = Products.create_unit(%{name: "kgs"})
+{:ok, each} = Products.create_unit(%{name: "bunches"})
+{:ok, pack} = Products.create_unit(%{name: "fl oz"})
 
 prices = [
   300,
