@@ -3,9 +3,13 @@ defmodule Jaang.Release.Seeder do
   Release tasks for seeds.
   """
 
+  #  And then for the release:
+  #
+  #  bin/my_app eval 'MyApp.Release.Seeder.seed(Elixir.MyApp.Repo, "seed.exs")
+
   require Logger
 
-  @app :my_app
+  @app :jaang
 
   @doc """
   Seed seeds file for repo.

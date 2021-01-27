@@ -8,7 +8,8 @@
 use Mix.Config
 
 config :jaang,
-  ecto_repos: [Jaang.Repo]
+  ecto_repos: [Jaang.Repo],
+  start_apps_before_migration: [:logger]
 
 # Configures the endpoint
 config :jaang, JaangWeb.Endpoint,
