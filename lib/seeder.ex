@@ -16,6 +16,7 @@ defmodule Jaang.Release.Seeder do
   @spec seed(Ecto.Repo.t(), String.t()) :: :ok | {:error, any()}
   def seed(repo, filename) do
     load_app()
+    Application.ensure_all_started(:timex)
 
     case Ecto.Migrator.with_repo(repo, &eval_seed(&1, filename)) do
       {:ok, {:ok, _fun_return}, _apps} ->

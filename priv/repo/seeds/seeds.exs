@@ -19,11 +19,13 @@ alias Jaang.Product.ProductPrice
 alias Jaang.Repo
 import Ecto.Query
 
-Application.ensure_all_started(:timex)
+# Application.ensure_all_started(:timex)
 
 timezone = "America/Los_Angeles"
 
 # Create a stores
+IO.puts("Creating Store started")
+
 {:ok, store1} =
   Stores.create_store(%{
     name: "Costco",
@@ -57,6 +59,10 @@ timezone = "America/Los_Angeles"
     address: "3256 Olympic Blvd Los Angeles, CA 90010",
     phone_number: "2139994444"
   })
+
+IO.puts("Store Creation completed")
+
+IO.puts("Create categories....")
 
 # Create categories
 {:ok, produce} =
@@ -127,10 +133,16 @@ timezone = "America/Los_Angeles"
 
 {:ok, juice} = Categories.create_subcategory(beverages, %{name: "Juice & Nectars"})
 
+IO.puts("Finished creating categories...")
+
+IO.puts("Creating unit...")
+
 # Create Unit
 {:ok, lb} = Products.create_unit(%{name: "kgs"})
 {:ok, each} = Products.create_unit(%{name: "bunches"})
 {:ok, pack} = Products.create_unit(%{name: "fl oz"})
+
+IO.puts("Finished creating units...")
 
 prices = [
   300,
@@ -266,6 +278,7 @@ product_names = [
 
 # Create Products for store 1
 for x <- 0..99 do
+  IO.puts("Start to create PRODUCTS for Store 1")
   store = store1
   category = Enum.random(categories)
   # get sub category
@@ -347,11 +360,13 @@ for x <- 0..99 do
 
   ProductPrice.create_product_price(product.id, attrs3)
 
+  IO.puts("Finished to create PRODUCTS for Store 1")
   # Creating tags
 end
 
 # Create Products for store 2
 for x <- 0..99 do
+  IO.puts("Start to create PRODUCTS for Store 2")
   store = store2
   category = Enum.random(categories)
   # get sub category
@@ -433,10 +448,13 @@ for x <- 0..99 do
 
   ProductPrice.create_product_price(product.id, attrs3)
   # Creating tags
+
+  IO.puts("Finished to create PRODUCTS for Store 2")
 end
 
 # Create Products for store 3
 for x <- 0..99 do
+  IO.puts("Start to create PRODUCTS for Store 3")
   store = store3
   category = Enum.random(categories)
   # get sub category
@@ -518,8 +536,10 @@ for x <- 0..99 do
 
   ProductPrice.create_product_price(product.id, attrs3)
   # Creating tags
+  IO.puts("Finished to create PRODUCTS for Store 3")
 end
 
+IO.puts("Adding search_term....")
 SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 1})
 SearchManager.create_search_term(%{term: "tofu", counter: 1, store_id: 1})
 SearchManager.create_search_term(%{term: "rice", counter: 1, store_id: 1})
@@ -552,3 +572,4 @@ SearchManager.create_search_term(%{term: "rice cake", counter: 1, store_id: 3})
 SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 3})
 SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 3})
 SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 3})
+IO.puts("Finished adding search_term.")

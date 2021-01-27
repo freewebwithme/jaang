@@ -18,6 +18,8 @@ defmodule Jaang.Application do
       {Absinthe.Subscription, JaangWeb.Endpoint}
       # Start a worker by calling: Jaang.Worker.start_link(arg)
       # {Jaang.Worker, arg}
+
+      # Application.ensure_all_started(:timex)
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

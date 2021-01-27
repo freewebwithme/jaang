@@ -20,7 +20,7 @@ defmodule Jaang.MixProject do
   def application do
     [
       mod: {Jaang.Application, []},
-      extra_applications: [:timex, :logger, :runtime_tools, :os_mon]
+      extra_applications: [:timex, :tzdata, :logger, :runtime_tools, :os_mon]
     ]
   end
 
