@@ -382,13 +382,13 @@ defmodule JaangWeb.Schema do
       resolve(&CheckoutResolver.calculate_total/3)
     end
 
-    @desc "Place an order"
-    field :place_order, :invoice do
-      arg(:token, non_null(:string))
+    # @desc "Place an order"
+    # field :place_order, :invoice do
+    #  arg(:token, non_null(:string))
 
-      # middleware(Middleware.Authenticate)
-      resolve(&CheckoutResolver.place_an_order/3)
-    end
+    #  # middleware(Middleware.Authenticate)
+    #  resolve(&CheckoutResolver.place_an_order/3)
+    # end
   end
 
   object :delivery_datetime do

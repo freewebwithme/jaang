@@ -3,6 +3,9 @@
   - Create admin(DONE)
   - Admin user only can access admin page(DONE)
 
+  - Add User count stats in HomeLive
+  - Add User in Navbar menu
+  
   - Display orders(confirmed, shopping, on_the_way, delivered orders)
   - Display orders by store.
   - Display drivers

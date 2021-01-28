@@ -5,7 +5,7 @@ defmodule Jaang.Admin.Account.AdminAccounts do
 
   def create_admin_user(attrs) do
     %AdminUser{}
-    |> AdminUser.changeset(attrs)
+    |> AdminUser.registration_changeset(attrs)
     |> Repo.insert!()
   end
 

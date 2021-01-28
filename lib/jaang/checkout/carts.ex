@@ -82,7 +82,12 @@ defmodule Jaang.Checkout.Carts do
 
   def add_to_cart(%Order{line_items: existing_line_items} = cart, cart_attrs) do
     %{product_id: product_id, quantity: quantity} = cart_attrs
-    product_id = String.to_integer(product_id)
+
+    product_id =
+      if is_binary(product_id) do
+        String.to_integer(product_id)
+      end
+
     # Check if exisiting cart has same product id
     case Enum.find(existing_line_items, fn line_item -> line_item.product_id == product_id end) do
       nil ->

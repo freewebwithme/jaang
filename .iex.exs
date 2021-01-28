@@ -76,3 +76,6 @@ alias Jaang.Payment.Stripe.{Customer, PaymentMethod, SetupIntent, PaymentIntent}
 import Ecto.Query
 
 stripe_id = "cus_IQ6pa99rGTl2KQ"
+
+#### Admin
+alias Jaang.Admin.Invoice.Invoices
