@@ -98,6 +98,7 @@ defmodule JaangWeb do
       import JaangWeb.Gettext
       import Phoenix.LiveView.Helpers
       alias JaangWeb.Router.Helpers, as: Routes
+      alias JaangWeb.Admin.Helpers
     end
   end
 

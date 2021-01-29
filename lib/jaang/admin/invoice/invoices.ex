@@ -24,10 +24,13 @@ defmodule Jaang.Admin.Invoice.Invoices do
   [
    paginate: %{page: 2, per_page: 5},
    sort: %{sort_by: :delivery_time, sort_order: :asc}
+   filter_by: %{by_state: :submitted}
   ]
   """
-  def get_unfulfilled_invoices(criteria) when is_list(criteria) do
-    query = from(i in Invoice, where: i.status not in [:cart, :refunded, :delivered])
+  def get_invoices(criteria) when is_list(criteria) do
+    query = from(i in Invoice)
+    IO.puts("Inspecting criteria")
+    IO.inspect(criteria)
 
     Enum.reduce(criteria, query, fn
       {:paginate, %{page: page, per_page: per_page}}, query ->
@@ -37,6 +40,15 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
       {:sort, %{sort_by: sort_by, sort_order: sort_order}}, query ->
         from q in query, order_by: [{^sort_order, ^sort_by}]
+
+      {:filter_by, %{by_state: state}}, query ->
+        case state == :all do
+          true ->
+            from(q in query)
+
+          _ ->
+            from q in query, where: q.status == ^state
+        end
     end)
     |> Repo.all()
   end

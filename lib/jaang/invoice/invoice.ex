@@ -18,7 +18,7 @@ defmodule Jaang.Invoice do
     field :pm_intent_id, :string
 
     field :status, Ecto.Enum,
-      values: [:cart, :refunded, :submitted, :packed, :on_the_way, :delivered]
+      values: [:cart, :refunded, :submitted, :shopping, :packed, :on_the_way, :delivered]
 
     field :delivery_time, :string
 

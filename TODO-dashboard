@@ -10,3 +10,21 @@
   - Display orders by store.
   - Display drivers
   - Assign orders to drivers.
+
+  [Features]
+    - Admin has to view, update and search order
+      - Order detail page
+      - Order status update(:shopping, :packed, :on_the_way, :delivered)
+    - Admin has to assign or change a driver manually
+    - Admin has to check shoppers and drivers detail
+      - Personal information of shoppers and drivers.
+      - Fulfilled invoice list
+      - Earnings of shoppers and drivers
+    - Admin has to see Customer's information.
+      - Personal information of Customer.
+      - Order detail.
+      - Refund
+    - Customer service section including refend request.  
+    - Partners
+      - List product by category
+      - Edit product information including price.

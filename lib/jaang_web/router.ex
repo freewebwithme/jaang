@@ -34,6 +34,20 @@ defmodule JaangWeb.Router do
     pipe_through :dashboard
 
     live "/", HomeLive
+    live "/orders", OrdersLive
+
+    live "/partners", PartnersOverviewLive
+    live "/partners/hannam", HannamChainLive
+
+    live "/customers", CustomersLive
+
+    live "/employees", EmployeesOverviewLive
+    live "/employees/shoppers", ShoppersLive
+    live "/employees/drivers", DriversLive
+
+    live "/customer-services", CustomerServicesOverviewLive
+    live "/customer-services/messages", CustomerServiceMessagesLive
+    live "/customer-services/refund-request", CustomerServiceRefundRequestsLive
   end
 
   scope "/", JaangWeb do
