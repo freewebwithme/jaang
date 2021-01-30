@@ -1,4 +1,4 @@
-defmodule JaangWeb.Admin.HomeLive do
+defmodule JaangWeb.Admin.Home.HomeLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Invoice.Invoices
 

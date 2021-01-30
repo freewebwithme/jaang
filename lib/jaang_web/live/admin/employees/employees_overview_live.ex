@@ -1,4 +1,4 @@
-defmodule JaangWeb.Admin.EmployeesOverviewLive do
+defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
   use JaangWeb, :dashboard_live_view
 
   def mount(_params, _session, socket) do

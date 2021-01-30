@@ -1,4 +1,4 @@
-defmodule JaangWeb.Admin.CustomerServiceRefundRequestsLive do
+defmodule JaangWeb.Admin.CustomerServices.CustomerServiceRefundRequestsLive do
   use JaangWeb, :dashboard_live_view
 
   def mount(_params, _session, socket) do

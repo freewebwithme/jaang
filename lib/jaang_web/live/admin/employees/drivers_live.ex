@@ -1,4 +1,4 @@
-defmodule JaangWeb.Admin.DriversLive do
+defmodule JaangWeb.Admin.Employees.DriversLive do
   use JaangWeb, :dashboard_live_view
 
   def mount(_params, _session, socket) do

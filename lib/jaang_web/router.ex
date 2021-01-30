@@ -33,21 +33,22 @@ defmodule JaangWeb.Router do
   scope "/admin", JaangWeb.Admin do
     pipe_through :dashboard
 
-    live "/", HomeLive
-    live "/orders", OrdersLive
+    live "/", Home.HomeLive
+    live "/orders", Orders.OrdersLive
+    live "/orders/detail/:id", Orders.OrderDetailLive
 
-    live "/partners", PartnersOverviewLive
-    live "/partners/hannam", HannamChainLive
+    live "/partners", Partners.PartnersOverviewLive
+    live "/partners/hannam", Partners.HannamChainLive
 
-    live "/customers", CustomersLive
+    live "/customers", Customers.CustomersLive
 
-    live "/employees", EmployeesOverviewLive
-    live "/employees/shoppers", ShoppersLive
-    live "/employees/drivers", DriversLive
+    live "/employees", Employees.EmployeesOverviewLive
+    live "/employees/shoppers", Employees.ShoppersLive
+    live "/employees/drivers", Employees.DriversLive
 
-    live "/customer-services", CustomerServicesOverviewLive
-    live "/customer-services/messages", CustomerServiceMessagesLive
-    live "/customer-services/refund-request", CustomerServiceRefundRequestsLive
+    live "/customer-services", CustomerServices.CustomerServicesOverviewLive
+    live "/customer-services/messages", CustomerServices.CustomerServiceMessagesLive
+    live "/customer-services/refund-request", CustomerServices.CustomerServiceRefundRequestsLive
   end
 
   scope "/", JaangWeb do

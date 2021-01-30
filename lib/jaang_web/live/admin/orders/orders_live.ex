@@ -1,4 +1,4 @@
-defmodule JaangWeb.Admin.OrdersLive do
+defmodule JaangWeb.Admin.Orders.OrdersLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Invoice.Invoices
 

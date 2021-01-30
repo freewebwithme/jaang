@@ -1,4 +1,4 @@
-defmodule JaangWeb.Admin.HannamChainLive do
+defmodule JaangWeb.Admin.Partners.HannamChainLive do
   use JaangWeb, :dashboard_live_view
 
   def mount(_params, _session, socket) do

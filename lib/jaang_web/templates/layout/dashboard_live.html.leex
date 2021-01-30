@@ -73,7 +73,7 @@
           <div class="mt-5 flex-1 h-0 overflow-y-auto">
             <nav class="px-2 space-y-1">
               <!-- Current: "bg-indigo-800 text-white", Default: "text-indigo-100 hover:bg-indigo-600" -->
-              <%= live_redirect to: Routes.live_path(@socket,JaangWeb.Admin.HomeLive),
+              <%= live_redirect to: Routes.live_path(@socket,JaangWeb.Admin.Home.HomeLive),
                   class: if @current_page == "Home", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                          else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
               do %>
@@ -84,7 +84,7 @@
                 Dashboard
               <% end %>
 
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.OrdersLive),
+              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrdersLive),
                   class: if @current_page == "Orders", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
               do %>
@@ -110,7 +110,7 @@
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.PartnersOverviewLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.PartnersOverviewLive),
                       class: if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -121,7 +121,7 @@
                     Overview
                   <% end %>
                   
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.HannamChainLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.HannamChainLive),
                       class: if @current_page == "Hannam", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -134,7 +134,7 @@
                 </div>
               </div>
 
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomersLive),
+              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomersLive),
                   class: if @current_page == "Customers", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
               do %>
@@ -162,7 +162,7 @@
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.EmployeesOverviewLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.EmployeesOverviewLive),
                       class: if @current_page == "Employees Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -172,7 +172,7 @@
                     </svg>
                     Overview
                   <% end %>
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.ShoppersLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.ShoppersLive),
                       class: if @current_page == "Shoppers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -184,7 +184,7 @@
                     Shoppers
                   <% end %>
                   
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.DriversLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.DriversLive),
                       class: if @current_page == "Drivers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -243,7 +243,7 @@
             <nav class="flex-1 px-2 space-y-1">
               <!-- Current: "bg-indigo-800 text-white", Default: "text-indigo-100 hover:bg-indigo-600" -->
 
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.HomeLive),
+              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Home.HomeLive),
                   class: if @current_page == "Home", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                          else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
               do %>
@@ -256,7 +256,7 @@
 
               <% end %>
             
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.OrdersLive),
+              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrdersLive),
                   
                   class: if @current_page == "Orders", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
@@ -282,7 +282,7 @@
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.PartnersOverviewLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.PartnersOverviewLive),
                       class: if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -293,7 +293,7 @@
                     Overview
                   <% end %>
                   
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.HannamChainLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.HannamChainLive),
                       class: if @current_page == "Hannam", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -305,7 +305,7 @@
                   <% end %>
                 </div>
               </div>
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomersLive),
+              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomersLive),
                   
                   class: if @current_page == "Customers", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
@@ -332,7 +332,7 @@
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.EmployeesOverviewLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.EmployeesOverviewLive),
                       class: if @current_page == "Employees Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -343,7 +343,7 @@
                     Overview
                   <% end %>
                   
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.ShoppersLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.ShoppersLive),
                       class: if @current_page == "Shoppers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -355,7 +355,7 @@
                     Shoppers
                   <% end %>
 
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.DriversLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.DriversLive),
                       class: if @current_page == "Drivers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -386,7 +386,7 @@
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServicesOverviewLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServicesOverviewLive),
                       class: if @current_page == "Customer Services Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -397,7 +397,7 @@
                     Overview
                   <% end %>
                   
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServiceMessagesLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServiceMessagesLive),
                       class: if @current_page == "Customer Service Messages", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -407,7 +407,7 @@
                     Messages 
                   <% end %>
 
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServiceRefundRequestsLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServiceRefundRequestsLive),
                       class: if @current_page == "Refund Request", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>

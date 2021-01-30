@@ -1,4 +1,4 @@
-defmodule JaangWeb.Admin.CustomerServicesOverviewLive do
+defmodule JaangWeb.Admin.CustomerServices.CustomerServicesOverviewLive do
   use JaangWeb, :dashboard_live_view
 
   def mount(_params, _session, socket) do

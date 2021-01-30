@@ -52,4 +52,13 @@ defmodule Jaang.Admin.Invoice.Invoices do
     end)
     |> Repo.all()
   end
+
+  @doc """
+  Get invoice by id and preload orders and user information
+  """
+
+  def get_invoice(invoice_id) do
+    query = from i in Invoice, where: i.id == ^invoice_id
+    Repo.one(query) |> Repo.preload([:orders, :user])
+  end
 end
