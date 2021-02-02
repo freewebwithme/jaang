@@ -11,6 +11,23 @@
   - Display drivers
   - Assign orders to drivers.
 
+  - Partners page
+    [Overview page]
+      - Published products
+      - Unpublished products 
+      - Shopper 
+      - Driver 
+      - Gross sales
+      - Net income 
+      - Number of orders
+      - Number of refund request
+
+  - Product page
+    [Overview page]
+      - Show parners' stats(published and unpublished products count)
+      - Product page
+        - Product table that has edit, delete and add new product function
+
   [Features]
     - Admin has to view, update and search order
       - Order detail page

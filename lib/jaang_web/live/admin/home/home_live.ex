@@ -3,7 +3,7 @@ defmodule JaangWeb.Admin.Home.HomeLive do
   alias Jaang.Admin.Invoice.Invoices
 
   def mount(_params, _session, socket) do
-    {:ok, socket, temporary_assigns: [unfulfilled_invoices: []]}
+    {:ok, socket, temporary_assigns: [invoices: []]}
   end
 
   def handle_params(params, _url, socket) do

@@ -5,12 +5,14 @@ defmodule JaangWeb.Admin.Helpers do
     Money.to_string(money)
   end
 
-  def display_phone_number(phone_number) do
+  def display_phone_number(phone_number) when is_binary(phone_number) do
     area_code = String.slice(phone_number, 0, 3)
     first_three = String.slice(phone_number, 3, 3)
     last_four = String.slice(phone_number, 6, 4)
     "(#{area_code})#{first_three}-#{last_four}"
   end
+
+  def display_phone_number(phone_number) when is_nil(phone_number), do: nil
 
   def capitalize_text(text) when is_atom(text) do
     text = Atom.to_string(text)
@@ -26,6 +28,19 @@ defmodule JaangWeb.Admin.Helpers do
   end
 
   def uppercase_text(text) when is_nil(text), do: nil
+
+  @doc """
+  Convert atom to string or string to atom depends on argument
+  """
+  def convert_atom_and_string(text) when is_atom(text) do
+    Atom.to_string(text) |> String.capitalize()
+  end
+
+  def convert_atom_and_string(text) when is_binary(text) do
+    String.downcase(text) |> String.to_atom()
+  end
+
+  def convert_atom_and_string(text) when is_nil(text), do: nil
 
   def has_next_page?(num_of_result, per_page) do
     if num_of_result < per_page do

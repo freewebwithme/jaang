@@ -6,7 +6,7 @@ defmodule JaangWeb.Admin.AdminUserAuth do
   import Phoenix.Controller
 
   alias Jaang.Admin.Account.AdminAccounts
-  alias JaangWeb.Admin.HomeLive
+  alias JaangWeb.Admin.Home.HomeLive
   alias JaangWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.

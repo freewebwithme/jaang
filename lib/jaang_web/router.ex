@@ -38,7 +38,12 @@ defmodule JaangWeb.Router do
     live "/orders/detail/:id", Orders.OrderDetailLive
 
     live "/partners", Partners.PartnersOverviewLive
-    live "/partners/hannam", Partners.HannamChainLive
+    live "/partners/:store_id", Partners.PartnerLive
+    live "/partners/orders/:store_name/:order_id/detail", Partners.PartnerOrderDetailLive
+
+    live "/products", Products.ProductsLive
+    live "/products/list/:published", Products.ProductsListLive
+    live "/products/detail/:product_id", Products.ProductDetailLive
 
     live "/customers", Customers.CustomersLive
 

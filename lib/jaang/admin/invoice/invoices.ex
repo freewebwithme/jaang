@@ -17,7 +17,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
   end
 
   @doc """
-  Returns a list of donations matching the given `criteria`
+  Returns a list of invoice matching the given `criteria`
 
   Example Criteria:
 
@@ -29,8 +29,6 @@ defmodule Jaang.Admin.Invoice.Invoices do
   """
   def get_invoices(criteria) when is_list(criteria) do
     query = from(i in Invoice)
-    IO.puts("Inspecting criteria")
-    IO.inspect(criteria)
 
     Enum.reduce(criteria, query, fn
       {:paginate, %{page: page, per_page: per_page}}, query ->
@@ -53,6 +51,10 @@ defmodule Jaang.Admin.Invoice.Invoices do
     |> Repo.all()
   end
 
+  def get_invoices() do
+    Repo.all(Invoice)
+  end
+
   @doc """
   Get invoice by id and preload orders and user information
   """
@@ -60,5 +62,13 @@ defmodule Jaang.Admin.Invoice.Invoices do
   def get_invoice(invoice_id) do
     query = from i in Invoice, where: i.id == ^invoice_id
     Repo.one(query) |> Repo.preload([:orders, :user])
+  end
+
+  def update_invoice(invoice_id, attrs) do
+    invoice = get_invoice(invoice_id)
+
+    invoice
+    |> Invoice.changeset(attrs)
+    |> Repo.update()
   end
 end

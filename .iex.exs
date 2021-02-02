@@ -79,3 +79,6 @@ stripe_id = "cus_IQ6pa99rGTl2KQ"
 
 #### Admin
 alias Jaang.Admin.Invoice.Invoices
+alias Jaang.Admin.Product.Products
+alias Jaang.Admin.Store.Stores
+alias Jaang.Admin.Order.Orders

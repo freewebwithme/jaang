@@ -1,8 +1,7 @@
-defmodule JaangWeb.Admin.Partners.HannamChainLive do
+defmodule JaangWeb.Admin.Products.ProductsLive do
   use JaangWeb, :dashboard_live_view
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, current_page: "Hannam")
     {:ok, socket}
   end
 end
