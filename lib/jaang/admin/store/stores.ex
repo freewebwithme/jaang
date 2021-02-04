@@ -14,7 +14,7 @@ defmodule Jaang.Admin.Store.Stores do
   to get information about stores to display store list in
   navigation menu
   """
-  def get_store_info() do
+  def list_stores() do
     Repo.all(Store)
   end
 end

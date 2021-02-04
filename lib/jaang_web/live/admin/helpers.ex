@@ -1,6 +1,14 @@
 defmodule JaangWeb.Admin.Helpers do
   alias Jaang.Utility
 
+  @doc """
+  Pick first product image from list of product images
+  """
+  def pick_product_image(product_images) do
+    [first_image] = Enum.filter(product_images, &(&1.order == 1))
+    first_image.image_url
+  end
+
   def display_money(%Money{} = money) do
     Money.to_string(money)
   end

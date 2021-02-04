@@ -165,7 +165,7 @@
             </div>
           
          
-          <!-- Orders table -->
+    <!-- Orders table -->
     <div class="flex flex-col mt-10">
       <div class="max-w-7xl px-1 sm:px-2 md:px-4 mb-5">
         <h1 class="text-2xl font-semibold text-gray-900">Orders</h1>
@@ -175,7 +175,7 @@
         <div class="">
           <form class="" id="select-by-state" phx-change="select-by-state">
             <select name="by-state">
-              <%= options_for_select(["All", "Cart", "Refunded", "Submitted", "Shopping", "Packed", "On the way", "Delivered"], @filter_by) %>
+              <%= options_for_select(["All", "Cart", "Refunded", "Submitted", "Shopping", "Packed", "On_the_way", "Delivered"], @filter_by) %>
             </select>
             <label for="by-state">by state</label>
           </form>
@@ -283,7 +283,9 @@
                           @socket,
                           __MODULE__,
                           page: @options.page - 1,
-                          per_page: @options.per_page
+                          per_page: @options.per_page,
+                          has_next_page: @has_next_page,
+                          filter_by: @filter_by
                         ),
                         class: "border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" do %>
                       <svg class="mr-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -303,7 +305,9 @@
                           @socket,
                           __MODULE__,
                           page: i,
-                          per_page: @options.per_page
+                          per_page: @options.per_page,
+                          has_next_page: @has_next_page,
+                          filter_by: @filter_by
                       ),
                       class: (if i == @options.page, do: "border-indigo-500 text-gray-500 hover:text-gray-700 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium",
                       else: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium")  %>
@@ -318,7 +322,9 @@
                             @socket,
                             __MODULE__,
                             page: @options.page + 1,
-                            per_page: @options.per_page
+                            per_page: @options.per_page,
+                            has_next_page: @has_next_page,
+                            filter_by: @filter_by
                           ),
                          class: "border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" do %>
                     Next
@@ -335,7 +341,7 @@
           </div>
         </div>
       </div>
-          </div>
+    </div>
         </div>
       </div>
     </main>

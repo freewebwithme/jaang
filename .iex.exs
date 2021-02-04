@@ -47,7 +47,16 @@ alias Jaang.Repo
 alias Jaang.{Category, Store, Product}
 alias Jaang.Category.{Categories, SubCategory}
 alias Jaang.Store.Stores
-alias Jaang.Product.{Products, Tag, ProductTags, RecipieTags, ProductImage, ProductPrice}
+
+alias Jaang.Product.{
+  Products,
+  Tag,
+  ProductTags,
+  RecipieTags,
+  ProductImage,
+  ProductPrice,
+  MarketPrice
+}
 
 alias Jaang.{
   StoreManager,

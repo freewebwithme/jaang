@@ -14,8 +14,7 @@ alias Jaang.{Store, Category, Product, SearchManager}
 alias Jaang.Category.{SubCategory, Categories}
 alias Jaang.Store.Stores
 alias Jaang.Category.Categories
-alias Jaang.Product.Products
-alias Jaang.Product.ProductPrice
+alias Jaang.Product.{Products, MarketPrice}
 alias Jaang.Repo
 import Ecto.Query
 
@@ -138,9 +137,11 @@ IO.puts("Finished creating categories...")
 IO.puts("Creating unit...")
 
 # Create Unit
-{:ok, lb} = Products.create_unit(%{name: "kgs"})
-{:ok, each} = Products.create_unit(%{name: "bunches"})
-{:ok, pack} = Products.create_unit(%{name: "fl oz"})
+{:ok, lb} = Products.create_unit(%{name: "lb"})
+{:ok, each} = Products.create_unit(%{name: "each"})
+{:ok, pack} = Products.create_unit(%{name: "pack"})
+{:ok, kg} = Products.create_unit(%{name: "kg"})
+{:ok, ct} = Products.create_unit(%{name: "ct"})
 
 IO.puts("Finished creating units...")
 
@@ -191,7 +192,9 @@ product_image_urls = [
 units = [
   lb,
   each,
-  pack
+  pack,
+  kg,
+  ct
 ]
 
 stores = [
@@ -277,8 +280,9 @@ product_names = [
 ]
 
 # Create Products for store 1
+IO.puts("Start to create PRODUCTS for Store 1")
+
 for x <- 0..99 do
-  IO.puts("Start to create PRODUCTS for Store 1")
   store = store1
   category = Enum.random(categories)
   # get sub category
@@ -295,7 +299,6 @@ for x <- 0..99 do
     directions:
       "Keep refrigerated. Shake well. Best if used within 7-10 days after opening. Do not use.",
     warnings: "Do no reuse.",
-    regular_price: Enum.random(prices),
     published: true,
     unit_id: unit.id,
     unit_name: unit.name,
@@ -329,28 +332,7 @@ for x <- 0..99 do
       order: 3
     })
 
-  # create product prrices
-  #  attrs1 = %{
-  #    start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
-  #    end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
-  #    on_sale: false,
-  #    original_price: Money.new(Enum.random(prices), :USD),
-  #    sale_price: Money.new(0, :USD)
-  #  }
-  #
-  #  ProductPrice.create_product_price(product.id, attrs1)
-  #
-  #  attrs2 = %{
-  #    start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
-  #    end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
-  #    on_sale: false,
-  #    original_price: Money.new(Enum.random(prices), :USD),
-  #    sale_price: Money.new(0, :USD)
-  #  }
-  #
-  #  ProductPrice.create_product_price(product.id, attrs2)
-
-  attrs3 = %{
+  attrs = %{
     start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, timezone),
     end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, timezone),
     on_sale: false,
@@ -358,15 +340,17 @@ for x <- 0..99 do
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product.id, attrs3)
+  MarketPrice.create_market_price_with_product_price(product.id, attrs)
 
-  IO.puts("Finished to create PRODUCTS for Store 1")
   # Creating tags
 end
 
+IO.puts("Finished to create PRODUCTS for Store 1")
+
 # Create Products for store 2
+IO.puts("Start to create PRODUCTS for Store 2")
+
 for x <- 0..99 do
-  IO.puts("Start to create PRODUCTS for Store 2")
   store = store2
   category = Enum.random(categories)
   # get sub category
@@ -383,7 +367,6 @@ for x <- 0..99 do
     directions:
       "Keep refrigerated. Shake well. Best if used within 7-10 days after opening. Do not use.",
     warnings: "Do no reuse.",
-    regular_price: Enum.random(prices),
     published: true,
     unit_id: unit.id,
     unit_name: unit.name,
@@ -417,28 +400,7 @@ for x <- 0..99 do
       order: 3
     })
 
-  # create product prrices
-  # attrs1 = %{
-  #  start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
-  #  end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
-  #  on_sale: false,
-  #  original_price: Money.new(Enum.random(prices), :USD),
-  #  sale_price: Money.new(0, :USD)
-  # }
-
-  # ProductPrice.create_product_price(product.id, attrs1)
-
-  # attrs2 = %{
-  #  start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
-  #  end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
-  #  on_sale: false,
-  #  original_price: Money.new(Enum.random(prices), :USD),
-  #  sale_price: Money.new(0, :USD)
-  # }
-
-  # ProductPrice.create_product_price(product.id, attrs2)
-
-  attrs3 = %{
+  attrs = %{
     start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, timezone),
     end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, timezone),
     on_sale: false,
@@ -446,15 +408,16 @@ for x <- 0..99 do
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product.id, attrs3)
+  MarketPrice.create_market_price_with_product_price(product.id, attrs)
   # Creating tags
-
-  IO.puts("Finished to create PRODUCTS for Store 2")
 end
 
+IO.puts("Finished to create PRODUCTS for Store 2")
+
 # Create Products for store 3
+IO.puts("Start to create PRODUCTS for Store 3")
+
 for x <- 0..99 do
-  IO.puts("Start to create PRODUCTS for Store 3")
   store = store3
   category = Enum.random(categories)
   # get sub category
@@ -471,7 +434,6 @@ for x <- 0..99 do
     directions:
       "Keep refrigerated. Shake well. Best if used within 7-10 days after opening. Do not use.",
     warnings: "Do no reuse.",
-    regular_price: Enum.random(prices),
     published: true,
     unit_id: unit.id,
     unit_name: unit.name,
@@ -505,28 +467,7 @@ for x <- 0..99 do
       order: 3
     })
 
-  # create product prrices
-  # attrs1 = %{
-  #  start_date: Timex.to_datetime({{2016, 6, 24}, {0, 0, 0}}, @timezone),
-  #  end_date: Timex.to_datetime({{2017, 12, 12}, {0, 0, 0}}, @timezone),
-  #  on_sale: false,
-  #  original_price: Money.new(Enum.random(prices), :USD),
-  #  sale_price: Money.new(0, :USD)
-  # }
-
-  # ProductPrice.create_product_price(product.id, attrs1)
-
-  # attrs2 = %{
-  #  start_date: Timex.to_datetime({{2017, 12, 24}, {0, 0, 0}}, @timezone),
-  #  end_date: Timex.to_datetime({{2019, 12, 12}, {0, 0, 0}}, @timezone),
-  #  on_sale: false,
-  #  original_price: Money.new(Enum.random(prices), :USD),
-  #  sale_price: Money.new(0, :USD)
-  # }
-
-  # ProductPrice.create_product_price(product.id, attrs2)
-
-  attrs3 = %{
+  attrs = %{
     start_date: Timex.to_datetime({{2019, 12, 24}, {0, 0, 0}}, timezone),
     end_date: Timex.to_datetime({{2039, 12, 12}, {0, 0, 0}}, timezone),
     on_sale: false,
@@ -534,10 +475,11 @@ for x <- 0..99 do
     sale_price: Money.new(0, :USD)
   }
 
-  ProductPrice.create_product_price(product.id, attrs3)
+  MarketPrice.create_market_price_with_product_price(product.id, attrs)
   # Creating tags
-  IO.puts("Finished to create PRODUCTS for Store 3")
 end
+
+IO.puts("Finished to create PRODUCTS for Store 3")
 
 IO.puts("Adding search_term....")
 SearchManager.create_search_term(%{term: "kimchi", counter: 1, store_id: 1})
@@ -573,3 +515,5 @@ SearchManager.create_search_term(%{term: "dumpling", counter: 1, store_id: 3})
 SearchManager.create_search_term(%{term: "seaweed", counter: 1, store_id: 3})
 SearchManager.create_search_term(%{term: "noodles", counter: 1, store_id: 3})
 IO.puts("Finished adding search_term.")
+
+IO.puts("Finished seeds.exs")

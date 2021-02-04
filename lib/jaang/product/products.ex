@@ -3,7 +3,15 @@ defmodule Jaang.Product.Products do
    Function module for Product
   """
   alias Jaang.{Product, Repo}
-  alias Jaang.Product.{Unit, ProductImage, ProductTags, ProductRecipeTags, ProductPrice}
+
+  alias Jaang.Product.{
+    Unit,
+    ProductImage,
+    ProductTags,
+    ProductRecipeTags,
+    MarketPrice
+  }
+
   import Ecto.Query
 
   @timezone "America/Los_Angeles"
@@ -23,7 +31,7 @@ defmodule Jaang.Product.Products do
     %{original_price: original_price} = attrs
 
     # When creating product, create also product_price with end date 20 years after.
-    pp_attrs = %{
+    mp_attrs = %{
       start_date: Timex.now(@timezone),
       end_date: Timex.add(Timex.now(@timezone), Timex.Duration.from_days(7300)),
       on_sale: false,
@@ -31,8 +39,8 @@ defmodule Jaang.Product.Products do
       sale_price: Money.new(0)
     }
 
-    # Create product price
-    ProductPrice.create_product_price(product.id, pp_attrs)
+    # Create market price with product price
+    MarketPrice.create_market_price_with_product_price(product.id, mp_attrs)
   end
 
   def create_unit(attrs) do

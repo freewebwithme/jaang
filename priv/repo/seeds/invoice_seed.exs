@@ -3,8 +3,48 @@ alias Jaang.Checkout.Order
 alias Jaang.Invoice.Invoices
 # Create order(cart)
 # loop through each user
+statuses = [
+  :submitted,
+  :shopping,
+  :packed,
+  :on_the_way,
+  :delivered
+]
 
-for user_id <- 12..21 do
+driver_tips = [
+  100,
+  200,
+  300,
+  150,
+  400,
+  450,
+  500
+]
+
+subtotals = [
+  5500,
+  7700,
+  3604,
+  4893,
+  9000
+]
+
+totals = [
+  12000,
+  23000,
+  43000,
+  9000,
+  21400
+]
+
+item_adjustments = [
+  899,
+  500,
+  1504,
+  3400
+]
+
+for user_id <- 2..11 do
   # Store 1
   for x <- 0..9 do
     invoice = Invoices.create_invoice(user_id)
@@ -20,15 +60,15 @@ for user_id <- 12..21 do
     invoice =
       Invoices.update_invoice(invoice, %{
         delivery_fee: Money.new(499),
-        driver_tip: Money.new(100),
+        driver_tip: Money.new(Enum.random(driver_tips)),
         sales_tax: Money.new(599),
-        subtotal: Money.new(5500),
-        total: Money.new(6583),
-        item_adjustment: Money.new(899),
+        subtotal: Money.new(Enum.random(subtotals)),
+        total: Money.new(Enum.random(totals)),
+        item_adjustment: Money.new(Enum.random(item_adjustments)),
         delivery_time: "1pm to 3pm on Today",
         pm_intent_id: "somePaymentMethodID",
         payment_method: "Ending with 4242",
-        status: :submitted,
+        status: Enum.random(statuses),
         total_items: 5,
         recipient: "David",
         address_line_one: "777 S Vermont Ave",

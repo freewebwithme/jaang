@@ -20,6 +20,7 @@ defmodule Jaang.Product do
     field :category_name, :string
     field :sub_category_name, :string
 
+    has_many :market_prices, Jaang.Product.MarketPrice
     has_many :product_prices, Jaang.Product.ProductPrice
     has_many :product_images, Jaang.Product.ProductImage
 
