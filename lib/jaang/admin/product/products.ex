@@ -16,36 +16,59 @@ defmodule Jaang.Admin.Product.Products do
   """
   def get_products(store_id, criteria) when is_list(criteria) do
     query = from(p in Product, where: p.store_id == ^store_id)
+    IO.puts("getting products")
 
-    Enum.reduce(criteria, query, fn
-      {:paginate, %{page: page, per_page: per_page}}, query ->
-        from q in query,
-          offset: ^((page - 1) * per_page),
-          limit: ^per_page
+    products =
+      Enum.reduce(criteria, query, fn
+        {:paginate, %{page: page, per_page: per_page}}, query ->
+          from q in query,
+            offset: ^((page - 1) * per_page),
+            limit: ^per_page
 
-      {:sort, %{sort_by: sort_by, sort_order: sort_order}}, query ->
-        from q in query,
-          order_by: [{^sort_order, ^sort_by}]
+        {:sort, %{sort_by: sort_by, sort_order: sort_order}}, query ->
+          from q in query,
+            order_by: [{^sort_order, ^sort_by}]
 
-      {:filter_by, %{by_state: state}}, query ->
-        IO.puts(state)
+        {:filter_by, %{by_state: state}}, query ->
+          cond do
+            state == "Published" ->
+              from(q in query, where: q.published == true)
 
-        cond do
-          state == "Published" ->
-            from(q in query, where: q.published == true)
+            state == "Unpublished" ->
+              from(q in query, where: q.published == false)
 
-          state == "Unpublished" ->
-            from(q in query, where: q.published == false)
+            state == "All" ->
+              from(q in query)
 
-          state == "All" ->
-            from(q in query)
+            true ->
+              from(q in query)
+          end
 
-          true ->
-            from(q in query)
-        end
-    end)
-    |> Repo.all()
-    |> Repo.preload([:market_prices, :product_prices, :product_images])
+        {:search_by, %{search_by: search_by, search_term: term}}, query ->
+          search_pattern = "%#{term}%"
+          IO.puts("searching products")
+
+          if search_by == "Name" do
+            IO.puts("Search by name")
+
+            from q in query,
+              where: ilike(q.name, ^search_pattern)
+          else
+            from q in query,
+              where: ilike(q.barcode, ^search_pattern)
+          end
+      end)
+      |> Repo.all()
+      |> Repo.preload([:market_prices, :product_prices, :product_images])
+
+    products
+  end
+
+  def get_product(store_id, product_id) do
+    query = from p in Product, where: p.store_id == ^store_id, where: p.id == ^product_id
+
+    Repo.one(query)
+    |> Repo.preload([:market_prices, :product_prices, :product_images, :tags, :recipe_tags])
   end
 
   @doc """

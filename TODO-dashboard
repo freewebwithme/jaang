@@ -28,6 +28,16 @@
       - Product page
         - Product table that has edit, delete and add new product function
 
+  [ 2/3/2021 ]
+    - Search products
+  [ 2/4/2021 ]
+    - Product detail screen
+      - Display basic information with image
+      - Add on sale? prices
+      - Product edit screen
+        - Upload product image 
+        - edit basic information
+
   [Features]
     - Admin has to view, update and search order
       - Order detail page

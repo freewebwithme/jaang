@@ -43,7 +43,8 @@ defmodule JaangWeb.Router do
 
     live "/products", Products.ProductsLive
     live "/products/:store_name/list", Products.ProductsListLive
-    live "/products/detail/:product_id", Products.ProductDetailLive
+    live "/products/:store_name/search/", Products.ProductSearchResultLive
+    live "/products/detail/:store_id/:product_id", Products.ProductDetailLive
 
     live "/customers", Customers.CustomersLive
 
