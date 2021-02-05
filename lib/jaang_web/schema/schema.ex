@@ -620,7 +620,6 @@ defmodule JaangWeb.Schema do
     field :vendor, :string
     field :published, :boolean
     field :barcode, :string
-    field :unit_id, :string
     field :unit_name, :string
     field :store_name, :string
     field :store_id, :integer

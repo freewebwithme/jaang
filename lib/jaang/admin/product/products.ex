@@ -68,7 +68,15 @@ defmodule Jaang.Admin.Product.Products do
     query = from p in Product, where: p.store_id == ^store_id, where: p.id == ^product_id
 
     Repo.one(query)
-    |> Repo.preload([:market_prices, :product_prices, :product_images, :tags, :recipe_tags])
+    |> Repo.preload([
+      :market_prices,
+      :product_prices,
+      :product_images,
+      :tags,
+      :recipe_tags,
+      :category,
+      :sub_category
+    ])
   end
 
   @doc """

@@ -45,6 +45,7 @@ defmodule JaangWeb.Router do
     live "/products/:store_name/list", Products.ProductsListLive
     live "/products/:store_name/search/", Products.ProductSearchResultLive
     live "/products/detail/:store_id/:product_id", Products.ProductDetailLive
+    live "/products/detail/:store_id/edit/:product_id", Products.ProductEditDetailLive
 
     live "/customers", Customers.CustomersLive
 
