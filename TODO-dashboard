@@ -32,11 +32,17 @@
     - Search products
   [ 2/4/2021 ]
     - Product detail screen
-      - Display basic information with image
+      - Display basic information with image(DONE)
       - Add on sale? prices
       - Product edit screen
         - Upload product image 
         - edit basic information
+
+  [ 2/5/2021 ]
+    - Edit product detail page
+      - Work on tags and recipe tags
+      - And update product
+      - Upload image to Amazon aws
 
   [Features]
     - Admin has to view, update and search order

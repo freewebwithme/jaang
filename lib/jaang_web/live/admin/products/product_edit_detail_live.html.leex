@@ -1,5 +1,8 @@
 <div class="container mx-auto">
-  <h2 class="py-5 px-10 text-3xl text-gray-900">Edit product detail</h2>
+  <div class="flex items-center justify-between">
+    <h2 class="py-5 px-10 text-3xl text-gray-900">Edit product detail</h2>
+    
+  </div>
   <div class="bg-white shadow overflow-hidden sm:rounded-lg  ml-10  sm:pt-4 sm:space-y-5">
     <div class="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
       <div>
@@ -54,11 +57,14 @@
         </ul>
       </div>
       <div class="space-y-6 sm:space-y-5">
-        <%= f = form_for @changeset, "#", [phx_submit: :save, class: "space-y-6 sm:space-y-5"]  %>
+        <%= f = form_for @changeset, "#", [phx_submit: :product_update, phx_change: :form_changed, 
+                class: "space-y-6 sm:space-y-5"]  %>
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :name, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+              <%= text_input f, :name, 
+              [phx_debounce: "blur", 
+               class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
               <%= error_tag f, :name %>
             </div>
           </div>
@@ -66,7 +72,9 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :description, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= textarea f, :description, class: "max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md", rows: 5 %>
+              <%= textarea f, :description, 
+                [phx_debounce: "blur", 
+                 class: "max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md", rows: 5] %>
               <%= error_tag f, :description %>
               <p class="mt-2 text-sm text-gray-500">Write a product description.</p>
             </div>
@@ -75,7 +83,9 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :barcode, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :barcode, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+              <%= text_input f, :barcode, 
+                  class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
+                  phx_debounce: "blur" %>
               <%= error_tag f, :barcode %>
             </div>
           </div>
@@ -85,7 +95,8 @@
             <div class="mt-1 sm:mt-0 sm:col-span-2">
               <%= for market_price <- @changeset.data.market_prices do %>
                 <%= text_input f, :market_price,
-                    [class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
+                    [phx_debounce: "blue",
+                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
                      value: Helpers.display_money(market_price.original_price) ] %>
                 <%= error_tag f, :market_price %>
               <% end %>
@@ -97,8 +108,9 @@
             <div class="mt-1 sm:mt-0 sm:col-span-2">
               <%= for customer_price <- @changeset.data.product_prices do %>
                 <%= text_input f, :product_price,
-                    [class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
-                     value: Helpers.display_money(customer_price.original_price) ] %>
+                    [readonly: true, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
+                     value: Helpers.display_money(customer_price.original_price)
+                     ] %>
                 <%= error_tag f, :product_price %>
                 <p class="mt-2 text-sm text-gray-500">This field(customer price) is readonly and will be calculated automatically.</p>
               <% end %>
@@ -109,9 +121,8 @@
             <%= label f, :category, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <%= inputs_for f, :category, fn fc -> %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <select name="product_category" id="product_category" class="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md" >
-                  <%= options_for_select(["Category 1", "Category 2", "Category 3"], "Category 1") %>
-                </select>
+                <%= select fc, :name, Enum.map(@categories, & {&1.name, &1.id}),
+                    [selected: @changeset.data.category_id, class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
                 <%= error_tag fc, :name %>
               </div>
               <% end %>
@@ -121,9 +132,8 @@
             <%= label f, :sub_category, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <%= inputs_for f, :sub_category, fn fc -> %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <select name="product_sub_category" id="product_sub_category" class="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md" >
-                  <%= options_for_select(["Sub Category 1", "Sub Category 2", "Sub Category 3"], "Sub Category 1") %>
-                </select>
+                <%= select fc, :name, Enum.map(@sub_categories, & {&1.name, &1.id}),
+                    [selected: @changeset.data.sub_category_id, class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
                 <%= error_tag fc, :name %>
               </div>
               <% end %>
@@ -132,7 +142,9 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :ingredients, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= textarea f, :ingredients, class: "max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md", rows: 3 %>
+              <%= textarea f, :ingredients, 
+                  phx_debounce: "blur", 
+                  class: "max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md", rows: 3 %>
               <%= error_tag f, :ingredients %>
               <p class="mt-2 text-sm text-gray-500">Write a product ingredients.</p>
             </div>
@@ -141,7 +153,9 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :warnings, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :warnings, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+              <%= text_input f, :warnings,
+                  phx_debounce: "blue", 
+                  class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
               <%= error_tag f, :warnings %>
             </div>
           </div>
@@ -149,7 +163,9 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :unit_name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :unit_name, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+              <%= text_input f, :unit_name, 
+                  phx_debounce: "blur",
+                  class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
               <%= error_tag f, :unit_name %>
             </div>
           </div>
@@ -158,7 +174,8 @@
             <%= label f, :tags, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
                 <%= text_input f, :tag_name, 
-                    [class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
+                    [phx_debounce: "blur",
+                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
                      value: "tags name"] %>
                 <%= error_tag f, :tag_name %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated tag name.</p>
@@ -169,7 +186,8 @@
             <%= label f, :recipe_tags, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
                 <%= text_input f, :recipe_tag_name, 
-                    [class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
+                    [phx_debounce: "blur",
+                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
                      value: "recipe tags name"] %>
                 <%= error_tag f, :recipe_tag_name %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated recipe tag name.</p>
@@ -179,10 +197,18 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :store_name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :store_name, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+              <%= text_input f, :store_name, readonly: true, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
               <%= error_tag f, :store_name %>
               <p class="mt-2 text-sm text-gray-500">This field is readonly.</p>
             </div>
+          </div>
+          <div class="flex justify-end">
+            <div class="flex-shrink-0">
+              <%= submit "Save",
+                  class: "relative inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              %>
+            </div> 
+
           </div>
         </form>
       </div>
