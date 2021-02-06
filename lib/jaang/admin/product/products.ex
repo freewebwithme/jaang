@@ -65,12 +65,21 @@ defmodule Jaang.Admin.Product.Products do
   end
 
   def get_product(store_id, product_id) do
-    query = from p in Product, where: p.store_id == ^store_id, where: p.id == ^product_id
+    # query = from p in Product, where: p.store_id == ^store_id, where: p.id == ^product_id
+    query =
+      from p in Product,
+        where: p.store_id == ^store_id,
+        where: p.id == ^product_id,
+        join: mp in assoc(p, :market_prices),
+        on: mp.product_id == p.id,
+        where: fragment("now() between ? and ?", mp.start_date, mp.end_date),
+        join: pp in assoc(p, :product_prices),
+        on: pp.product_id == p.id,
+        where: fragment("now() between ? and ?", mp.start_date, pp.end_date),
+        preload: [market_prices: mp, product_prices: pp]
 
     Repo.one(query)
     |> Repo.preload([
-      :market_prices,
-      :product_prices,
       :product_images,
       :tags,
       :recipe_tags,

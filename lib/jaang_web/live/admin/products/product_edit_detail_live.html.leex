@@ -93,36 +93,57 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :market_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= for market_price <- @changeset.data.market_prices do %>
                 <%= text_input f, :market_price,
-                    [phx_debounce: "blue",
+                    [phx_debounce: "blur",
                      class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
-                     value: Helpers.display_money(market_price.original_price) ] %>
-                <%= error_tag f, :market_price %>
-              <% end %>
+                     value: @market_price ] %>
             </div>
           </div>
+
+          <%= if @on_sale do %>
+          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <%= label f, :market_sale_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
+            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                <%= text_input f, :market_sale_price,
+                    [phx_debounce: "blur",
+                     readonly: true,
+                     class: "text-red-600 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
+                     value: Helpers.display_money(@market_sale_price) ] %>
+            </div>
+          </div>
+          <% end %>
 
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :product_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= for customer_price <- @changeset.data.product_prices do %>
                 <%= text_input f, :product_price,
                     [readonly: true, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
-                     value: Helpers.display_money(customer_price.original_price)
+                     value: Helpers.display_money(@customer_price)
                      ] %>
-                <%= error_tag f, :product_price %>
                 <p class="mt-2 text-sm text-gray-500">This field(customer price) is readonly and will be calculated automatically.</p>
-              <% end %>
             </div>
           </div>
+
+          <%= if @on_sale do %>
+          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <%= label f, :product_sale_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
+            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                <%= text_input f, :product_sale_price,
+                    [readonly: true,
+                     class: "text-red-600 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
+                     value: Helpers.display_money(@customer_sale_price)
+                     ] %>
+                <p class="mt-2 text-sm text-gray-500">This field(customer sale price) is readonly and will be calculated automatically.</p>
+            </div>
+          </div>
+          <% end %>
 
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :category, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <%= inputs_for f, :category, fn fc -> %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= select fc, :name, Enum.map(@categories, & {&1.name, &1.id}),
-                    [selected: @changeset.data.category_id, class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
+                <%= select fc, :category_id, Enum.map(@categories, & {&1.name, &1.id}),
+                    [selected: @selected_category, class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
                 <%= error_tag fc, :name %>
               </div>
               <% end %>
@@ -132,9 +153,14 @@
             <%= label f, :sub_category, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <%= inputs_for f, :sub_category, fn fc -> %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= select fc, :name, Enum.map(@sub_categories, & {&1.name, &1.id}),
-                    [selected: @changeset.data.sub_category_id, class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
-                <%= error_tag fc, :name %>
+                <%= select fc, :sub_category_id, Enum.map(@sub_categories, & {&1.name, &1.id}),
+                    [selected: @selected_sub_category, 
+                     prompt: "Choose Sub category",
+                     class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"]
+                %>
+                <%= if @sub_category_error do %>
+                  <p class="text-red-600 text-sm mt-2">Please select sub category</p>
+                <% end %>
               </div>
               <% end %>
           </div>
@@ -173,11 +199,11 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :tags, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :tag_name, 
+                <%= text_input f, :tags, 
                     [phx_debounce: "blur",
                      class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
-                     value: "tags name"] %>
-                <%= error_tag f, :tag_name %>
+                     value: @tags] %>
+                <%= error_tag f, :tags %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated tag name.</p>
               </div>
           </div>
@@ -185,11 +211,11 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :recipe_tags, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :recipe_tag_name, 
+                <%= text_input f, :recipe_tags, 
                     [phx_debounce: "blur",
                      class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
-                     value: "recipe tags name"] %>
-                <%= error_tag f, :recipe_tag_name %>
+                     value: @recipe_tags] %>
+                <%= error_tag f, :recipe_tags %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated recipe tag name.</p>
               </div>
           </div>
@@ -205,7 +231,10 @@
           <div class="flex justify-end">
             <div class="flex-shrink-0">
               <%= submit "Save",
-                  class: "relative inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  [disabled: !@can_save,
+                   class: (if @can_save, do: "relative inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+                          else: "relative inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
+                  ]
               %>
             </div> 
 

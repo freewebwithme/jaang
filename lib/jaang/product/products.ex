@@ -14,8 +14,6 @@ defmodule Jaang.Product.Products do
 
   import Ecto.Query
 
-  @timezone "America/Los_Angeles"
-
   def create_product_for_seeds(attrs) do
     %Product{}
     |> Product.changeset(attrs)
@@ -28,19 +26,8 @@ defmodule Jaang.Product.Products do
       |> Product.changeset(attrs)
       |> Repo.insert()
 
-    %{original_price: original_price} = attrs
-
-    # When creating product, create also product_price with end date 20 years after.
-    mp_attrs = %{
-      start_date: Timex.now(@timezone),
-      end_date: Timex.add(Timex.now(@timezone), Timex.Duration.from_days(7300)),
-      on_sale: false,
-      original_price: original_price,
-      sale_price: Money.new(0)
-    }
-
     # Create market price with product price
-    MarketPrice.create_market_price_with_product_price(product.id, mp_attrs)
+    MarketPrice.create_market_price_with_product_price(product.id, attrs)
   end
 
   def create_unit(attrs) do
@@ -55,6 +42,12 @@ defmodule Jaang.Product.Products do
     %ProductImage{}
     |> ProductImage.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_product(product, attrs) do
+    product
+    |> Product.changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """

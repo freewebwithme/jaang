@@ -1,5 +1,6 @@
 defmodule Jaang.Release.Seeder do
   @moduledoc """
+  This module was for Render.com
   Release tasks for seeds.
   """
 

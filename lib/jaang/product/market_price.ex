@@ -60,9 +60,21 @@ defmodule Jaang.Product.MarketPrice do
     end
   end
 
+  @timezone "America/Los_Angeles"
+
   def create_market_price(product_id, attrs) do
+    # When creating product, create also product_price with end date 20 years after.
+    mp_attrs = %{
+      start_date: Timex.now(@timezone),
+      end_date: Timex.add(Timex.now(@timezone), Timex.Duration.from_days(7300)),
+      on_sale: false,
+      sale_price: Money.new(0)
+    }
+
+    merged_attrs = Map.merge(mp_attrs, attrs)
+
     %MarketPrice{}
-    |> changeset(attrs)
+    |> changeset(merged_attrs)
     |> put_change(:product_id, product_id)
     |> Repo.insert()
   end
@@ -70,24 +82,74 @@ defmodule Jaang.Product.MarketPrice do
   @doc """
   Create market price and product price with same data but
   different on prices
+
+  Before add new market price, get recent market price and
+  change end_date to new market price's start_date - 1 second
+
+  This function is called in `products` module
   """
   def create_market_price_with_product_price(product_id, attrs) do
-    {:ok, market_price} = create_market_price(product_id, attrs)
+    # Get recent market price
+    case get_market_price(product_id) do
+      # There is no available market price so just create new one
+      nil ->
+        {:ok, market_price} = create_market_price(product_id, attrs)
+        calculated_price = calculate_price(market_price.original_price)
+        calculated_sale_price = calculate_price(market_price.sale_price)
 
-    calculated_price = calculate_price(market_price.original_price)
-    calculated_sale_price = calculate_price(market_price.sale_price)
+        ProductPrice.create_product_price(product_id, %{
+          start_date: market_price.start_date,
+          end_date: market_price.end_date,
+          discount_percentage: market_price.discount_percentage,
+          on_sale: market_price.on_sale,
+          original_price: calculated_price,
+          sale_price: calculated_sale_price
+        })
 
-    ProductPrice.create_product_price(product_id, %{
-      start_date: market_price.start_date,
-      end_date: market_price.end_date,
-      discount_percentage: market_price.discount_percentage,
-      on_sale: market_price.on_sale,
-      original_price: calculated_price,
-      sale_price: calculated_sale_price
-    })
+      old_market_price ->
+        # Found recent(last) market price, so changed its end_date to new one's start_date - 1 second
+        {:ok, market_price} = create_market_price(product_id, attrs)
+        calculated_price = calculate_price(market_price.original_price)
+        calculated_sale_price = calculate_price(market_price.sale_price)
+
+        # Change end_date for market price
+        update_market_price(old_market_price, %{
+          end_date: Timex.subtract(market_price.start_date, Timex.Duration.from_seconds(1))
+        })
+
+        # Change end_date for Product price(customer price)
+
+        case ProductPrice.get_product_price(product_id) do
+          nil ->
+            {:ok, _product_price} =
+              ProductPrice.create_product_price(product_id, %{
+                start_date: market_price.start_date,
+                end_date: market_price.end_date,
+                discount_percentage: market_price.discount_percentage,
+                on_sale: market_price.on_sale,
+                original_price: calculated_price,
+                sale_price: calculated_sale_price
+              })
+
+          old_product_price ->
+            {:ok, product_price} =
+              ProductPrice.create_product_price(product_id, %{
+                start_date: market_price.start_date,
+                end_date: market_price.end_date,
+                discount_percentage: market_price.discount_percentage,
+                on_sale: market_price.on_sale,
+                original_price: calculated_price,
+                sale_price: calculated_sale_price
+              })
+
+            ProductPrice.update_product_price(old_product_price, %{
+              end_date: Timex.subtract(product_price.start_date, Timex.Duration.from_seconds(1))
+            })
+        end
+    end
   end
 
-  # Calculate price from market price(in store price) to Product price(client price)
+  # Calculate price from market price(In-store price) to Product price(customer price)
   # Add 20% margin
   # Formula
   # Price = Unit Cost/(1 – Gross Margin Percentage) = $100/(1 – .25) = $133.33

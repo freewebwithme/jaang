@@ -27,6 +27,10 @@ defmodule Jaang.Category.Categories do
     Repo.get(Category, id)
   end
 
+  def get_sub_category(id) do
+    Repo.get(SubCategory, id)
+  end
+
   def list_categories() do
     Repo.all(Category)
   end
