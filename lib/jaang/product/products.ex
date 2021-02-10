@@ -45,6 +45,10 @@ defmodule Jaang.Product.Products do
   end
 
   def update_product(product, attrs) do
+    IO.puts("Inspecting product changeset")
+    changeset = Product.changeset(product, attrs)
+    IO.inspect(changeset)
+
     product
     |> Product.changeset(attrs)
     |> Repo.update()

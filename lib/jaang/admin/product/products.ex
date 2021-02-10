@@ -1,5 +1,6 @@
 defmodule Jaang.Admin.Product.Products do
   alias Jaang.Product
+  alias Jaang.Product.ProductImage
   import Ecto.Query
   alias Jaang.Repo
 
@@ -15,8 +16,22 @@ defmodule Jaang.Admin.Product.Products do
   ]
   """
   def get_products(store_id, criteria) when is_list(criteria) do
-    query = from(p in Product, where: p.store_id == ^store_id)
+    query =
+      from(
+        p in Product,
+        where: p.store_id == ^store_id,
+        order_by: [asc: :id],
+        join: mp in assoc(p, :market_prices),
+        on: mp.product_id == p.id,
+        where: fragment("now() between ? and ?", mp.start_date, mp.end_date),
+        join: pp in assoc(p, :product_prices),
+        on: pp.product_id == p.id,
+        where: fragment("now() between ? and ?", mp.start_date, pp.end_date),
+        preload: [market_prices: mp, product_prices: pp]
+      )
+
     IO.puts("getting products")
+    product_images_query = from pi in ProductImage, order_by: pi.order
 
     products =
       Enum.reduce(criteria, query, fn
@@ -59,13 +74,15 @@ defmodule Jaang.Admin.Product.Products do
           end
       end)
       |> Repo.all()
-      |> Repo.preload([:market_prices, :product_prices, :product_images])
+      |> Repo.preload(product_images: product_images_query)
 
     products
   end
 
   def get_product(store_id, product_id) do
     # query = from p in Product, where: p.store_id == ^store_id, where: p.id == ^product_id
+    product_images_query = from pi in ProductImage, order_by: pi.order
+
     query =
       from p in Product,
         where: p.store_id == ^store_id,
@@ -80,12 +97,12 @@ defmodule Jaang.Admin.Product.Products do
 
     Repo.one(query)
     |> Repo.preload([
-      :product_images,
       :tags,
       :recipe_tags,
       :category,
       :sub_category
     ])
+    |> Repo.preload(product_images: product_images_query)
   end
 
   @doc """
@@ -101,5 +118,10 @@ defmodule Jaang.Admin.Product.Products do
   def list_products_by_store(store_id) do
     query = from p in Product, where: p.store_id == ^store_id
     Repo.all(query) |> Repo.preload([:market_prices, :product_prices, :product_images])
+  end
+
+  def delete_product_image(product_image_id) do
+    Repo.get_by(ProductImage, id: product_image_id)
+    |> Repo.delete()
   end
 end

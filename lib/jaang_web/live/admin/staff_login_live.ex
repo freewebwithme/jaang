@@ -10,6 +10,7 @@ defmodule JaangWeb.Admin.StaffLoginLive do
 
   def handle_event("save", %{"admin_user" => params}, socket) do
     %{"email" => email, "password" => password} = params
+    IO.inspect(params)
 
     case AdminAccounts.get_user_by_email_and_password(email, password) do
       nil ->
@@ -24,7 +25,8 @@ defmodule JaangWeb.Admin.StaffLoginLive do
          )}
 
       %AdminUser{} = _admin_user ->
-        changeset = AdminUser.changeset(%AdminUser{})
+        changeset = AdminUser.changeset(%AdminUser{}, %{email: email, password: password})
+        IO.puts("Found admin user")
 
         {:noreply,
          assign(

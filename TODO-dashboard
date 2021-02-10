@@ -33,18 +33,25 @@
   [ 2/4/2021 ]
     - Product detail screen
       - Display basic information with image(DONE)
-      - Add on sale? prices
-      - Product edit screen
-        - Upload product image 
-        - edit basic information
+      - Add on sale? prices(DONE)
+      - Product edit screen(DONE)
+        - Upload product image (DONE)
+        - edit basic information(DONE)
 
   [ 2/5/2021 ]
     - Edit product detail page
       - Work on tags and recipe tags(DONE)
       - Select category and sub category (DONE)
-      - Get category and sub category and set it for product, then update product
-      - And update product
-      - Upload image to Amazon aws
+      - Get category and sub category and set it for product, then update product(DONE)
+      - Upload image to Amazon aws(DONE)
+  
+  [ 2/7/2021 ]
+    - When I change category and sub category, it will clear out other form fields.(DONE)
+    - Upload image to Amazon aws (DONE)
+
+  [ 2/10/2021 ]
+    - Add new product page
+  
 
   [Features]
     - Admin has to view, update and search order

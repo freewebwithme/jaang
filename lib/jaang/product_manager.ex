@@ -3,6 +3,7 @@ defmodule Jaang.ProductManager do
   alias Jaang.Category.Categories
 
   defdelegate create_product(attrs), to: Products
+  defdelegate update_product(product, attrs), to: Products
   defdelegate create_unit(attrs), to: Products
   defdelegate create_product_image(product, attrs), to: Products
   defdelegate get_product(id), to: Products
