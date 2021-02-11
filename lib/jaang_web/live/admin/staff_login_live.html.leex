@@ -9,7 +9,6 @@
         <%= @error_message %>
       </p>
     </div>
-    <p><%= @trigger_submit %></p>
    <%= f = form_for @changeset,
               Routes.admin_auth_path(@socket, :log_in),
               phx_submit: "save",

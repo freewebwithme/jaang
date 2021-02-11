@@ -1,8 +1,23 @@
 <div class="container mx-auto">
-  <h2 class="py-5 px-10 text-3xl text-gray-900">Products list for
-  <span class="text-indigo-600 font-bold">
-    <%= @store_name %>
-  </span> </h2>
+
+  <div class="flex items-center justify-between">
+    <h2 class="py-5 px-10 text-3xl text-gray-900">Products list for
+      <span class="text-indigo-600 font-bold">
+        <%= @store_name %>
+      </span>
+    </h2>
+    <div class="flex-shrink-0">
+      <%= live_redirect "Add product", to:
+          Routes.live_path(
+            @socket,
+            ProductAddLive,
+            store_id: @store_id
+          ),
+          class: "mr-5 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      %>
+    </div>
+
+  </div>
 
   <div class="flex justify-between items-center py-3 ml-10 ">
     <form class="flex md:ml-0" phx-submit="search">
@@ -14,7 +29,7 @@
             <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
           </svg>
         </div>
-        <input name="search-field" id="search_field" class="focus:border-indigo-500 focus:ring-indigo-500 rounded-md block w-full h-full pl-12 pr-3 py-5 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm" placeholder="Search" type="search" name="search">
+        <input required name="search-field" id="search_field" class="focus:border-indigo-500 focus:ring-indigo-500 rounded-md block w-full h-full pl-12 pr-3 py-5 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm" placeholder="Search" type="search" name="search">
       </div>
       <div class="flex items-center ml-6 justify-between">
         <label for="search-by">Search by</label>

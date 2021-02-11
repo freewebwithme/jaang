@@ -7,6 +7,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
   alias Jaang.Product.MarketPrice
   alias Jaang.ProductManager
   alias Jaang.Amazon.SimpleS3Upload
+  alias JaangWeb.Admin.Components.PublishedToggleComponent
 
   def mount(%{"store_id" => store_id, "product_id" => product_id}, _session, socket) do
     product = Products.get_product(store_id, product_id)
@@ -86,6 +87,13 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
     [on_sale] = Enum.map(product.market_prices, & &1.on_sale)
 
     {market_price, market_sale_price, product_price, product_sale_price, on_sale}
+  end
+
+  # Message from PublishedToggle Component about updated published state
+  def handle_info({:updated_product, updated_product}, socket) do
+    new_changeset = Product.changeset(updated_product, %{})
+    socket = assign(socket, changeset: new_changeset)
+    {:noreply, socket}
   end
 
   # Save the form
@@ -212,25 +220,6 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
           socket
       end
 
-    {:noreply, socket}
-  end
-
-  def handle_event("published", %{"published" => published}, socket) do
-    IO.inspect(published)
-    # get tags and recipe tags and convert to string format
-    tags = Product.build_recipe_tag_name_to_string(socket.assigns.product.tags)
-    recipe_tags = Product.build_recipe_tag_name_to_string(socket.assigns.product.recipe_tags)
-
-    {:ok, new_product} =
-      ProductManager.update_product(socket.assigns.product, %{
-        published: published,
-        tags: tags,
-        recipe_tags: recipe_tags
-      })
-
-    new_changeset = Product.changeset(new_product, %{})
-    IO.inspect(new_changeset.data.published)
-    socket = assign(socket, changeset: new_changeset)
     {:noreply, socket}
   end
 

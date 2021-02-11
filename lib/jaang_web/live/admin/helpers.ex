@@ -9,6 +9,22 @@ defmodule JaangWeb.Admin.Helpers do
     first_image.image_url
   end
 
+  def display_fullname(first, last) when is_binary(first) and is_binary(last) do
+    first <> " " <> last
+  end
+
+  def display_fullname(first, last) when is_binary(first) and is_nil(last) do
+    first
+  end
+
+  def display_fullname(first, last) when is_nil(first) and is_binary(last) do
+    last
+  end
+
+  def display_fullname(first, last) when is_nil(first) and is_nil(last) do
+    "No name"
+  end
+
   def display_money(%Money{} = money) do
     Money.to_string(money)
   end
@@ -55,6 +71,15 @@ defmodule JaangWeb.Admin.Helpers do
       false
     else
       true
+    end
+  end
+
+  def display_address(addresses) when is_list(addresses) do
+    if Enum.count(addresses) == 0 do
+      nil
+    else
+      [address] = Enum.filter(addresses, & &1.default)
+      address.address_line_one
     end
   end
 

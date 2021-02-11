@@ -1,7 +1,8 @@
 <div class="container mx-auto">
   <div class="flex items-center justify-between">
-    <h2 class="py-5 px-10 text-3xl text-gray-900">Edit product detail</h2>
-    <%= live_component @socket, PublishedToggleComponent, id: @product.id, changeset: @changeset, product: @product %>
+    <h2 class="py-5 px-10 text-3xl text-gray-900">Add product for
+      <span class="font-medium text-indigo-600"><%= @store_name %></span>
+    </h2>
   </div>
   <div class="bg-white shadow overflow-hidden sm:rounded-lg  ml-10  sm:pt-4 sm:space-y-5">
     <div class="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
@@ -18,20 +19,9 @@
               <div class="space-y-4">
                 <div class="aspect-w-3 aspect-h-2">
                   <img class="py-2 object-contain shadow-lg rounded-lg" 
-                      src="<%= if @image_one == nil, do: 'https://via.placeholder.com/250', else: @image_one.image_url %>"  alt="" />
+                      src="<%= if @image_one == nil, do: 'https://via.placeholder.com/250', else: @image_one %>"  alt="" />
                 </div>
 
-                <div class="flex justify-around items-center">
-                  <%= if @image_one != nil do %>
-                    <button disabled
-                            phx-value-image-id="<%= @image_one.id %>"
-                            class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                      Delete
-                    </button>
-                    <p class="text-sm ml-3">can't delete default image, but change it</p>
-                  <% end %>
-                </div>
-  
                 <div class="space-y-2">
                   <div class="text-lg leading-6 font-medium space-y-1">
                       <h3 class="text-indigo-600 text-center">Default image</h3>
@@ -76,19 +66,9 @@
               <div class="space-y-4">
                 <div class="aspect-w-3 aspect-h-2">
                   <img class="py-2 object-contain shadow-lg rounded-lg" 
-                       src="<%= if @image_two == nil, do: 'https://via.placeholder.com/250', else: @image_two.image_url %>" alt="" />
+                       src="<%= if @image_two == nil, do: 'https://via.placeholder.com/250', else: @image_two %>" alt="" />
                 </div>
 
-                <div class="flex justify-around items-center">
-                  <%= if @image_two != nil do %>
-                    <button phx-click="delete_image" 
-                            phx-value-image-id="<%= @image_two.id %>"
-                            class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                      Delete
-                    </button>
-                  <% end %>
-                </div>
-  
                 <div class="space-y-2">
                   <div class="text-lg leading-6 font-medium space-y-1">
                     <br>
@@ -134,17 +114,7 @@
               <div class="space-y-4">
                 <div class="aspect-w-3 aspect-h-2">
                   <img class="py-2 object-contain shadow-lg rounded-lg" 
-                       src="<%= if @image_three == nil, do: 'https://via.placeholder.com/250', else: @image_three.image_url %>" alt="" />
-                </div>
-
-                <div class="flex justify-around items-center">
-                  <%= if @image_three != nil do %>
-                    <button phx-click="delete_image" 
-                            phx-value-image-id="<%= @image_three.id %>"
-                            class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                      Delete
-                    </button>
-                  <% end %>
+                       src="<%= if @image_three == nil, do: 'https://via.placeholder.com/250', else: @image_three %>" alt="" />
                 </div>
   
                 <div class="space-y-2">
@@ -188,17 +158,19 @@
             </li>
         </ul>
       </div>
+
+      <!-- Basic information -->
       <div class="space-y-6 sm:space-y-5">
-        <%= f = form_for @changeset, "#", [phx_submit: :product_update, phx_change: :form_changed, 
+        <%= f = form_for @changeset, "#", [phx_submit: :add_product, phx_change: :form_changed, 
                 class: "space-y-6 sm:space-y-5"]  %>
-          <%= hidden_input f, :id %>
-          <%= hidden_input f, :store_id %>
+          <%= hidden_input f, :store_id, value: @store_id %>
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
               <%= text_input f, :name, 
               [phx_debounce: "blur", 
                 phx_update: "ignore",
+               required: true,
                class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
               <%= error_tag f, :name %>
             </div>
@@ -207,9 +179,9 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :published, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :published, 
-              [readonly: true,
-               class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
+              <%= checkbox f, :published,
+                  phx_update: "ignore",
+                  class: "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
               <p class="mt-2 text-sm text-gray-500">To update, use toggle at the top.</p>
             </div>
           </div>
@@ -231,6 +203,7 @@
             <div class="mt-1 sm:mt-0 sm:col-span-2">
               <%= text_input f, :barcode, 
                   class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
+                  required: true,
                   phx_update: "ignore",
                   phx_debounce: "blur" %>
               <%= error_tag f, :barcode %>
@@ -240,59 +213,25 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :market_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :market_price,
-                    [phx_debounce: "blur",
-                     phx_update: "ignore",
-                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
-                     value: Helpers.display_money(@market_price) ] %>
-                <p class="mt-2 text-sm text-gray-500">Example format: 5.99 or $5.99</p>
+              <%= number_input f, :market_price, 
+                  phx_debounce: "blur",
+                  phx_update: "ignore",
+                  required: true,
+                  step: "0.01",
+                  class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+              %>
+                <p class="mt-2 text-sm text-gray-500">Example format: 5.99, Number only without $ sign</p>
             </div>
           </div>
-
-          <%= if @on_sale do %>
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <%= label f, :market_sale_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
-            <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :market_sale_price,
-                    [phx_debounce: "blur",
-                     readonly: true,
-                     class: "text-red-600 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
-                     value: Helpers.display_money(@market_sale_price) ] %>
-            </div>
-          </div>
-          <% end %>
-
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <%= label f, :product_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
-            <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :product_price,
-                    [readonly: true, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
-                     value: Helpers.display_money(@customer_price)
-                     ] %>
-                <p class="mt-2 text-sm text-gray-500">This field(customer price) is readonly and will be calculated automatically.</p>
-            </div>
-          </div>
-
-          <%= if @on_sale do %>
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <%= label f, :product_sale_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
-            <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :product_sale_price,
-                    [readonly: true,
-                     class: "text-red-600 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
-                     value: Helpers.display_money(@customer_sale_price)
-                     ] %>
-                <p class="mt-2 text-sm text-gray-500">This field(customer sale price) is readonly and will be calculated automatically.</p>
-            </div>
-          </div>
-          <% end %>
 
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :category, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <%= inputs_for f, :category, fn fc -> %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
                 <%= select fc, :category_id, Enum.map(@categories, & {&1.name, &1.id}),
-                    [selected: @selected_category, class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
+                    [prompt: "Choose category",
+                     value: @selected_category,
+                     class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
                 <%= error_tag fc, :name %>
               </div>
               <% end %>
@@ -303,8 +242,7 @@
               <%= inputs_for f, :sub_category, fn fc -> %>
               <div id="sub-category-select" class="mt-1 sm:mt-0 sm:col-span-2">
                 <%= select fc, :sub_category_id, Enum.map(@sub_categories, & {&1.name, &1.id}),
-                    [
-                     selected: @selected_sub_category, 
+                    [value: @selected_sub_category,
                      prompt: "Choose Sub category",
                      class: "max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"]
                 %>
@@ -342,6 +280,7 @@
             <%= label f, :unit_name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
               <%= text_input f, :unit_name, 
+                  required: true,
                   phx_debounce: "blur",
                   phx_update: "ignore",
                   class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
@@ -356,7 +295,7 @@
                     [phx_debounce: "blur",
                      phx_update: "ignore",
                      class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
-                     value: @tags] %>
+                     ] %>
                 <%= error_tag f, :tags %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated tag name.</p>
               </div>
@@ -369,20 +308,12 @@
                     [phx_debounce: "blur",
                      phx_update: "ignore",
                      class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
-                     value: @recipe_tags] %>
+                     ] %>
                 <%= error_tag f, :recipe_tags %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated recipe tag name.</p>
               </div>
           </div>
 
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <%= label f, :store_name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
-            <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :store_name, readonly: true, class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
-              <%= error_tag f, :store_name %>
-              <p class="mt-2 text-sm text-gray-500">This field is readonly.</p>
-            </div>
-          </div>
           <div class="flex justify-end">
             <div class="flex-shrink-0">
               <%= submit "Save",

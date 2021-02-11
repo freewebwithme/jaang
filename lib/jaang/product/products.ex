@@ -28,6 +28,7 @@ defmodule Jaang.Product.Products do
 
     # Create market price with product price
     MarketPrice.create_market_price_with_product_price(product.id, attrs)
+    product
   end
 
   def create_unit(attrs) do

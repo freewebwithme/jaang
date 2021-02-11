@@ -50,7 +50,10 @@
     - Upload image to Amazon aws (DONE)
 
   [ 2/10/2021 ]
-    - Add new product page
+    - Add new product page (DONE)
+
+  [ 2/11/2021 ]
+    - Fetch orders by user_id in user detail page.
   
 
   [Features]

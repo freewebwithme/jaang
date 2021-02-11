@@ -42,12 +42,15 @@ defmodule JaangWeb.Router do
     live "/partners/orders/:store_name/:order_id/detail", Partners.PartnerOrderDetailLive
 
     live "/products", Products.ProductsLive
+    live "/products/add/new", Products.ProductAddLive
     live "/products/:store_name/list", Products.ProductsListLive
     live "/products/:store_name/search/", Products.ProductSearchResultLive
     live "/products/detail/:store_id/:product_id", Products.ProductDetailLive
     live "/products/detail/:store_id/edit/:product_id", Products.ProductEditDetailLive
 
     live "/customers", Customers.CustomersLive
+    live "/customers/:user_id/detail", Customers.CustomerDetailLive
+    live "/customers/search", Customers.CustomerSearchResultLive
 
     live "/employees", Employees.EmployeesOverviewLive
     live "/employees/shoppers", Employees.ShoppersLive

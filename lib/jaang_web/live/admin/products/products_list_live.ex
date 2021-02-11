@@ -1,8 +1,7 @@
 defmodule JaangWeb.Admin.Products.ProductsListLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Product.Products
-  alias JaangWeb.Admin.Products.ProductDetailLive
-  alias JaangWeb.Admin.Products.ProductSearchResultLive
+  alias JaangWeb.Admin.Products.{ProductDetailLive, ProductSearchResultLive, ProductAddLive}
 
   def mount(_params, _session, socket) do
     {:ok, socket, temporary_assigns: [products: []]}

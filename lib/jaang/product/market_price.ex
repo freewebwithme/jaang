@@ -84,7 +84,8 @@ defmodule Jaang.Product.MarketPrice do
   different on prices
 
   Before add new market price, get recent market price and
-  change end_date to new market price's start_date - 1 second
+  change end_date to new market price's start_date - 1 second.
+  `attrs` should contain `original_price`
 
   This function is called in `products` module
   """
