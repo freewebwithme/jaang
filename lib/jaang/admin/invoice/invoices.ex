@@ -31,6 +31,9 @@ defmodule Jaang.Admin.Invoice.Invoices do
     query = from(i in Invoice)
 
     Enum.reduce(criteria, query, fn
+      {:user_by, %{user_id: user_id}}, query ->
+        from q in query, where: q.user_id == ^user_id
+
       {:paginate, %{page: page, per_page: per_page}}, query ->
         from q in query,
           offset: ^((page - 1) * per_page),
@@ -46,6 +49,17 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
           _ ->
             from q in query, where: q.status == ^state
+        end
+
+      {:search_by, %{search_by: search_by, search_term: term}}, query ->
+        search_pattern = "%#{term}%"
+
+        case search_by do
+          "Invoice number" ->
+            from q in query, where: ilike(q.invoice_number, ^search_pattern)
+
+          _ ->
+            query
         end
     end)
     |> Repo.all()

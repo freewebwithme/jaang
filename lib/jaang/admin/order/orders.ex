@@ -4,7 +4,7 @@ defmodule Jaang.Admin.Order.Orders do
   alias Jaang.Repo
 
   @doc """
-  Returns a list of invoice matching the given `criteria`
+  Returns a list of order matching the given `criteria`
 
   Example Criteria:
 

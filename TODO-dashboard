@@ -54,6 +54,7 @@
 
   [ 2/11/2021 ]
     - Fetch orders by user_id in user detail page.
+    - Build shoppers and drivers schema
   
 
   [Features]

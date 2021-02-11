@@ -36,6 +36,7 @@ defmodule JaangWeb.Router do
     live "/", Home.HomeLive
     live "/orders", Orders.OrdersLive
     live "/orders/detail/:id", Orders.OrderDetailLive
+    live "/orders/search", Orders.OrderSearchResultLive
 
     live "/partners", Partners.PartnersOverviewLive
     live "/partners/:store_id", Partners.PartnerLive

@@ -1,6 +1,8 @@
 defmodule JaangWeb.Admin.Orders.OrdersLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Invoice.Invoices
+  alias JaangWeb.Admin.Components.OrderTableComponent
+  alias JaangWeb.Admin.Orders.OrderSearchResultLive
 
   def mount(_params, _session, socket) do
     {:ok, socket, temporary_assigns: [invoices: []]}
@@ -21,13 +23,32 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
 
     has_next_page = Helpers.has_next_page?(Enum.count(invoices), per_page)
 
+    filter_by_list = [
+      "All",
+      "Cart",
+      "Refunded",
+      "Submitted",
+      "Shopping",
+      "Packed",
+      "On_the_way",
+      "Delivered"
+    ]
+
+    filter_by_default = "ALL"
+
+    search_by_list = ["Invoice number"]
+    search_by_default = "Invoice number"
+
     socket =
       assign(socket,
         has_next_page: has_next_page,
         options: paginate_options,
         invoices: invoices,
         current_page: "Orders",
-        filter_by: by_state
+        filter_by: filter_by_default,
+        filter_by_list: filter_by_list,
+        search_by_list: search_by_list,
+        search_by: search_by_default
       )
 
     {:noreply, socket}
@@ -60,6 +81,22 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
             per_page: socket.assigns.options.per_page,
             has_next_page: socket.assigns.has_next_page,
             filter_by: by_state
+          )
+      )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("search", %{"search-by" => search_by, "search-field" => search_term}, socket) do
+    socket =
+      push_redirect(
+        socket,
+        to:
+          Routes.live_path(
+            socket,
+            OrderSearchResultLive,
+            search_by: search_by,
+            search_term: search_term
           )
       )
 

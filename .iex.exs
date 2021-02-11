@@ -91,4 +91,5 @@ alias Jaang.Admin.Invoice.Invoices
 alias Jaang.Admin.Product.Products
 alias Jaang.Admin.Store.Stores
 alias Jaang.Admin.Order.Orders
+alias Jaang.Admin.Customer.Customers
 alias Jaang.Utility
