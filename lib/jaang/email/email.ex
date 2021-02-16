@@ -6,7 +6,7 @@ defmodule Jaang.Email do
   def welcome_email(user) do
     base_email()
     |> to(user.email)
-    |> subject("Welcome to Jaang")
+    |> subject("Welcome to JaangCart")
     |> assign(:user, user)
     |> render(:welcome_email)
   end
@@ -40,7 +40,7 @@ defmodule Jaang.Email do
 
   defp base_email() do
     new_email()
-    |> from("jaang@example.com")
-    |> put_header("Reply-to", "jaang@example.com")
+    |> from("service@jaangcart.com")
+    |> put_header("Reply-to", "service@jaangcart.com")
   end
 end

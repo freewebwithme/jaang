@@ -55,6 +55,28 @@
   [ 2/11/2021 ]
     - Fetch orders by user_id in user detail page.
     - Build shoppers and drivers schema
+    - What should be in Shopper page
+      1. list of shoppers 
+      2. in shopper & driver detail page
+        - Shopper & Driver's basic information
+        - Orders(Invoice) that shopper & driver fulfilled
+        - Drirver's earning information.
+          - $3 for each delivery
+          - any tip goes to driver 
+  
+  [ 2/12/2021 ]
+    - Working on Employee schema
+    - Create migration for employee and employee_role, assigned_work
+          
+  [ 2/15/2021 ]
+    - Test each authentication function for user, admin_user and employee
+      - register, login,  change email, reset password
+
+  [ 2/16/2021 ]
+    - Create migration for employee and employee_role, assigned_work
+    - Test each authentication function for user, admin_user and employee
+      - register, login,  change email, reset password
+
   
 
   [Features]

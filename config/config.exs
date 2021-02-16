@@ -19,7 +19,14 @@ config :jaang, JaangWeb.Endpoint,
   pubsub_server: Jaang.PubSub,
   live_view: [signing_salt: "KJsHXRjB"]
 
-config :jaang, Jaang.Mailer, adapter: Bamboo.LocalAdapter
+config :jaang, Jaang.Mailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: System.get_env("MAILGUN_API_KEY"),
+  domain: System.get_env("MAILGUN_DOMAIN_NAME"),
+  base_uri: "https://api.mailgun.net/v3",
+  hackney_opts: [
+    recv_timeout: :timer.minutes(1)
+  ]
 
 config :money,
   default_currency: :USD

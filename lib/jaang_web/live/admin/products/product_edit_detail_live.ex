@@ -8,6 +8,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
   alias Jaang.ProductManager
   alias Jaang.Amazon.SimpleS3Upload
   alias JaangWeb.Admin.Components.PublishedToggleComponent
+  alias JaangWeb.Admin.Products.ProductDetailLive
 
   def mount(%{"store_id" => store_id, "product_id" => product_id}, _session, socket) do
     product = Products.get_product(store_id, product_id)
@@ -151,8 +152,6 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
     {market_price, market_sale_price, product_price, product_sale_price, on_sale} =
       get_product_price_info(new_product)
 
-    IO.inspect(new_product)
-
     socket =
       assign(socket,
         product: new_product,
@@ -169,6 +168,17 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
         on_sale: on_sale
       )
       |> put_flash(:info, "Product updated successfully")
+
+    socket =
+      push_redirect(socket,
+        to:
+          Routes.live_path(
+            socket,
+            ProductDetailLive,
+            socket.assigns.store_id,
+            new_product.id
+          )
+      )
 
     {:noreply, socket}
   end

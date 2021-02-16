@@ -1,6 +1,7 @@
 defmodule Jaang.Account.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Jaang.Account.Validator
 
   schema "users" do
     field :email, :string
@@ -25,26 +26,17 @@ defmodule Jaang.Account.User do
   def registration_changeset(%Jaang.Account.User{} = user, attrs) do
     user
     |> cast(attrs, [:email, :password])
-    |> validate_email()
-    |> validate_password()
+    |> Validator.validate_email()
+    |> Validator.validate_password()
     |> cast_assoc(:profile, with: &Jaang.Account.Profile.changeset/2)
   end
 
   def google_changeset(%Jaang.Account.User{} = user, attrs) do
     user
     |> cast(attrs, [:email, :password])
-    |> validate_email()
+    |> Validator.validate_email()
     |> generate_password()
     |> cast_assoc(:profile)
-  end
-
-  def validate_email(changeset) do
-    changeset
-    |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
-    |> validate_length(:email, max: 160)
-    |> unsafe_validate_unique(:email, Jaang.Repo)
-    |> unique_constraint(:email)
   end
 
   # This function will generate random password for google sign in.
@@ -55,26 +47,7 @@ defmodule Jaang.Account.User do
     changeset
     |> put_change(:password, random_password)
     # hash password
-    |> prepare_changes(&hash_password/1)
-  end
-
-  def validate_password(changeset) do
-    changeset
-    |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 80)
-    |> validate_confirmation(:password, message: "does not match password", required: true)
-    # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
-    # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
-    |> prepare_changes(&hash_password/1)
-  end
-
-  def hash_password(changeset) do
-    password = get_change(changeset, :password)
-
-    changeset
-    |> put_change(:hashed_password, Bcrypt.hash_pwd_salt(password))
-    |> delete_change(:password)
+    |> prepare_changes(&Validator.hash_password/1)
   end
 
   @doc """
@@ -85,7 +58,7 @@ defmodule Jaang.Account.User do
   def email_changeset(user, attrs) do
     user
     |> cast(attrs, [:email])
-    |> validate_email()
+    |> Validator.validate_email()
     |> case do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not chage")
@@ -98,7 +71,7 @@ defmodule Jaang.Account.User do
   def password_changeset(user, attrs) do
     user
     |> cast(attrs, [:password])
-    |> validate_password()
+    |> Validator.validate_password()
   end
 
   @doc """
@@ -107,32 +80,5 @@ defmodule Jaang.Account.User do
   def confirm_changeset(user) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     change(user, confirmed_at: now)
-  end
-
-  @doc """
-  Verifies the password.
-
-  If there is no user or the user doesn't have a passowrd, we call
-  `Bcrypt.no_user_verify/0` to avoid timing attacks.
-  """
-  def valid_password?(%Jaang.Account.User{hashed_password: hashed_password}, password)
-      when is_binary(hashed_password) and byte_size(password) > 0 do
-    Bcrypt.verify_pass(password, hashed_password)
-  end
-
-  def valid_password?(_, _) do
-    Bcrypt.no_user_verify()
-    false
-  end
-
-  @doc """
-  Validates the current password otherwise adds an error to the changeset.
-  """
-  def validate_current_password(changeset, password) do
-    if valid_password?(changeset.data, password) do
-      changeset
-    else
-      add_error(changeset, :current_password, "is not valid")
-    end
   end
 end

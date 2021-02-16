@@ -61,8 +61,25 @@ defmodule JaangWeb.Resolvers.AccountResolver do
     end
   end
 
+  def resend_confirmation_email(_, %{user_token: token}, _) do
+    user = AccountManager.get_user_by_session_token(token)
+
+    if user.confirmed_at do
+      {:ok, %{sent: false, message: "email not sent"}}
+    else
+      # Resend confirmation email
+      AccountManager.deliver_user_confirmation_instructions(
+        user,
+        &JaangWeb.Router.Helpers.account_confirmation_url(JaangWeb.Endpoint, :confirm, &1)
+      )
+
+      {:ok, %{sent: true, message: "email sent"}}
+    end
+  end
+
   @doc """
   Authenticate google user with idToken
+  TODO: Currently not using this function
   """
   def googleSignIn_with_id_token(_, %{idToken: idToken}, _) do
     case AccountManager.authenticate_google_idToken(idToken) do

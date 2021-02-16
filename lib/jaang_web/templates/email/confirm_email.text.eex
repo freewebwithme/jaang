@@ -1,6 +1,6 @@
 <h4>Confirm your account</h4>
 
-<p>Hi <%= @user.email %></p>
+<p>Hi <%= @user.profile.first_name %></p>
 <p>You can confirm your account by visiting the url below:</p>
 <a href="<%= @url %>" target="_blank">Confirm your account </a>
 <p>If you didn't request this change, please ignore this.</p>

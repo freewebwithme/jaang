@@ -1,6 +1,6 @@
 defmodule Jaang.Admin.Account.AdminAccounts do
   alias Jaang.Admin.Account.{AdminUser, AdminUserToken}
-  alias Jaang.Account.User
+  alias Jaang.Account.{User, Validator}
   alias Jaang.{Repo, EmailManager}
 
   def create_admin_user(attrs) do
@@ -38,7 +38,7 @@ defmodule Jaang.Admin.Account.AdminAccounts do
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(AdminUser, email: email)
-    if AdminUser.valid_password?(user, password), do: user
+    if Validator.valid_password?(user, password), do: user
   end
 
   def get_user_by_email(email) when is_binary(email) do
@@ -115,7 +115,7 @@ defmodule Jaang.Admin.Account.AdminAccounts do
   def confirm_user(token) do
     with {:ok, query} <- AdminUserToken.verify_email_token_query(token, "confirm"),
          %AdminUser{} = admin_user <- Repo.one(query),
-         {:ok, %{user: admin_user}} <- Repo.transaction(confirm_user_multi(admin_user)) do
+         {:ok, %{admin_user: admin_user}} <- Repo.transaction(confirm_user_multi(admin_user)) do
       {:ok, admin_user}
     else
       _ -> :error

@@ -60,7 +60,7 @@ defmodule Jaang.MixProject do
       {:ueberauth_google, "~> 0.9.0"},
       {:ueberauth_identity, "~> 0.3.0"},
       {:bcrypt_elixir, "~> 2.0"},
-      {:bamboo, "~> 1.5"},
+      {:bamboo, "~> 1.7"},
       {:recaptcha, "~> 3.0"},
       {:joken, "~> 2.2"},
       {:joken_jwks, "~> 1.3"},

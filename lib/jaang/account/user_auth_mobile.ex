@@ -1,6 +1,6 @@
 defmodule Jaang.Account.UserAuthMobile do
   @moduledoc """
-  User authentication moduel for Graphql API
+  User authentication module for Graphql API
   """
   alias Jaang.AccountManager
   alias Jaang.Repo

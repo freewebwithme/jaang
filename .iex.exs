@@ -93,3 +93,4 @@ alias Jaang.Admin.Store.Stores
 alias Jaang.Admin.Order.Orders
 alias Jaang.Admin.Customer.Customers
 alias Jaang.Utility
+alias Jaang.Admin.Account.{Employee, EmployeeProfile, EmployeeRole, AssignedWork}

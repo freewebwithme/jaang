@@ -1,6 +1,6 @@
 defmodule Jaang.Account.Accounts do
   alias Jaang.{Repo, ProfileManager, EmailManager}
-  alias Jaang.Account.{User, UserToken, Address, Profile}
+  alias Jaang.Account.{User, UserToken, Address, Profile, Validator}
   alias Jaang.Distance
   alias Ecto.Changeset
   import Ecto.Query
@@ -13,6 +13,12 @@ defmodule Jaang.Account.Accounts do
   """
   def create_user_with_profile(attrs) do
     with {:ok, user} <- create_user(attrs) do
+      # Send confirmation email
+      deliver_user_confirmation_instructions(
+        user,
+        &JaangWeb.Router.Helpers.account_confirmation_url(JaangWeb.Endpoint, :confirm, &1)
+      )
+
       {:ok, user}
     else
       {:error, error} -> {:error, error}
@@ -23,6 +29,13 @@ defmodule Jaang.Account.Accounts do
     case create_user_using_google(attrs) do
       {:ok, user} ->
         user = Repo.get_by(User, id: user.id) |> Repo.preload(:profile)
+
+        # Send confirmation email
+        deliver_user_confirmation_instructions(
+          user,
+          &JaangWeb.Router.Helpers.account_confirmation_url(JaangWeb.Endpoint, :confirm, &1)
+        )
+
         {:ok, user}
 
       {:error, error} ->
@@ -110,7 +123,7 @@ defmodule Jaang.Account.Accounts do
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email) |> Repo.preload(:profile)
-    if User.valid_password?(user, password), do: user
+    if Validator.valid_password?(user, password), do: user
   end
 
   @doc """
@@ -126,7 +139,7 @@ defmodule Jaang.Account.Accounts do
 
   """
   def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email)
+    Repo.get_by(User, email: email) |> Repo.preload(:profile)
   end
 
   @doc """

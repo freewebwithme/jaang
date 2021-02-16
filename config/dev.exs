@@ -30,6 +30,8 @@ config :jaang, JaangWeb.Endpoint,
     ]
   ]
 
+# config :jaang, Jaang.Mailer, adapter: Bamboo.LocalAdapter
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

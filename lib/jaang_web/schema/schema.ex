@@ -220,6 +220,13 @@ defmodule JaangWeb.Schema do
       resolve(&AccountResolver.reset_password/3)
     end
 
+    @desc "Send confirmation email from Flutter"
+    field :resend_confirmation_email, :simple_response do
+      arg(:user_token, non_null(:string))
+
+      resolve(&AccountResolver.resend_confirmation_email/3)
+    end
+
     @desc "Google Sign in"
     field :google_signin, :session do
       arg(:email, non_null(:string))
