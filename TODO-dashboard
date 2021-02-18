@@ -78,6 +78,7 @@
       - register, login,  change email, reset password
 
   
+    - Add broadcast function in update_invoice function
 
   [Features]
     - Admin has to view, update and search order

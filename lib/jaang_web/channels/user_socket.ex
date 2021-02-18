@@ -7,6 +7,7 @@ defmodule JaangWeb.UserSocket do
 
   ## Channels
   channel "cart:*", JaangWeb.CartChannel
+  channel "invoice:*", JaangWeb.InvoiceChannel
   #  channel "order:*", JaangWeb.OrderChannel
 
   # Socket params are passed from the client and can

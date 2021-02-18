@@ -67,7 +67,8 @@ defmodule Jaang.MixProject do
       {:stripity_stripe, "~> 2.0"},
       {:google_maps, "~> 0.11.0"},
       {:uuid, "~> 1.1"},
-      {:timex, "~> 3.6"}
+      {:timex, "~> 3.6"},
+      {:ex_signal, "~> 0.3.0"}
     ]
   end
 

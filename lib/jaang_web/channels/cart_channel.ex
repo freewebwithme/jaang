@@ -1,6 +1,7 @@
 defmodule JaangWeb.CartChannel do
   use Phoenix.Channel
   alias Jaang.{AccountManager, OrderManager, InvoiceManager}
+  alias Jaang.Notification.OneSignal
 
   def join("cart:" <> user_id, _params, %{assigns: %{current_user: user}} = socket) do
     # check if current user match client user
@@ -175,12 +176,26 @@ defmodule JaangWeb.CartChannel do
     if(user.id == fetched_user.id) do
       # user matches, go ahead process an order
       case OrderManager.place_an_order(fetched_user, delivery_time) do
-        {:ok, _invoice} ->
+        {:ok, invoice} ->
           # Send empty cart
           {carts, total_items, total_price} = get_updated_carts(user.id)
 
-          {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
-           socket}
+          # Send order confirmation push notification
+          OneSignal.create_notification(
+            "JaangCart",
+            "We received your order and will process soon. Thanks",
+            fetched_user.id
+          )
+
+          # Send invoice id to the flutter to join invoice channel in flutter
+          {:reply,
+           {:ok,
+            %{
+              orders: carts,
+              total_items: total_items,
+              total_price: total_price,
+              invoice_id: invoice.id
+            }}, socket}
 
         {:error, _message} ->
           {:reply, :error, socket}

@@ -32,7 +32,7 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
       ) do
     # Change string to atom
     new_state = Helpers.convert_atom_and_string(state)
-    {:ok, invoice} = Invoices.update_invoice(invoice_id, %{status: new_state})
+    {:ok, invoice} = Invoices.update_invoice_status(invoice_id, new_state)
 
     socket =
       assign(

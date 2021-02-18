@@ -57,6 +57,10 @@ config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET_KEY")
 
 config :tzdata, :data_dir, "etc/elixir_tzdata_data"
 
+config :ex_signal,
+  app_id: System.get_env("ONE_SIGNAL_APP_ID"),
+  api_key: System.get_env("ONE_SIGNAL_API_KEY")
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

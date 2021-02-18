@@ -28,7 +28,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
   ]
   """
   def get_invoices(criteria) when is_list(criteria) do
-    query = from(i in Invoice)
+    query = from i in Invoice, order_by: [desc: i.inserted_at]
 
     Enum.reduce(criteria, query, fn
       {:user_by, %{user_id: user_id}}, query ->
@@ -84,5 +84,21 @@ defmodule Jaang.Admin.Invoice.Invoices do
     invoice
     |> Invoice.changeset(attrs)
     |> Repo.update()
+  end
+
+  def update_invoice_status(invoice_id, status) do
+    invoice = get_invoice(invoice_id)
+
+    invoice =
+      invoice
+      |> Invoice.changeset(%{status: status})
+      |> Repo.update()
+
+    JaangWeb.Endpoint.broadcast!("invoice:" <> invoice.id, "invoice_updated", %{
+      invoice_number: invoice.invoice_number,
+      status: invoice.status
+    })
+
+    {:ok, invoice}
   end
 end
