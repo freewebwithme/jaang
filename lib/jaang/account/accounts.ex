@@ -344,11 +344,33 @@ defmodule Jaang.Account.Accounts do
     end
   end
 
+  def google_signin_from_mobile(email, display_name, photo_url) when is_nil(display_name) do
+    if user = get_user_by_email(email) do
+      {:ok, user}
+    else
+      attrs = %{
+        email: email,
+        profile: %{
+          first_name: nil,
+          last_name: nil,
+          photo_url: photo_url
+        }
+      }
+
+      {:ok, user} = create_user_with_profile_using_google(attrs)
+      {:ok, user}
+    end
+  end
+
   def google_signin_from_mobile(email, display_name, photo_url) do
     if user = get_user_by_email(email) do
       {:ok, user}
     else
-      [first_name, last_name] = String.split(display_name, " ")
+      names = String.split(display_name, " ")
+      # Get first name
+      [first_name] = Enum.take(names, 1)
+      # Get last name
+      [last_name] = Enum.take(names, -1)
 
       attrs = %{
         email: email,

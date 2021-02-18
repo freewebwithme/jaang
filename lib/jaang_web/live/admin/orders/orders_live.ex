@@ -34,7 +34,7 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
       "Delivered"
     ]
 
-    filter_by_default = "ALL"
+    filter_by_default = params["filter_by"] || "All"
 
     search_by_list = ["Invoice number"]
     search_by_default = "Invoice number"
