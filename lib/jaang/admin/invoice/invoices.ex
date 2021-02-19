@@ -1,6 +1,8 @@
 defmodule Jaang.Admin.Invoice.Invoices do
   alias Jaang.{Invoice, Repo}
   import Ecto.Query
+  alias Jaang.Invoice.Invoices
+  alias Jaang.Notification.OneSignal
 
   # 1 Get all invoices whose status is submitted, packed, on_the_way, delivered
   # set up per page option
@@ -86,19 +88,86 @@ defmodule Jaang.Admin.Invoice.Invoices do
     |> Repo.update()
   end
 
-  def update_invoice_status(invoice_id, status) do
+  def update_invoice_status(invoice_id, :shopping = status) do
+    invoice = get_invoice(invoice_id)
+    IO.puts("Status is changed to on the way")
+
+    case update_and_broadcast_invoice(invoice, status) do
+      {:ok, invoice} ->
+        # Send push notification to flutter client
+        OneSignal.create_notification(
+          "JaangCart",
+          "Our shopper just starts shopping!",
+          invoice.user_id
+        )
+
+        {:ok, invoice}
+
+      {:error, _reason} ->
+        :error
+    end
+  end
+
+  def update_invoice_status(invoice_id, :packed = status) do
+    invoice = get_invoice(invoice_id)
+    IO.puts("Status is changed to on the way")
+
+    case update_and_broadcast_invoice(invoice, status) do
+      {:ok, invoice} ->
+        # Send push notification to driver
+        # OneSignal.create_notification(
+        #  "JaangCart",
+        #  "Our shopper just starts shopping!",
+        #  invoice.user_id
+        # )
+
+        {:ok, invoice}
+
+      {:error, _reason} ->
+        :error
+    end
+  end
+
+  def update_invoice_status(invoice_id, :on_the_way = status) do
+    invoice = get_invoice(invoice_id)
+    IO.puts("Status is changed to on the way")
+
+    case update_and_broadcast_invoice(invoice, status) do
+      {:ok, invoice} ->
+        # Send push notification to flutter client
+        OneSignal.create_notification("JaangCart", "Your order is on the way!", invoice.user_id)
+        {:ok, invoice}
+
+      {:error, _reason} ->
+        :error
+    end
+  end
+
+  def update_invoice_status(invoice_id, :delivered = status) do
+    IO.puts("Status is changed to delivered")
     invoice = get_invoice(invoice_id)
 
-    invoice =
-      invoice
-      |> Invoice.changeset(%{status: status})
-      |> Repo.update()
+    case update_and_broadcast_invoice(invoice, status) do
+      {:ok, invoice} ->
+        # Send push notification to flutter client
+        OneSignal.create_notification("JaangCart", "Your order is delivered!", invoice.user_id)
 
-    JaangWeb.Endpoint.broadcast!("invoice:" <> invoice.id, "invoice_updated", %{
-      invoice_number: invoice.invoice_number,
-      status: invoice.status
-    })
+        {:ok, invoice}
 
-    {:ok, invoice}
+      {:error, _reason} ->
+        :error
+    end
+  end
+
+  def update_invoice_status(invoice_id, status) do
+    invoice = get_invoice(invoice_id)
+    update_and_broadcast_invoice(invoice, status)
+  end
+
+  defp update_and_broadcast_invoice(invoice, status) do
+    invoice
+    |> Invoice.changeset(%{status: status})
+    |> Repo.update()
+    |> Invoices.broadcast(:invoice_updated)
   end
 end

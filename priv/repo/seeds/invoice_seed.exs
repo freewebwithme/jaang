@@ -57,7 +57,7 @@ for user_id <- 2..11 do
     {:ok, cart} = Carts.add_to_cart(cart, %{product_id: Enum.random(1..100), quantity: 1})
     {:ok, cart} = Carts.add_to_cart(cart, %{product_id: Enum.random(1..100), quantity: 1})
 
-    invoice =
+    {:ok, invoice} =
       Invoices.update_invoice(invoice, %{
         delivery_fee: Money.new(499),
         driver_tip: Money.new(Enum.random(driver_tips)),

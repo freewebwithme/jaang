@@ -187,6 +187,8 @@ defmodule JaangWeb.CartChannel do
             fetched_user.id
           )
 
+          # Broadcast for new invoice
+
           # Send invoice id to the flutter to join invoice channel in flutter
           {:reply,
            {:ok,

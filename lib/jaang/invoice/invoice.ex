@@ -34,8 +34,10 @@ defmodule Jaang.Invoice do
 
     field :phone_number, :string
 
-    has_many :orders, Jaang.Checkout.Order
+    field :shopper_id, :id
+    field :driver_id, :id
     belongs_to :user, Jaang.Account.User
+    has_many :orders, Jaang.Checkout.Order
 
     timestamps(type: :utc_datetime)
   end

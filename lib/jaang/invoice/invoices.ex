@@ -46,7 +46,8 @@ defmodule Jaang.Invoice.Invoices do
   def update_invoice(%Invoice{} = invoice, attrs) do
     invoice
     |> Invoice.changeset(attrs)
-    |> Repo.update!()
+    |> Repo.update()
+    |> broadcast(:invoice_updated)
   end
 
   @doc """
@@ -62,4 +63,23 @@ defmodule Jaang.Invoice.Invoices do
 
     Repo.all(query)
   end
+
+  @topic inspect(__MODULE__)
+
+  def subscribe do
+    IO.puts("Subscribe to #{@topic}")
+    Phoenix.PubSub.subscribe(Jaang.PubSub, @topic)
+  end
+
+  def broadcast({:ok, invoice}, event) do
+    Phoenix.PubSub.broadcast(
+      Jaang.PubSub,
+      @topic,
+      {event, invoice}
+    )
+
+    {:ok, invoice}
+  end
+
+  def broadcast({:error, _reason} = error, _event), do: error
 end

@@ -1,5 +1,7 @@
 defmodule Jaang.Notification.OneSignal do
   def create_notification(heading, contents, user_id) do
+    IO.puts("Sending notifications")
+
     ExSignal.create_notifications(%{
       "headings" => %{"en" => heading},
       "contents" => %{"en" => contents},

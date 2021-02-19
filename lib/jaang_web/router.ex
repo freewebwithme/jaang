@@ -17,6 +17,7 @@ defmodule JaangWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug JaangWeb.Plugs.SetCurrentUser
+    plug JaangWeb.Plugs.SetCurrentEmployee
   end
 
   pipeline :dashboard do

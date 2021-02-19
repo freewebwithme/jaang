@@ -3,6 +3,8 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
   alias Jaang.Admin.Invoice.Invoices
 
   def mount(%{"id" => invoice_id}, _session, socket) do
+    if connected?(socket), do: Jaang.Invoice.Invoices.subscribe()
+
     invoice = Invoices.get_invoice(invoice_id)
 
     statuses = [
@@ -10,6 +12,7 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
       %{status: "Submitted", desc: "Order just submitted"},
       %{status: "Shopping", desc: "Shopper is shopping your order"},
       %{status: "Packed", desc: "Order is ready to pick up by Driver"},
+      %{status: "On_the_way", desc: "Order is on the way to customer"},
       %{status: "Delivered", desc: "Order is delivered"}
     ]
 
@@ -40,6 +43,18 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
         invoice: invoice,
         current_status: Helpers.convert_atom_and_string(invoice.status)
       )
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:invoice_updated, invoice}, socket) do
+    IO.puts("Invoice is updated: #{invoice.id}")
+
+    socket =
+      update(socket, :invoice, fn _invoice -> invoice end)
+      |> update(:current_status, fn _invoice ->
+        Helpers.convert_atom_and_string(invoice.status)
+      end)
 
     {:noreply, socket}
   end

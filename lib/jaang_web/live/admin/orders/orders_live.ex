@@ -5,6 +5,8 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
   alias JaangWeb.Admin.Orders.OrderSearchResultLive
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: Jaang.Invoice.Invoices.subscribe()
+
     {:ok, socket, temporary_assigns: [invoices: []]}
   end
 
@@ -100,6 +102,11 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
           )
       )
 
+    {:noreply, socket}
+  end
+
+  def handle_info({:invoice_updated, invoice}, socket) do
+    IO.puts("Invoice updated: #{invoice.id}")
     {:noreply, socket}
   end
 end

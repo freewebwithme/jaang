@@ -50,12 +50,12 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
 
   ## Examples
 
-      iex> change_employee_password(user)
+      iex> change_employee_password(employee)
       %Ecto.Changeset{data: %Employee{}}
 
   """
-  def change_employee_password(user, attrs \\ %{}) do
-    Employee.password_changeset(user, attrs)
+  def change_employee_password(employee, attrs \\ %{}) do
+    Employee.password_changeset(employee, attrs)
   end
 
   @doc """
@@ -116,17 +116,17 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   If the token matches, the employee account is marked as confirmed
   and the token is deleted.
   """
-  def confirm_user(token) do
+  def confirm_employee(token) do
     with {:ok, query} <- EmployeeToken.verify_email_token_query(token, "confirm"),
          %Employee{} = employee <- Repo.one(query),
-         {:ok, %{employee: employee}} <- Repo.transaction(confirm_user_multi(employee)) do
+         {:ok, %{employee: employee}} <- Repo.transaction(confirm_employee_multi(employee)) do
       {:ok, employee}
     else
       _ -> :error
     end
   end
 
-  defp confirm_user_multi(employee) do
+  defp confirm_employee_multi(employee) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:employee, Employee.confirm_changeset(employee))
     |> Ecto.Multi.delete_all(
