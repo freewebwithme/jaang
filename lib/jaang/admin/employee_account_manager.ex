@@ -1,7 +1,8 @@
-defmodule Jaang.Admin.EmployeeManager do
+defmodule Jaang.Admin.EmployeeAccountManager do
   alias Jaang.Admin.Account.Employee.EmployeeAccounts
 
   defdelegate create_employee(attrs), to: EmployeeAccounts
+  defdelegate create_employee_with_profile(attrs), to: EmployeeAccounts
   defdelegate delete_employee(employee), to: EmployeeAccounts
   defdelegate update_employee(employee, attrs), to: EmployeeAccounts
   defdelegate get_employee_by_email_and_password(email, password), to: EmployeeAccounts

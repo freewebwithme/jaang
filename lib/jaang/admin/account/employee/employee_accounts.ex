@@ -6,7 +6,21 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   def create_employee(attrs) do
     %Employee{}
     |> Employee.registration_changeset(attrs)
-    |> Repo.insert!()
+    |> Repo.insert()
+  end
+
+  def create_employee_with_profile(attrs) do
+    with {:ok, employee} <- create_employee(attrs) do
+      # Send confirmation email
+      deliver_employee_confirmation_instructions(
+        employee,
+        &JaangWeb.Router.Helpers.account_confirmation_url(JaangWeb.Endpoint, :confirm, &1)
+      )
+
+      {:ok, employee}
+    else
+      {:error, error} -> {:error, error}
+    end
   end
 
   def get_admin_user(id) do
@@ -222,5 +236,13 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   def get_employee_by_session_token(token) do
     {:ok, query} = EmployeeToken.verify_session_token_query(token)
     Repo.one(query)
+  end
+
+  def data() do
+    Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
   end
 end

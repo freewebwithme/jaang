@@ -14,7 +14,7 @@ defmodule Jaang.Admin.Account.Employee.EmployeeToken do
   @salt "jaang token"
   # 60 days
   @max_age 24 * 60 * 60 * 60
-  schema "employees_tokens" do
+  schema "employee_tokens" do
     field :token, :binary
     field :context, :string
     field :sent_to, :string

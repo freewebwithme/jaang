@@ -2,7 +2,7 @@ defmodule Jaang.Admin.Account.EmployeeAuthMobile do
   @moduledoc """
   User authentication module for Graphql API
   """
-  alias Jaang.Admin.EmployeeManager
+  alias Jaang.Admin.EmployeeAccountManager
   alias Jaang.Repo
   import Ecto.Query
 
@@ -12,7 +12,7 @@ defmodule Jaang.Admin.Account.EmployeeAuthMobile do
   and return employee schema and token
   """
   def log_in_mobile_employee(email, password) do
-    if employee = EmployeeManager.get_employee_by_email_and_password(email, password) do
+    if employee = EmployeeAccountManager.get_employee_by_email_and_password(email, password) do
       token = generate_employee_session_token(employee)
       {:ok, employee, token}
     else
