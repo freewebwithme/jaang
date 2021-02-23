@@ -43,8 +43,8 @@ defmodule JaangWeb.Resolvers.AccountResolver do
 
         {:ok, %{user: user, token: token, expired: false}}
 
-      _ ->
-        {:error, "Can't register, please try again"}
+      {:error, error} ->
+        {:error, error}
     end
   end
 
