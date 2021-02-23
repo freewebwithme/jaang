@@ -74,6 +74,11 @@ defmodule JaangWeb.Router do
     post "/account/confirm", AccountConfirmationController, :create
     get "/account/confirm/:token", AccountConfirmationController, :confirm
 
+    # employee account confirmation
+    get "/employee/account/confirm", Admin.EmployeeAccountConfirmationController, :new
+    post "/employee/account/confirm", Admin.EmployeeAccountConfirmationController, :create
+    get "/employee/account/confirm/:token", Admin.EmployeeAccountConfirmationController, :confirm
+
     # Staff login
     live "/staff-login", Admin.StaffLoginLive
     post "/staff-login", Admin.AdminAuthController, :log_in
@@ -98,6 +103,12 @@ defmodule JaangWeb.Router do
     post "/reset_password", ResetPasswordController, :create
     get "/reset_password/:token", ResetPasswordController, :edit
     put "/reset_password/:token", ResetPasswordController, :update
+
+    # Reset password for employee
+    get "/employee/reset_password", Admin.EmployeeResetPasswordController, :new
+    post "/employee/reset_password", Admin.EmployeeResetPasswordController, :create
+    get "/employee/reset_password/:token", Admin.EmployeeResetPasswordController, :edit
+    put "/employee/reset_password/:token", Admin.EmployeeResetPasswordController, :update
 
     # Log in
     get "/:provider", AuthController, :request

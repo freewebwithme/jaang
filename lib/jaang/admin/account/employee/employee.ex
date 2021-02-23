@@ -15,8 +15,8 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     many_to_many :roles, Jaang.Admin.Account.Employee.EmployeeRole,
       join_through: Jaang.Admin.Account.Employee.EmployeeEmployeeRole
 
-    many_to_many :assigned_works, Jaang.Invoice,
-      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedWork
+    many_to_many :invoices, Jaang.Invoice,
+      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice
 
     timestamps(type: :utc_datetime)
   end

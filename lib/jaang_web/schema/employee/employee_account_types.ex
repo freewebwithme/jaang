@@ -22,6 +22,42 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
 
       resolve(&EmployeeAccountResolver.sign_up_employee/3)
     end
+
+    @desc "Log in an employee"
+    field :log_in_employee, :employee_session do
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
+      resolve(&EmployeeAccountResolver.log_in_employee/3)
+    end
+
+    @desc "Reset password"
+    field :reset_password, :simple_response do
+      arg(:email, non_null(:string))
+
+      resolve(&EmployeeAccountResolver.reset_password/3)
+    end
+
+    @desc "Send confirmation email from Flutter"
+    field :resend_confirmation_email, :simple_response do
+      arg(:employee_token, non_null(:string))
+
+      resolve(&EmployeeAccountResolver.resend_confirmation_email/3)
+    end
+
+    @desc "Log out"
+    field :log_out, :employee_session do
+      arg(:token, :string)
+      middleware(Middleware.Authenticate)
+
+      resolve(&EmployeeAccountResolver.log_out/3)
+    end
+
+    @desc "Verify session token from client"
+    field :verify_token, :employee_session do
+      arg(:token, non_null(:string))
+
+      resolve(&EmployeeAccountResolver.verify_token/3)
+    end
   end
 
   object :employee_session do
@@ -37,7 +73,7 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
     field :confirmed_at, :string
     field :employee_profile, :employee_profile, resolve: dataloader(EmployeeAccounts)
     field :roles, list_of(:employee_role), resolve: dataloader(EmployeeAccounts)
-    field :assigned_works, list_of(:invoice), resolve: dataloader(Products)
+    field :invoices, list_of(:invoice), resolve: dataloader(Products)
   end
 
   object :employee_profile do

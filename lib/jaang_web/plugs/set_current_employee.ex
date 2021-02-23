@@ -9,8 +9,6 @@ defmodule JaangWeb.Plugs.SetCurrentEmployee do
   def call(conn, _) do
     context = build_context(conn)
     conn = Absinthe.Plug.put_options(conn, context: context)
-    IO.puts("Inspecting conn")
-    IO.inspect(conn)
     conn
   end
 

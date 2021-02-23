@@ -16,6 +16,6 @@ defmodule Jaang.Admin.Account.Employee.EmployeeProfile do
   def changeset(%__MODULE__{} = employee_profile, attrs) do
     employee_profile
     |> cast(attrs, [:first_name, :last_name, :phone, :photo_url, :employee_id])
-    |> validate_required([:first_name, :last_name, :phone, :employee_id])
+    |> validate_required([:first_name, :last_name, :phone])
   end
 end

@@ -10,11 +10,18 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   end
 
   def create_employee_with_profile(attrs) do
+    IO.puts("Inspecting register attrs")
+    IO.inspect(attrs)
+
     with {:ok, employee} <- create_employee(attrs) do
       # Send confirmation email
       deliver_employee_confirmation_instructions(
         employee,
-        &JaangWeb.Router.Helpers.account_confirmation_url(JaangWeb.Endpoint, :confirm, &1)
+        &JaangWeb.Router.Helpers.employee_account_confirmation_url(
+          JaangWeb.Endpoint,
+          :confirm,
+          &1
+        )
       )
 
       {:ok, employee}
@@ -110,14 +117,17 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
 
   """
 
-  def deliver_employee_confirmation_instructions(%Employee{} = employee, confirmation_url_fun)
-      when is_function(confirmation_url_fun, 1) do
+  def deliver_employee_confirmation_instructions(
+        %Employee{} = employee,
+        employee_confirmation_url_fun
+      )
+      when is_function(employee_confirmation_url_fun, 1) do
     if employee.confirmed_at do
       {:error, :already_confirmed}
     else
       {encoded_token, employee_token} = EmployeeToken.build_email_token(employee, "confirm")
       Repo.insert!(employee_token)
-      url = confirmation_url_fun.(encoded_token)
+      url = employee_confirmation_url_fun.(encoded_token)
 
       # TODO: # Send email
       EmailManager.send_confirmation_instructions(employee, url)
