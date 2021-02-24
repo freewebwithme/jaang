@@ -45,7 +45,7 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
     end
 
     @desc "Log out"
-    field :log_out, :employee_session do
+    field :log_out_employee, :employee_session do
       arg(:token, :string)
       middleware(Middleware.Authenticate)
 
@@ -53,7 +53,7 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
     end
 
     @desc "Verify session token from client"
-    field :verify_token, :employee_session do
+    field :verify_employee_token, :employee_session do
       arg(:token, non_null(:string))
 
       resolve(&EmployeeAccountResolver.verify_token/3)
