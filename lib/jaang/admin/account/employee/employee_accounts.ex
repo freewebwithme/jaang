@@ -2,6 +2,7 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   alias Jaang.Admin.Account.Employee.{Employee, EmployeeToken}
   alias Jaang.{Repo, EmailManager}
   alias Jaang.Account.Validator
+  import Ecto.Query
 
   def create_employee(attrs) do
     %Employee{}
@@ -238,6 +239,58 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   def delete_session_token(token) do
     Repo.delete_all(EmployeeToken.token_and_context_query(token, "session"))
     :ok
+  end
+
+  @doc """
+  Returns a list of invoice matching the given `criteria`
+
+  Example Criteria:
+
+  [
+   paginate: %{page: 2, per_page: 5},
+   sort: %{sort_by: :delivery_time, sort_order: :asc}
+   filter_by: %{by_state: :submitted}
+  ]
+  """
+  def list_employees(criteria) do
+    query = from(e in Employee)
+
+    Enum.reduce(criteria, query, fn
+      {:paginate, %{page: page, per_page: per_page}}, query ->
+        from q in query,
+          offset: ^((page - 1) * per_page),
+          limit: ^per_page
+
+      {:filter_by, %{by_role: role_name}}, query ->
+        case role_name == "All" do
+          true ->
+            from(q in query)
+
+          _ ->
+            from q in query, join: er in assoc(q, :roles), where: er.name == ^role_name
+        end
+
+      {:search_by, %{search_by: search_by, search_term: term}}, query ->
+        search_pattern = "%#{term}%"
+
+        case search_by do
+          "Name" ->
+            from q in query,
+              join: ep in assoc(q, :employee_profile),
+              on: q.id == ep.employee_id,
+              where: ilike(ep.first_name, ^search_pattern),
+              preload: [employee_profile: ep]
+
+          "Email" ->
+            from q in query,
+              where: ilike(q.email, ^search_pattern)
+
+          _ ->
+            query
+        end
+    end)
+    |> Repo.all()
+    |> Repo.preload([:employee_profile, :roles])
   end
 
   @doc """

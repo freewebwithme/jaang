@@ -25,4 +25,6 @@ defmodule Jaang.Admin.EmployeeAccountManager do
   defdelegate generate_employee_session_token(employee), to: EmployeeAccounts
   defdelegate delete_session_token(token), to: EmployeeAccounts
   defdelegate get_employee_by_session_token(token), to: EmployeeAccounts
+
+  defdelegate list_employees(criteria), to: EmployeeAccounts
 end

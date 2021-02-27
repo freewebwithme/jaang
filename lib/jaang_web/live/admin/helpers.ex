@@ -92,4 +92,12 @@ defmodule JaangWeb.Admin.Helpers do
     {:ok, formatted_datetime} = Utility.convert_and_format_datetime(datetime)
     formatted_datetime
   end
+
+  def display_user_avatar(imageUrl) when is_nil(imageUrl) do
+    "https://jaang-la.s3-us-west-1.amazonaws.com/default-avatar.jpg"
+  end
+
+  def display_user_avatar(imageUrl) do
+    imageUrl
+  end
 end

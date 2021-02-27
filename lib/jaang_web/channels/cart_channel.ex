@@ -1,6 +1,7 @@
 defmodule JaangWeb.CartChannel do
   use Phoenix.Channel
   alias Jaang.{AccountManager, OrderManager, InvoiceManager}
+  alias Jaang.Invoice.Invoices
   alias Jaang.Notification.OneSignal
 
   def join("cart:" <> user_id, _params, %{assigns: %{current_user: user}} = socket) do
@@ -188,7 +189,7 @@ defmodule JaangWeb.CartChannel do
           )
 
           # Broadcast for new invoice
-
+          Invoices.broadcast({:ok, invoice}, :new_order)
           # Send invoice id to the flutter to join invoice channel in flutter
           {:reply,
            {:ok,

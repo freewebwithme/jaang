@@ -35,27 +35,24 @@ defmodule Jaang.Checkout.Checkout do
         # Calculate total items
         total_items = OrderManager.count_total_item(invoice.orders)
         # Update an invoice
-        invoice =
-          InvoiceManager.update_invoice(invoice, %{
-            pm_intent_id: payment_intent.id,
-            payment_method: "Ending with #{last4}",
-            status: :submitted,
-            total_items: total_items,
-            # Add delivery address info
-            recipient: address.recipient,
-            address_line_one: address.address_line_one,
-            address_line_two: address.address_line_two,
-            business_name: address.business_name,
-            zipcode: address.zipcode,
-            city: address.city,
-            state: address.state,
-            instructions: address.instructions,
-            phone_number: user.profile.phone,
-            # Add delivery time
-            delivery_time: delivery_time
-          })
-
-        {:ok, invoice}
+        InvoiceManager.update_invoice(invoice, %{
+          pm_intent_id: payment_intent.id,
+          payment_method: "Ending with #{last4}",
+          status: :submitted,
+          total_items: total_items,
+          # Add delivery address info
+          recipient: address.recipient,
+          address_line_one: address.address_line_one,
+          address_line_two: address.address_line_two,
+          business_name: address.business_name,
+          zipcode: address.zipcode,
+          city: address.city,
+          state: address.state,
+          instructions: address.instructions,
+          phone_number: user.profile.phone,
+          # Add delivery time
+          delivery_time: delivery_time
+        })
 
       {:error, error} ->
         IO.inspect(error)

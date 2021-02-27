@@ -66,10 +66,12 @@ defmodule Jaang.Invoice.Invoices do
 
   @topic inspect(__MODULE__)
 
-  def subscribe do
+  def subscribe() do
     IO.puts("Subscribe to #{@topic}")
     Phoenix.PubSub.subscribe(Jaang.PubSub, @topic)
   end
+
+  def subscribe(_), do: :error
 
   def broadcast({:ok, invoice}, event) do
     Phoenix.PubSub.broadcast(

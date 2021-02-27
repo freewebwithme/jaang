@@ -48,7 +48,7 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
   end
 
   def handle_info({:invoice_updated, invoice}, socket) do
-    IO.puts("Invoice is updated: #{invoice.id}")
+    IO.puts("Invoice is updated from OrderDetailLive: #{invoice.id}")
 
     socket =
       update(socket, :invoice, fn _invoice -> invoice end)
@@ -56,6 +56,10 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
         Helpers.convert_atom_and_string(invoice.status)
       end)
 
+    {:noreply, socket}
+  end
+
+  def handle_info({:new_order, _invoice}, socket) do
     {:noreply, socket}
   end
 end

@@ -1,7 +1,7 @@
 defmodule JaangWeb.Admin.Orders.OrdersLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Invoice.Invoices
-  alias JaangWeb.Admin.Components.OrderTableComponent
+  alias JaangWeb.Admin.Components.{InvoiceComponent}
   alias JaangWeb.Admin.Orders.OrderSearchResultLive
 
   def mount(_params, _session, socket) do
@@ -11,7 +11,7 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
   end
 
   def handle_params(params, _url, socket) do
-    IO.puts("Inspecting params")
+    IO.puts("Calling handle_params from OrdersLive")
     IO.inspect(params)
     page = String.to_integer(params["page"] || "1")
     per_page = String.to_integer(params["per_page"] || "10")
@@ -58,7 +58,7 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
 
   def handle_event("select-per-page", %{"per-page" => per_page}, socket) do
     per_page = String.to_integer(per_page)
-
+    IO.puts("Calling handle_event: select-per-page")
     has_next_page = Helpers.has_next_page?(Enum.count(socket.assigns.invoices), per_page)
 
     socket =
@@ -106,7 +106,13 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
   end
 
   def handle_info({:invoice_updated, invoice}, socket) do
-    IO.puts("Invoice updated: #{invoice.id}")
+    IO.puts(":invoice updated handle info calling from OrdersLive")
+    socket = update(socket, :invoices, fn invoices -> [invoice | invoices] end)
+    {:noreply, socket}
+  end
+
+  def handle_info({:new_order, invoice}, socket) do
+    socket = update(socket, :invoices, fn invoices -> [invoice | invoices] end)
     {:noreply, socket}
   end
 end

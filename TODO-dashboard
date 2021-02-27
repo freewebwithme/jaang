@@ -80,6 +80,25 @@
   
     - Add broadcast function in update_invoice function
 
+  [ 2/26/2021 ]
+    - When employee register as employee, assign their role(shopper or driver) in 
+      dashboard.
+      - show employees in employees in overview page.
+      - add or edit employees information(ex, roles)
+      - employee detail page.
+
+    - Return invoices by status(:submitted, :packed, :on_the_way)
+
+  [ 2/27/2021 ]
+    - When employee register as employee, assign their role(shopper or driver) in 
+      dashboard.
+      - show employees in employees in overview page.
+      - add or edit employees information(ex, roles)
+      - employee detail page.
+
+    - Return invoices by status(:submitted, :packed, :on_the_way)
+
+
   [Features]
     - Admin has to view, update and search order
       - Order detail page

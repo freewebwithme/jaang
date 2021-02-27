@@ -65,6 +65,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
         end
     end)
     |> Repo.all()
+    |> Repo.preload(user: :profile)
   end
 
   def get_invoices() do
@@ -90,7 +91,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
   def update_invoice_status(invoice_id, :shopping = status) do
     invoice = get_invoice(invoice_id)
-    IO.puts("Status is changed to on the way")
+    IO.puts("Status is changed Shopping")
 
     case update_and_broadcast_invoice(invoice, status) do
       {:ok, invoice} ->

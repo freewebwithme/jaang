@@ -79,61 +79,65 @@ defmodule JaangWeb.Admin.Components.OrderTableComponent do
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <%= for invoice <- @invoices do %>
-                  <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10">
-                          <img class="h-10 w-10 rounded-full" src="https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/store-logos/costco.png" alt="">
-                        </div>
-                        <div class="ml-4">
-                          <div class="text-sm font-medium text-gray-900">
-                            Costco
+
+                <div id="invoices" phx-update="prepend">
+
+
+                  <%= for invoice <- @invoices do %>
+                    <tr id="<%= invoice.id %>">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/store-logos/costco.png" alt="">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              Costco
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= invoice.delivery_time %></div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= Helpers.display_money(invoice.total) %></div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10">
-                          <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=60" alt="">
-                        </div>
-                        <div class="ml-4">
-                          <div class="text-sm text-gray-900">
-                            Karen
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900"><%= invoice.delivery_time %></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900"><%= Helpers.display_money(invoice.total) %></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=60" alt="">
                           </div>
-                          <div class="text-sm text-gray-500">
-                            (213)234-5334
+                          <div class="ml-4">
+                            <div class="text-sm text-gray-900">
+                              Karen
+                            </div>
+                            <div class="text-sm text-gray-500">
+                              (213)234-5334
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        <%= Helpers.capitalize_text(invoice.status) %>
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Yes
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <%= live_redirect "View", to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, invoice.id),
-                          class: "text-indigo-600 hover:text-indigo-900" %>
-                    </td>
-                  </tr>
-                <% end %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          <%= Helpers.capitalize_text(invoice.status) %>
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Yes
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <%= live_redirect "View", to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, invoice.id),
+                            class: "text-indigo-600 hover:text-indigo-900" %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </div>
+
               </tbody>
             </table>
-
-
           </div>
         </div>
       </div>
