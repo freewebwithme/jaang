@@ -1,7 +1,11 @@
 <div class="container mx-auto">
   <div class="flex items-center justify-between">
     <h2 class="py-5 px-10 text-3xl text-gray-900">Edit product detail</h2>
-    <%= live_component @socket, PublishedToggleComponent, id: @product.id, changeset: @changeset, product: @product %>
+    <%= live_component @socket, 
+        PublishedToggleComponent, 
+        id: @product.id, 
+        changeset: @changeset, 
+        product: @product %>
   </div>
   <div class="bg-white shadow overflow-hidden sm:rounded-lg  ml-10  sm:pt-4 sm:space-y-5">
     <div class="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">

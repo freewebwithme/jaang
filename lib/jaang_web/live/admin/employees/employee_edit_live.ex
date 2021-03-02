@@ -2,10 +2,10 @@ defmodule JaangWeb.Admin.Employees.EmployeeEditLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.EmployeeAccountManager
   alias JaangWeb.Admin.Employees.EmployeesOverviewLive
+  alias __MODULE__
 
   def mount(%{"id" => id}, _session, socket) do
     employee = EmployeeAccountManager.get_employee(id)
-    IO.inspect(employee)
     changeset = EmployeeAccountManager.change_employee(employee, %{})
     roles = EmployeeAccountManager.list_roles()
     selected_roles = get_selected_roles(employee)
@@ -15,12 +15,18 @@ defmodule JaangWeb.Admin.Employees.EmployeeEditLive do
         current_page: "Employee edit page",
         employee: employee,
         roles: roles,
+        role_count: Enum.count(roles),
         selected_roles: selected_roles,
         changeset: changeset,
         can_save: changeset.valid?
       )
 
     {:ok, socket}
+  end
+
+  def handle_event("validate", params, socket) do
+    IO.inspect(params)
+    {:noreply, socket}
   end
 
   defp get_selected_roles(employee) do
@@ -34,5 +40,11 @@ defmodule JaangWeb.Admin.Employees.EmployeeEditLive do
       end
 
     selected_roles
+  end
+
+  def employee_has_role?(employee, role) do
+    result = role in employee.roles
+    IO.inspect(result)
+    result
   end
 end
