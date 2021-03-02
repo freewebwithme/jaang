@@ -1,5 +1,5 @@
 defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
-  alias Jaang.Admin.Account.Employee.{Employee, EmployeeToken}
+  alias Jaang.Admin.Account.Employee.{Employee, EmployeeToken, EmployeeRole}
   alias Jaang.{Repo, EmailManager}
   alias Jaang.Account.Validator
   import Ecto.Query
@@ -8,6 +8,11 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
     %Employee{}
     |> Employee.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  def change_employee(attrs) do
+    %Employee{}
+    |> Ecto.Changeset.change(attrs)
   end
 
   def create_employee_with_profile(attrs) do
@@ -36,13 +41,18 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   end
 
   def delete_employee(%Employee{} = employee) do
-    Repo.delete!(employee)
+    Repo.delete(employee)
   end
 
   def update_employee(employee, attrs) do
     employee
     |> Employee.changeset(attrs)
     |> Repo.update!()
+  end
+
+  def change_employee(%Employee{} = employee, attrs) do
+    employee
+    |> Employee.changeset(attrs)
   end
 
   @doc """
@@ -65,6 +75,10 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
 
   def get_employee_by_email(email) when is_binary(email) do
     Repo.get_by(Employee, email: email)
+  end
+
+  def get_employee(id) do
+    Repo.get_by(Employee, id: id) |> Repo.preload([:employee_profile, :roles])
   end
 
   @doc """
@@ -299,6 +313,36 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   def get_employee_by_session_token(token) do
     {:ok, query} = EmployeeToken.verify_session_token_query(token)
     Repo.one(query)
+  end
+
+  ### * Roles
+  def create_employee_role(attrs) do
+    %EmployeeRole{}
+    |> EmployeeRole.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def get_employee_role(id) do
+    Repo.get_by(EmployeeRole, id: id)
+  end
+
+  def update_employee_role(employee_role, attrs) do
+    employee_role
+    |> EmployeeRole.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def change_employee_role(%EmployeeRole{} = employee_role, attrs) do
+    employee_role
+    |> EmployeeRole.changeset(attrs)
+  end
+
+  def delete_employee_role(%EmployeeRole{} = employee_role) do
+    Repo.delete(employee_role)
+  end
+
+  def list_roles() do
+    Repo.all(EmployeeRole)
   end
 
   def data() do

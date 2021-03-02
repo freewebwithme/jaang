@@ -9,6 +9,7 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     field :hashed_password, :string
     field :stripe_id, :string
     field :confirmed_at, :utc_datetime
+    field :active, :boolean, default: false
 
     has_one :employee_profile, Jaang.Admin.Account.Employee.EmployeeProfile
 
@@ -24,7 +25,8 @@ defmodule Jaang.Admin.Account.Employee.Employee do
   @doc false
   def changeset(%__MODULE__{} = employee, attrs) do
     employee
-    |> cast(attrs, [:email, :stripe_id])
+    |> cast(attrs, [:email, :stripe_id, :active])
+    |> cast_assoc(:employee_profile)
   end
 
   @doc false

@@ -1,6 +1,9 @@
 defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.EmployeeAccountManager
+  alias JaangWeb.Admin.Components.EmployeeComponent
+  alias JaangWeb.Admin.Employees.EmployeeAddLive
+  alias JaangWeb.Admin.Employees.Roles.EmployeeRolesLive
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -95,5 +98,20 @@ defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
       )
 
     {:noreply, socket}
+  end
+
+  @doc """
+  Get a list of roles and display names
+  """
+  def display_roles(roles) when is_list(roles) do
+    if(Enum.count(roles) == 0) do
+      "Not assigned"
+    else
+      role_names = ""
+
+      Enum.reduce(roles, role_names, fn role, acc ->
+        acc <> ", " <> role.name
+      end)
+    end
   end
 end

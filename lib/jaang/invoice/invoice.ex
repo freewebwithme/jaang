@@ -39,6 +39,9 @@ defmodule Jaang.Invoice do
     belongs_to :user, Jaang.Account.User
     has_many :orders, Jaang.Checkout.Order
 
+    many_to_many :employees, Jaang.Admin.Account.Employee.Employee,
+      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice
+
     timestamps(type: :utc_datetime)
   end
 

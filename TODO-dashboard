@@ -89,7 +89,7 @@
 
     - Return invoices by status(:submitted, :packed, :on_the_way)
 
-  [ 2/27/2021 ]
+  [ 3/1/2021 ]
     - When employee register as employee, assign their role(shopper or driver) in 
       dashboard.
       - show employees in employees in overview page.
@@ -98,6 +98,8 @@
 
     - Return invoices by status(:submitted, :packed, :on_the_way)
 
+  [ 3/2/2021 ]
+    - Working on EmployeeEdit for Roles. 
 
   [Features]
     - Admin has to view, update and search order

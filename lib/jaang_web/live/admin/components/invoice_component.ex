@@ -54,7 +54,8 @@ defmodule JaangWeb.Admin.Components.InvoiceComponent do
 
                       <div>
                        <div class="">
-                         <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        <p class="text-sm text-gray-600"> Order status </p>
+                         <p class="mt-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           <%= Helpers.capitalize_text(invoice.status) %>
                          </p>
                        </div>
