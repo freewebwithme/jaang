@@ -10,6 +10,7 @@ defmodule JaangWeb.Admin.Employees.EmployeeDetailLive do
     socket =
       assign(socket,
         current_page: "Employee detail page",
+        page_title: "Employee detail",
         employee: employee
       )
 

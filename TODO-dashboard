@@ -100,6 +100,12 @@
 
   [ 3/2/2021 ]
     - Working on EmployeeEdit for Roles. 
+    - Add active toggle button at the top
+      - If role is not assigned, disable toggle button
+
+  [ 3/3/2021 ]
+    - If role is not assigned, disable toggle button
+    - Working on employee edit and add using live_action
 
   [Features]
     - Admin has to view, update and search order

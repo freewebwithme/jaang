@@ -14,7 +14,8 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     has_one :employee_profile, Jaang.Admin.Account.Employee.EmployeeProfile
 
     many_to_many :roles, Jaang.Admin.Account.Employee.EmployeeRole,
-      join_through: Jaang.Admin.Account.Employee.EmployeeEmployeeRole
+      join_through: Jaang.Admin.Account.Employee.EmployeeEmployeeRole,
+      on_replace: :delete
 
     many_to_many :invoices, Jaang.Invoice,
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice
@@ -26,13 +27,14 @@ defmodule Jaang.Admin.Account.Employee.Employee do
   def changeset(%__MODULE__{} = employee, attrs) do
     employee
     |> cast(attrs, [:email, :stripe_id, :active])
+    |> validate_required(:email)
     |> cast_assoc(:employee_profile)
   end
 
   @doc false
   def registration_changeset(%__MODULE__{} = employee, attrs) do
     employee
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :active, :stripe_id])
     |> Validator.validate_email()
     |> Validator.validate_password()
     |> cast_assoc(:employee_profile)

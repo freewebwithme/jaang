@@ -4,15 +4,34 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   alias Jaang.Account.Validator
   import Ecto.Query
 
+  def create_employee(changeset) when is_struct(changeset, Ecto.Changeset) do
+    changeset |> Repo.insert()
+  end
+
   def create_employee(attrs) do
     %Employee{}
     |> Employee.registration_changeset(attrs)
     |> Repo.insert()
   end
 
+  def change_employee(%Employee{} = employee, attrs) do
+    employee
+    |> Employee.changeset(attrs)
+  end
+
   def change_employee(attrs) do
     %Employee{}
-    |> Ecto.Changeset.change(attrs)
+    |> Employee.changeset(attrs)
+  end
+
+  def registration_change_employee(attrs) do
+    %Employee{}
+    |> Employee.registration_changeset(attrs)
+  end
+
+  def put_roles_in_changeset(changeset, roles) do
+    changeset
+    |> Ecto.Changeset.put_assoc(:roles, roles)
   end
 
   def create_employee_with_profile(attrs) do
@@ -50,9 +69,8 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
     |> Repo.update!()
   end
 
-  def change_employee(%Employee{} = employee, attrs) do
-    employee
-    |> Employee.changeset(attrs)
+  def update_employee(changeset) do
+    changeset |> Repo.update!()
   end
 
   @doc """

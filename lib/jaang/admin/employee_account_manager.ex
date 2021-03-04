@@ -5,11 +5,14 @@ defmodule Jaang.Admin.EmployeeAccountManager do
   defdelegate create_employee_with_profile(attrs), to: EmployeeAccounts
   defdelegate delete_employee(employee), to: EmployeeAccounts
   defdelegate update_employee(employee, attrs), to: EmployeeAccounts
+  defdelegate update_employee(changeset), to: EmployeeAccounts
   defdelegate get_employee_by_email_and_password(email, password), to: EmployeeAccounts
   defdelegate get_employee_by_email(email), to: EmployeeAccounts
   defdelegate get_employee(id), to: EmployeeAccounts
   defdelegate change_employee_password(employee, attrs), to: EmployeeAccounts
   defdelegate change_employee(employee, attrs), to: EmployeeAccounts
+  defdelegate registration_change_employee(attrs), to: EmployeeAccounts
+  defdelegate put_roles_in_changeset(changeset, roles), to: EmployeeAccounts
 
   defdelegate deliver_update_email_instructions(employee, current_email, update_email_url_fun),
     to: EmployeeAccounts

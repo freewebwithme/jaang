@@ -55,15 +55,15 @@ defmodule JaangWeb.Router do
     live "/customers/search", Customers.CustomerSearchResultLive
 
     live "/employees", Employees.EmployeesOverviewLive
-    live "/employees/add", Employees.EmployeeAddLive
+    live "/employees/add", Employees.EmployeeIndexLive, :add
+    live "/employees/edit/:id", Employees.EmployeeIndexLive, :edit
     live "/employees/detail/:id", Employees.EmployeeDetailLive
-    live "/employees/edit/:id", Employees.EmployeeEditLive
     live "/employees/shoppers", Employees.ShoppersLive
     live "/employees/drivers", Employees.DriversLive
 
-    live "/employees/roles", Employees.Roles.EmployeeRolesLive
-    live "/employees/roles/add", Employees.Roles.EmployeeRoleAddLive
-    live "/employees/roles/edit/:id", Employees.Roles.EmployeeRoleEditLive
+    live "/employees/roles", Employees.Roles.EmployeeRoleIndexLive, :index
+    live "/employees/roles/add", Employees.Roles.EmployeeRoleIndexLive, :add
+    live "/employees/roles/edit/:id", Employees.Roles.EmployeeRoleIndexLive, :edit
 
     live "/customer-services", CustomerServices.CustomerServicesOverviewLive
     live "/customer-services/messages", CustomerServices.CustomerServiceMessagesLive

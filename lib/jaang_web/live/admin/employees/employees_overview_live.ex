@@ -2,7 +2,7 @@ defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.EmployeeAccountManager
   alias JaangWeb.Admin.Components.EmployeeComponent
-  alias JaangWeb.Admin.Employees.EmployeeAddLive
+  alias JaangWeb.Admin.Employees.EmployeeIndexLive
   alias JaangWeb.Admin.Employees.Roles.EmployeeRolesLive
 
   def mount(_params, _session, socket) do
@@ -110,7 +110,11 @@ defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
       role_names = ""
 
       Enum.reduce(roles, role_names, fn role, acc ->
-        acc <> ", " <> role.name
+        if acc == "" do
+          acc <> role.name
+        else
+          acc <> ", " <> role.name
+        end
       end)
     end
   end
