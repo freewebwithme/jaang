@@ -34,6 +34,25 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
     |> Ecto.Changeset.put_assoc(:roles, roles)
   end
 
+  def put_assigned_stores_in_changeset(changeset, stores) do
+    changeset
+    |> Ecto.Changeset.put_assoc(:assigned_stores, stores)
+  end
+
+  def delete_employee(%Employee{} = employee) do
+    Repo.delete(employee)
+  end
+
+  def update_employee(employee, attrs) do
+    employee
+    |> Employee.changeset(attrs)
+    |> Repo.update!()
+  end
+
+  def update_employee(changeset) do
+    changeset |> Repo.update()
+  end
+
   def create_employee_with_profile(attrs) do
     IO.puts("Inspecting register attrs")
     IO.inspect(attrs)
@@ -59,20 +78,6 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
     Repo.get_by(AdminUser, id: id)
   end
 
-  def delete_employee(%Employee{} = employee) do
-    Repo.delete(employee)
-  end
-
-  def update_employee(employee, attrs) do
-    employee
-    |> Employee.changeset(attrs)
-    |> Repo.update!()
-  end
-
-  def update_employee(changeset) do
-    changeset |> Repo.update!()
-  end
-
   @doc """
   Log in a employee using email and password
 
@@ -96,7 +101,7 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   end
 
   def get_employee(id) do
-    Repo.get_by(Employee, id: id) |> Repo.preload([:employee_profile, :roles])
+    Repo.get_by(Employee, id: id) |> Repo.preload([:employee_profile, :roles, :assigned_stores])
   end
 
   @doc """
@@ -322,7 +327,7 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
         end
     end)
     |> Repo.all()
-    |> Repo.preload([:employee_profile, :roles])
+    |> Repo.preload([:employee_profile, :roles, :assigned_stores])
   end
 
   @doc """

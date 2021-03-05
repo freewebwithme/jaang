@@ -5,6 +5,7 @@ defmodule JaangWeb.Schema do
   alias Jaang.Checkout.Carts
   alias Jaang.Account.Accounts
   alias Jaang.Product.Products
+  alias Jaang.Store.Stores
   alias Jaang.Admin.Account.Employee.EmployeeAccounts
 
   import_types(JaangWeb.Schema.ProductTypes)
@@ -43,6 +44,7 @@ defmodule JaangWeb.Schema do
       |> Dataloader.add_source(Accounts, Accounts.data())
       |> Dataloader.add_source(Products, Products.data())
       |> Dataloader.add_source(EmployeeAccounts, EmployeeAccounts.data())
+      |> Dataloader.add_source(Stores, Stores.data())
 
     Map.put(ctx, :loader, loader)
   end

@@ -13,6 +13,7 @@ defmodule Jaang.Admin.EmployeeAccountManager do
   defdelegate change_employee(employee, attrs), to: EmployeeAccounts
   defdelegate registration_change_employee(attrs), to: EmployeeAccounts
   defdelegate put_roles_in_changeset(changeset, roles), to: EmployeeAccounts
+  defdelegate put_assigned_stores_in_changeset(changeset, stores), to: EmployeeAccounts
 
   defdelegate deliver_update_email_instructions(employee, current_email, update_email_url_fun),
     to: EmployeeAccounts

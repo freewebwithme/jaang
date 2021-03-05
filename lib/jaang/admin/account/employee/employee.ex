@@ -12,6 +12,11 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     field :active, :boolean, default: false
 
     has_one :employee_profile, Jaang.Admin.Account.Employee.EmployeeProfile
+    has_many :orders, Jaang.Checkout.Order
+
+    many_to_many :assigned_stores, Jaang.Store,
+      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedStore,
+      on_replace: :delete
 
     many_to_many :roles, Jaang.Admin.Account.Employee.EmployeeRole,
       join_through: Jaang.Admin.Account.Employee.EmployeeEmployeeRole,

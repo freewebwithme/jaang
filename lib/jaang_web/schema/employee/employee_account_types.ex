@@ -71,7 +71,9 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
     field :stripe_id, :string
     field :email, :string
     field :confirmed_at, :string
+    field :active, :boolean
     field :employee_profile, :employee_profile, resolve: dataloader(EmployeeAccounts)
+    field :assigned_stores, list_of(:store), resolve: dataloader(Stores)
     field :roles, list_of(:employee_role), resolve: dataloader(EmployeeAccounts)
     field :invoices, list_of(:invoice), resolve: dataloader(Products)
   end

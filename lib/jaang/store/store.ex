@@ -12,6 +12,11 @@ defmodule Jaang.Store do
     field :store_logo, :string
 
     has_many :products, Jaang.Product
+
+    many_to_many :employees, Jaang.Admin.Account.Employee.Employee,
+      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedStore,
+      on_replace: :delete
+
     timestamps(type: :utc_datetime)
   end
 

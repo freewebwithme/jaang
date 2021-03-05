@@ -35,6 +35,7 @@ defmodule Jaang.Checkout.Order do
     # Minimum acount must be over $35
     field :required_amount, Money.Ecto.Amount.Type
     belongs_to :user, Jaang.Account.User
+    belongs_to :employee, Jaang.Admin.Account.Employee.Employee
 
     timestamps(type: :utc_datetime)
   end
@@ -46,6 +47,7 @@ defmodule Jaang.Checkout.Order do
       :status,
       :total,
       :user_id,
+      :employee_id,
       :store_id,
       :store_name,
       :store_logo,

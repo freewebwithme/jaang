@@ -42,6 +42,15 @@ defmodule JaangWeb.Admin.Components.EmployeeComponent do
 
                 </div>
                 <div>
+                  <div>
+                    <p class="text-sm text-gray-500"> Assigned Stores</p>
+                    <p class="mt-2 items-center text-sm text-indigo-600">
+                      <%= EmployeesOverviewLive.display_roles(employee.assigned_stores) %>
+                    </p>
+                  </div>
+
+                </div>
+                <div>
                  <div class="">
                   <p class="text-sm text-gray-600"> Active </p>
                    <p class="mt-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= if employee.active, do: 'bg-green-100 text-green-800', else: 'bg-red-100 text-red-800' %>">

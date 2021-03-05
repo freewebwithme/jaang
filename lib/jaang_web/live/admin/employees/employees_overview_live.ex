@@ -2,8 +2,6 @@ defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.EmployeeAccountManager
   alias JaangWeb.Admin.Components.EmployeeComponent
-  alias JaangWeb.Admin.Employees.EmployeeIndexLive
-  alias JaangWeb.Admin.Employees.Roles.EmployeeRolesLive
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -84,19 +82,20 @@ defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
   end
 
   def handle_event("search", %{"search-by" => search_by, "search-field" => search_term}, socket) do
-    socket =
-      push_redirect(
-        socket,
-        to:
-          Routes.live_path(
-            socket,
-            # TODO: Create Employee search result page
-            OrderSearchResultLive,
-            search_by: search_by,
-            search_term: search_term
-          )
-      )
-
+    # socket =
+    #  push_redirect(
+    #    socket,
+    #    to:
+    #      Routes.live_path(
+    #        socket,
+    #        # TODO: Create Employee search result page
+    #        OrderSearchResultLive,
+    #        search_by: search_by,
+    #        search_term: search_term
+    #      )
+    #  )
+    IO.inspect(search_term)
+    IO.inspect(search_by)
     {:noreply, socket}
   end
 

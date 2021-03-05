@@ -205,4 +205,12 @@ defmodule Jaang.Store.Stores do
 
     categories_ready
   end
+
+  def data() do
+    Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
+  end
 end

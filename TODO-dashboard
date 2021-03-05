@@ -107,6 +107,13 @@
     - If role is not assigned, disable toggle button
     - Working on employee edit and add using live_action
 
+  [ 3/4/2021 ]
+    - Bug with active button in edit employee page
+
+  [ 3/5/2021 ]
+    - Add assign store in Edit employee page
+    - Remove assigned_store_id, shopper_id, driver_id field from employee table
+    
   [Features]
     - Admin has to view, update and search order
       - Order detail page
