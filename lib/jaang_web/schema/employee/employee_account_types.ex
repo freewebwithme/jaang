@@ -3,6 +3,7 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
 
   alias Jaang.Admin.Account.Employee.EmployeeAccounts
   alias Jaang.Product.Products
+  alias Jaang.Store.Stores
   alias JaangWeb.Resolvers.Employee.EmployeeAccountResolver
   alias JaangWeb.Schema.Middleware
 

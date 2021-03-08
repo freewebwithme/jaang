@@ -4,6 +4,8 @@ defmodule JaangWeb.CartChannel do
   alias Jaang.Invoice.Invoices
   alias Jaang.Notification.OneSignal
 
+  intercept ["new_order"]
+
   def join("cart:" <> user_id, _params, %{assigns: %{current_user: user}} = socket) do
     # check if current user match client user
     IO.puts("Printing user_id #{user_id}")
@@ -48,6 +50,11 @@ defmodule JaangWeb.CartChannel do
   end
 
   def handle_info(_message, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_out("new_order", _payload, socket) do
+    IO.puts("Testing channel")
     {:noreply, socket}
   end
 
@@ -190,7 +197,8 @@ defmodule JaangWeb.CartChannel do
 
           # Broadcast for new invoice
           Invoices.broadcast({:ok, invoice}, :new_order)
-          # Send invoice id to the flutter to join invoice channel in flutter
+
+          # Send invoice id to the flutter to join invoice channel in flutter(Not joining invoice channel currently)
           {:reply,
            {:ok,
             %{

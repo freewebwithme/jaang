@@ -110,6 +110,7 @@ defmodule JaangWeb.Schema.CartTypes do
     field :delivery_day, :string
     field :delivery_date, :string
     field :delivery_month, :string
+    field :delivery_year, :string
     field :available_hours, list_of(:string)
   end
 

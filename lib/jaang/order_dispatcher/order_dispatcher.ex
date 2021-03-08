@@ -1,5 +1,6 @@
 defmodule Jaang.OrderDispatcher do
   alias Jaang.Invoice
+  alias Jaang.Admin.ShopperManager
 
   @doc """
   Assign a shopper to invoice(order)
@@ -9,7 +10,6 @@ defmodule Jaang.OrderDispatcher do
     # Check if order(invoice) has multiple store order
     case has_multiple_store_orders?(invoice) do
       true ->
-        # assign it to shopper,
         nil
 
       _ ->
@@ -29,13 +29,7 @@ defmodule Jaang.OrderDispatcher do
     end
   end
 
-  # How can I find best available shoper?
-  # conditions -
-  # 1. shopper who is currently not fulfilling order
-  # 2. shopper who has better feedback(review)
-  # 3. shopper who has better time record for fulfilling order(faster shopping time)
-  # 4.
   def find_available_shopper(store_id) do
-    shoppers = ShopperManager.get_shoppers_by_store(store_id)
+    shoppers = ShopperManager.get_best_available_shopper(store_id)
   end
 end

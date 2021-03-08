@@ -104,15 +104,42 @@
       - If role is not assigned, disable toggle button
 
   [ 3/3/2021 ]
-    - If role is not assigned, disable toggle button
-    - Working on employee edit and add using live_action
+    - Working on employee edit and add using live_action(DONE)
 
   [ 3/4/2021 ]
-    - Bug with active button in edit employee page
+    - Bug with active button in edit employee page(DONE)
 
   [ 3/5/2021 ]
-    - Add assign store in Edit employee page
+    - Add assign store in Edit employee page(DONE)
     - Remove assigned_store_id, shopper_id, driver_id field from employee table
+
+  [ 3/6/2021 ]
+    - OrderDispatcher..
+      - How can I track if employee(shopper or driver) is currently working on order?
+      - Track duration that takes to complete order.(Implement this function in flutter and just
+        send result to server(ex: 36 min))
+
+      - Add working :boolean field to employee?
+
+      - Create another table(Task) for employee's job to measure employee's performance
+        - How long does it take a Shopping?
+        - How long does it take a Delivery? 
+        - Task schema
+          - invoice_id
+          - order_id
+          - employee_id
+          - start_datetime
+          - end_datetime
+          - duration
+          - task_type(:delivery, :shopping)
+
+  [ 3/8/2021 ]
+    - Just implemented
+      - Added delivery_order and delivery_date to invoice table
+    
+    - get order by today, that is status in [:submitted, :shopping, :packed, :on_the_way, :delivered]
+      and sort_by delivery_order
+
     
   [Features]
     - Admin has to view, update and search order

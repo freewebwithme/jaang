@@ -84,4 +84,22 @@ defmodule Jaang.Invoice.Invoices do
   end
 
   def broadcast({:error, _reason} = error, _event), do: error
+
+  @doc """
+  Broadcast to store employees for new order or updated order status
+  """
+
+  def broadcast_to_employee({:ok, invoice}, event) do
+    store_ids = Enum.map(invoice.orders, & &1.store_id)
+
+    Enum.map(store_ids, fn store_id ->
+      Phoenix.PubSub.broadcast(
+        Jaang.PubSub,
+        "store:" <> store_id,
+        {event, invoice}
+      )
+    end)
+
+    {:ok, invoice}
+  end
 end

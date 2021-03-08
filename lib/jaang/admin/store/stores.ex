@@ -9,6 +9,10 @@ defmodule Jaang.Admin.Store.Stores do
     Repo.get_by(Store, id: store_id) |> Repo.preload(:products)
   end
 
+  def get_store_with_employees(store_id) do
+    Repo.get_by(Store, id: store_id) |> Repo.preload(employees: :roles)
+  end
+
   @doc """
   This function will be called in admin home screen
   to get information about stores to display store list in

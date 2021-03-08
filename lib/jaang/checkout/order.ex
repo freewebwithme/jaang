@@ -16,6 +16,7 @@ defmodule Jaang.Checkout.Order do
              :store_logo,
              :user_id,
              :available_checkout,
+             :order_placed_at,
              :required_amount
            ]}
   defprotocol MoneyProtocol do
@@ -23,7 +24,9 @@ defmodule Jaang.Checkout.Order do
   end
 
   schema "orders" do
-    field :status, Ecto.Enum, values: [:cart, :submitted]
+    field :status, Ecto.Enum,
+      values: [:cart, :refunded, :submitted, :shopping, :packed, :on_the_way, :delivered]
+
     field :total, Money.Ecto.Amount.Type
     embeds_many :line_items, LineItem, on_replace: :delete
 
@@ -32,6 +35,7 @@ defmodule Jaang.Checkout.Order do
     field :store_logo, :string
     field :invoice_id, :id
     field :available_checkout, :boolean, default: false
+    field :order_placed_at, :utc_datetime
     # Minimum acount must be over $35
     field :required_amount, Money.Ecto.Amount.Type
     belongs_to :user, Jaang.Account.User
@@ -53,7 +57,8 @@ defmodule Jaang.Checkout.Order do
       :store_logo,
       :invoice_id,
       :available_checkout,
-      :required_amount
+      :required_amount,
+      :order_placed_at
     ])
     |> cast_embed(:line_items, required: true, with: &LineItem.changeset/2)
     |> set_order_total()

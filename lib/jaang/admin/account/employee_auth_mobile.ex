@@ -71,7 +71,8 @@ defmodule Jaang.Admin.Account.EmployeeAuthMobile do
 
   def get_employee_by_session_token(token) do
     with {:ok, query} <- verify_session_token_query(token),
-         %{} = employee <- Repo.one(query) |> Repo.preload(:employee_profile) do
+         %{} = employee <-
+           Repo.one(query) |> Repo.preload([:employee_profile, :roles, :assigned_stores]) do
       {:ok, employee}
     else
       nil -> {:error, "Can't find a employee"}

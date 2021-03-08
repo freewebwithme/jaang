@@ -1,5 +1,6 @@
 defmodule Jaang.Checkout.Checkout do
   alias Jaang.{ProfileManager, InvoiceManager, StripeManager, OrderManager}
+  alias Jaang.Store.DeliveryDateTimes
 
   @doc """
   This function places an order using currently saved
@@ -26,10 +27,15 @@ defmodule Jaang.Checkout.Checkout do
            default_payment_method_id
          ) do
       {:ok, payment_intent} ->
+        # Get current datetime
+        order_placed_at = DateTime.utc_now() |> DateTime.truncate(:second)
+
+        # Parse delivery_time
+        {delivery_order, delivery_date} = DeliveryDateTimes.parse_delivery_datetime(delivery_time)
         IO.inspect(payment_intent.id)
         # Mark order as "submitted"
         Enum.map(invoice.orders, fn order ->
-          OrderManager.update_cart(order, %{status: :submitted})
+          OrderManager.update_cart(order, %{status: :submitted, order_placed_at: order_placed_at})
         end)
 
         # Calculate total items
@@ -51,7 +57,10 @@ defmodule Jaang.Checkout.Checkout do
           instructions: address.instructions,
           phone_number: user.profile.phone,
           # Add delivery time
-          delivery_time: delivery_time
+          delivery_time: delivery_time,
+          delivery_date: delivery_date,
+          delivery_order: delivery_order,
+          invoice_placed_at: order_placed_at
         })
 
       {:error, error} ->

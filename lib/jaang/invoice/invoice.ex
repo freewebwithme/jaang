@@ -21,6 +21,8 @@ defmodule Jaang.Invoice do
       values: [:cart, :refunded, :submitted, :shopping, :packed, :on_the_way, :delivered]
 
     field :delivery_time, :string
+    field :delivery_date, :date
+    field :delivery_order, :integer
 
     # Embed address information
     field :recipient, :string
@@ -34,6 +36,7 @@ defmodule Jaang.Invoice do
 
     field :phone_number, :string
 
+    field :invoice_placed_at, :utc_datetime
     field :shopper_id, :id
     field :driver_id, :id
     belongs_to :user, Jaang.Account.User
@@ -70,7 +73,10 @@ defmodule Jaang.Invoice do
       :state,
       :instructions,
       :phone_number,
-      :delivery_time
+      :delivery_time,
+      :delivery_date,
+      :delivery_order,
+      :invoice_placed_at
     ]
 
     invoice
