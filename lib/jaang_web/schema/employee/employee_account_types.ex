@@ -48,7 +48,6 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
     @desc "Log out"
     field :log_out_employee, :employee_session do
       arg(:token, :string)
-      middleware(Middleware.Authenticate)
 
       resolve(&EmployeeAccountResolver.log_out/3)
     end

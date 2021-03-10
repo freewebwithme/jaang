@@ -2,6 +2,7 @@ defmodule Jaang.Account.Profile do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, except: [:__meta__, :user]}
   schema "profiles" do
     field :first_name, :string
     field :last_name, :string

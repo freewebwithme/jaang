@@ -224,6 +224,7 @@ defmodule JaangWeb.CartChannel do
     })
   end
 
+  # TODO: I don't need to convert Money to string manually.
   def get_updated_carts(user_id) do
     # Refresh product price in carts
     OrderManager.get_all_carts(user_id) |> OrderManager.refresh_product_price()

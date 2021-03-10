@@ -3,7 +3,7 @@ defmodule Jaang.Invoice do
   import Ecto.Changeset
   alias Jaang.Invoice
 
-  @derive {Jason.Encoder, except: [:__meta__]}
+  @derive {Jason.Encoder, except: [:__meta__, :employees]}
   schema "invoices" do
     field :invoice_number, :string
     field :subtotal, Money.Ecto.Amount.Type
@@ -46,6 +46,14 @@ defmodule Jaang.Invoice do
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice
 
     timestamps(type: :utc_datetime)
+  end
+
+  # Implementing Jason.Encoder for Money type
+  # Convert %Money{amount: 0, currency: :USD} to $0
+  defimpl Jason.Encoder, for: Money do
+    def encode(struct, opts) do
+      Jason.Encode.string(Money.to_string(struct), opts)
+    end
   end
 
   @doc false

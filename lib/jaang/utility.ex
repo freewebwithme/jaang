@@ -45,4 +45,12 @@ defmodule Jaang.Utility do
 
     price_changed
   end
+
+  @doc """
+  Check if date is today.
+  This function is called for checking invoice.delivery_date is Today
+  """
+  def today?(date) do
+    Timex.today() == date
+  end
 end

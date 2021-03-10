@@ -8,14 +8,25 @@ defmodule Jaang.Admin.Invoice.Invoices do
   # set up per page option
   # set up pagination
   @doc """
-  Get all invoices whose status is submitted, packed, on_the_way, delivered
+  Get all invoices whose status is submitted, packed, on_the_way, delivered.
+  Returns invoice list groupbed by status
   """
-  def get_unfulfilled_invoices() do
+  def get_unfulfilled_invoices(store_id) do
+    today = Timex.today()
+
     query =
       from i in Invoice,
-        where: i.status not in [:cart, :refunded, :delivered]
+        where:
+          i.status not in [:cart, :refunded, :delivered] and
+            i.delivery_date == ^today,
+        order_by: i.delivery_order,
+        join: o in assoc(i, :orders),
+        where: o.store_id == ^store_id,
+        preload: [orders: o]
 
-    Repo.all(query) |> Repo.preload(:orders)
+    Repo.all(query)
+    |> Repo.preload(user: :profile)
+    |> Enum.group_by(fn invoice -> invoice.status end)
   end
 
   @doc """

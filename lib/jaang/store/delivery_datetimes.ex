@@ -106,6 +106,16 @@ defmodule Jaang.Store.DeliveryDateTimes do
     # make it odd hour(3, 5, 7, 9, 11)
     # Because available hours timelines have odd number hour
 
+    # TODO: Delivery time restriction(start 3 pm). Remove later
+    available_start_hour =
+      if available_start_hour.hour < 15 do
+        # We start delivery from 3 pm.
+        Timex.to_datetime(
+          {{now.year, now.month, now.day}, {15, 00, 00}},
+          "America/Los_Angeles"
+        )
+      end
+
     {:ok, available_start_hour} =
       if(rem(available_start_hour.hour, 2) == 0) do
         IO.puts("even number")
