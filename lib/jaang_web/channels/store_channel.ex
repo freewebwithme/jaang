@@ -1,8 +1,9 @@
 defmodule JaangWeb.StoreChannel do
   use Phoenix.Channel
   alias Jaang.Admin.Invoice.Invoices
+  alias Jaang.Admin.EmployeeAccountManager
 
-  intercept ["new_order"]
+  intercept ["invoice_updated"]
 
   @impl true
   def join("store:" <> store_id, _params, %{assigns: %{current_employee: employee}} = socket) do
@@ -47,19 +48,28 @@ defmodule JaangWeb.StoreChannel do
 
   @impl true
   def handle_in("start_shopping", payload, socket) do
-    # Get employee id and invoice id from payload
-    # Get employee and invoice
-    # Set invoice :employees to employee
-    # update invoice and order status to :shopping
-    # return new grouped_invoices
+    IO.puts("Calling handle_in('start_shopping')")
+    %{"invoice_id" => invoice_id, "employee_id" => employee_id} = payload
+    # IO.puts("invoice_id #{invoice_id}, employee_id: #{employee_id}")
+
+    {:ok, invoice} = Invoices.assign_employee_to_invoice(invoice_id, employee_id, :shopping)
+
+    # Send reply with updated invoice
+    {:reply, {:ok, %{invoice: invoice}}, socket}
   end
 
   @impl true
-  def handle_info({:send_order_info, event}, %{assigns: %{store_id: store_id}} = socket) do
-    IO.puts("Printing store_id #{store_id}")
+  @doc """
+  Whenever invoice is updated, send updated invoice and updated invoice list
+  using handle_in
+  """
+  def handle_out("invoice_updated", _message, %{assigns: %{store_id: store_id}} = socket) do
+    IO.puts("invoice updated handle out: ")
+
     {submitted, shopping, packed, on_the_way} = return_grouped_invoices(store_id)
 
-    push(socket, event, %{
+    push(socket, "invoice_updated", %{
+      # invoice: invoice,
       submitted: submitted,
       shopping: shopping,
       packed: packed,
@@ -69,6 +79,7 @@ defmodule JaangWeb.StoreChannel do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_info(_message, socket) do
     {:noreply, socket}
   end

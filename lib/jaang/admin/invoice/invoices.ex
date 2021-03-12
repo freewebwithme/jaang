@@ -3,6 +3,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
   import Ecto.Query
   alias Jaang.Invoice.Invoices
   alias Jaang.Notification.OneSignal
+  alias Jaang.Admin.EmployeeAccountManager
 
   # 1 Get all invoices whose status is submitted, packed, on_the_way, delivered
   # set up per page option
@@ -10,6 +11,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
   @doc """
   Get all invoices whose status is submitted, packed, on_the_way, delivered.
   Returns invoice list groupbed by status
+  There will be only one order because I filters with store_id
   """
   def get_unfulfilled_invoices(store_id) do
     today = Timex.today()
@@ -89,7 +91,31 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
   def get_invoice(invoice_id) do
     query = from i in Invoice, where: i.id == ^invoice_id
-    Repo.one(query) |> Repo.preload([:orders, :user])
+    Repo.one(query) |> Repo.preload([:orders, [user: :profile], :employees])
+  end
+
+  @doc """
+  Assigns employees to invoice with invoice status.
+  Update order's status too.
+  employees could be a single shopper and a single driver.
+  It will be used when a shopper starts shopping(:shopping) and
+  a driver picked up the order(:on_the_way)
+  """
+  def assign_employee_to_invoice(invoice_id, employee_id, status) do
+    employee = EmployeeAccountManager.get_employee(employee_id)
+    invoice = get_invoice(invoice_id)
+    # get order from invoice to update order's status
+    # There will always be only 1 order in invoice at this moment
+    [order] = Enum.take(invoice.orders, 1)
+    # TODO: assign same employee to order
+    {:ok, invoice} =
+      invoice
+      |> Ecto.Changeset.change(%{status: status, orders: [%{status: status, id: order.id}]})
+      |> Ecto.Changeset.put_assoc(:employees, [employee | invoice.employees])
+      |> Repo.update()
+
+    Invoices.broadcast_to_employee(invoice, "invoice_updated")
+    {:ok, invoice}
   end
 
   def update_invoice(invoice_id, attrs) do
@@ -106,6 +132,9 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
     case update_and_broadcast_invoice(invoice, status) do
       {:ok, invoice} ->
+        # Broadcast to store employee
+        IO.puts("invoice status changed, notifying employee...")
+        Invoices.broadcast_to_employee(invoice, "invoice_updated")
         # Send push notification to flutter client
         OneSignal.create_notification(
           "JaangCart",
@@ -132,6 +161,8 @@ defmodule Jaang.Admin.Invoice.Invoices do
         #  "Our shopper just starts shopping!",
         #  invoice.user_id
         # )
+        # Broadcast to store employee
+        Invoices.broadcast_to_employee(invoice, "invoice_updated")
 
         {:ok, invoice}
 
@@ -146,7 +177,12 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
     case update_and_broadcast_invoice(invoice, status) do
       {:ok, invoice} ->
+        # Broadcast to store employee
+        Invoices.broadcast_to_employee(invoice, "invoice_updated")
+
         # Send push notification to flutter client
+        # Broadcast to store employee
+        Invoices.broadcast_to_employee(invoice, "invoice_updated")
         OneSignal.create_notification("JaangCart", "Your order is on the way!", invoice.user_id)
         {:ok, invoice}
 
@@ -161,6 +197,9 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
     case update_and_broadcast_invoice(invoice, status) do
       {:ok, invoice} ->
+        # Broadcast to store employee
+        Invoices.broadcast_to_employee(invoice, "invoice_updated")
+
         # Send push notification to flutter client
         OneSignal.create_notification("JaangCart", "Your order is delivered!", invoice.user_id)
 
@@ -176,6 +215,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
     update_and_broadcast_invoice(invoice, status)
   end
 
+  # This function is for Admin Dashboard
   defp update_and_broadcast_invoice(invoice, status) do
     invoice
     |> Invoice.changeset(%{status: status})

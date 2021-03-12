@@ -30,6 +30,9 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   end
 
   def put_roles_in_changeset(changeset, roles) do
+    # I should do suply whole roles in put_assoc function like this
+    # put_assoc(:roles[roles | employee.roles])
+    # but in this case, roles param has whole roles
     changeset
     |> Ecto.Changeset.put_assoc(:roles, roles)
   end

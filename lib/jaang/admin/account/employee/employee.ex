@@ -12,7 +12,6 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     field :active, :boolean, default: false
 
     has_one :employee_profile, Jaang.Admin.Account.Employee.EmployeeProfile
-    has_many :orders, Jaang.Checkout.Order
 
     many_to_many :assigned_stores, Jaang.Store,
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedStore,
@@ -21,6 +20,9 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     many_to_many :roles, Jaang.Admin.Account.Employee.EmployeeRole,
       join_through: Jaang.Admin.Account.Employee.EmployeeEmployeeRole,
       on_replace: :delete
+
+    many_to_many :orders, Jaang.Checkout.Order,
+      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedOrder
 
     many_to_many :invoices, Jaang.Invoice,
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice

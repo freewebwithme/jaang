@@ -43,7 +43,8 @@ defmodule Jaang.Invoice do
     has_many :orders, Jaang.Checkout.Order
 
     many_to_many :employees, Jaang.Admin.Account.Employee.Employee,
-      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice
+      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice,
+      on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
