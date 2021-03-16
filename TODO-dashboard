@@ -124,7 +124,7 @@
       - Create another table(Task) for employee's job to measure employee's performance
         - How long does it take a Shopping?
         - How long does it take a Delivery? 
-        - Task schema
+        - EmployeeTask schema
           - invoice_id
           - order_id
           - employee_id
@@ -132,6 +132,8 @@
           - end_datetime
           - duration
           - task_type(:delivery, :shopping)
+          - status(:in_progress, :done, :on_the_way, :delivered)
+          - embedd_many(line_items) - copy from order.
 
   [ 3/8/2021 ]
     - Just implemented
@@ -140,7 +142,18 @@
     - get order by today, that is status in [:submitted, :shopping, :packed, :on_the_way, :delivered]
       and sort_by delivery_order
 
-    
+  [ 3/15/2021 ]
+    - Create EmployeeTask when start shopping, and save it to database
+      - When creating EmployeeTask, copy LineItem from order
+      - After shopper finishes to fulfill an order, edit original line_items, orders and invoices
+        with final price and items
+        
+    - Scan product item barcode and check if it matches with ordered item(compare barcode number)
+
+  [ Week's plan(3/15/2021 - 3/19/2021)]
+    - Finish fulfilling an orde by shopper 
+    - Check out screen 
+
   [Features]
     - Admin has to view, update and search order
       - Order detail page

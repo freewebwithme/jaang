@@ -104,7 +104,8 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
   end
 
   def get_employee(id) do
-    Repo.get_by(Employee, id: id) |> Repo.preload([:employee_profile, :roles, :assigned_stores])
+    Repo.get_by(Employee, id: id)
+    |> Repo.preload([:employee_profile, :roles, :assigned_stores, :invoices, :employee_tasks])
   end
 
   @doc """

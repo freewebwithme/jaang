@@ -114,6 +114,8 @@ defmodule Jaang.Store.DeliveryDateTimes do
           {{now.year, now.month, now.day}, {15, 00, 00}},
           "America/Los_Angeles"
         )
+      else
+        available_start_hour
       end
 
     {:ok, available_start_hour} =
@@ -129,8 +131,6 @@ defmodule Jaang.Store.DeliveryDateTimes do
         available_start_hour |> Timex.format("{h12} {am}")
       end
 
-    IO.puts("Printing available_start_hour")
-    IO.inspect(available_start_hour)
     # Get index
     index =
       if(available_start_hour == "9 pm") do

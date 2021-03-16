@@ -29,7 +29,7 @@ defmodule Jaang.Invoice.Invoices do
   end
 
   def get_invoice_by_id(invoice_id) do
-    Repo.get_by(Invoice, id: invoice_id)
+    Repo.get_by(Invoice, id: invoice_id) |> Repo.preload(employees: :employee_profile)
   end
 
   def get_or_create_invoice(user_id) do

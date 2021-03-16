@@ -2,11 +2,8 @@ defmodule Jaang.Checkout.LineItem do
   use Ecto.Schema
   alias Jaang.Checkout.LineItem
   alias Jaang.ProductManager
-  alias Jaang.Product
-  alias Jaang.Repo
 
   import Ecto.Changeset
-  import Ecto.Query
 
   @derive Jason.Encoder
   embedded_schema do
@@ -24,6 +21,7 @@ defmodule Jaang.Checkout.LineItem do
     field :quantity, :integer
     field :price, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
+    field :barcode, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -47,7 +45,8 @@ defmodule Jaang.Checkout.LineItem do
       :price,
       :total,
       :inserted_at,
-      :updated_at
+      :updated_at,
+      :barcode
     ])
     |> set_product_details()
     |> set_total()
@@ -99,6 +98,7 @@ defmodule Jaang.Checkout.LineItem do
         # that is why I keep original_price
         |> put_change(:original_price, product_price.original_price)
         |> put_change(:discount_percentage, product_price.discount_percentage)
+        |> put_change(:barcode, product.barcode)
     end
   end
 

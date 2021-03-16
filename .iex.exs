@@ -96,3 +96,5 @@ alias Jaang.Utility
 alias Jaang.Admin.Account.Employee.{Employee, EmployeeProfile, EmployeeRole}
 alias Jaang.Admin.Account.EmployeeAuthMobile
 alias Jaang.Admin.EmployeeAccountManager
+alias Jaang.Admin.EmployeeTask
+alias Jaang.Admin.EmployeeTask.EmployeeTasks

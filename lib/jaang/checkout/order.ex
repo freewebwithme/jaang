@@ -53,7 +53,6 @@ defmodule Jaang.Checkout.Order do
       :status,
       :total,
       :user_id,
-      :employee_id,
       :store_id,
       :store_name,
       :store_logo,
@@ -64,10 +63,20 @@ defmodule Jaang.Checkout.Order do
     ])
     |> cast_embed(:line_items, required: true, with: &LineItem.changeset/2)
     |> set_order_total()
+    |> set_checkout_available()
     |> validate_required([:status, :total, :user_id])
   end
 
-  defp set_order_total(changeset) do
+  @doc """
+  Assign employees to order and change status(:shopping, :on_the_way)
+  """
+  def assign_employee_changeset(%Order{} = order, employee, status) do
+    order
+    |> change(%{status: status})
+    |> put_assoc(:employees, [employee | order.employees])
+  end
+
+  def set_order_total(changeset) do
     items = get_field(changeset, :line_items)
 
     total =
@@ -75,19 +84,25 @@ defmodule Jaang.Checkout.Order do
         Money.add(acc, item.total)
       end)
 
-    available_checkout = checkout_available(total)
+    changeset
+    |> put_change(:total, total)
+  end
+
+  def set_checkout_available(changeset) do
+    total = get_field(changeset, :total)
+
+    available_checkout = checkout_available?(total)
 
     required_amount =
-      cond do
-        available_checkout == true ->
+      case available_checkout do
+        true ->
           Money.new(0, :USD)
 
-        available_checkout == false ->
+        _ ->
           calculate_require_amount(total)
       end
 
     changeset
-    |> put_change(:total, total)
     |> put_change(:available_checkout, available_checkout)
     |> put_change(:required_amount, required_amount)
   end
@@ -95,7 +110,7 @@ defmodule Jaang.Checkout.Order do
   # Calculate if total price is over $35
   # and update :avilable_checkout in order
   # param: %Money{0, :USD}
-  defp checkout_available(total) do
+  defp checkout_available?(total) do
     if(Money.compare(total, Money.new(3500, :USD)) >= 0) do
       true
     else

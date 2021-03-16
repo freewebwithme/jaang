@@ -12,6 +12,7 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     field :active, :boolean, default: false
 
     has_one :employee_profile, Jaang.Admin.Account.Employee.EmployeeProfile
+    has_many :employee_tasks, Jaang.Admin.EmployeeTask
 
     many_to_many :assigned_stores, Jaang.Store,
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedStore,
@@ -25,7 +26,8 @@ defmodule Jaang.Admin.Account.Employee.Employee do
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedOrder
 
     many_to_many :invoices, Jaang.Invoice,
-      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice
+      join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice,
+      on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end

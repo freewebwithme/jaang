@@ -2,6 +2,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
   alias Jaang.{Invoice, Repo}
   import Ecto.Query
   alias Jaang.Invoice.Invoices
+  alias Jaang.Checkout.Order
   alias Jaang.Notification.OneSignal
   alias Jaang.Admin.EmployeeAccountManager
 
@@ -91,7 +92,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
   def get_invoice(invoice_id) do
     query = from i in Invoice, where: i.id == ^invoice_id
-    Repo.one(query) |> Repo.preload([:orders, [user: :profile], :employees])
+    Repo.one(query) |> Repo.preload([[orders: :employees], [user: :profile], :employees])
   end
 
   @doc """
@@ -107,10 +108,11 @@ defmodule Jaang.Admin.Invoice.Invoices do
     # get order from invoice to update order's status
     # There will always be only 1 order in invoice at this moment
     [order] = Enum.take(invoice.orders, 1)
-    # TODO: assign same employee to order
+    {:ok, order} = Order.assign_employee_changeset(order, employee, status) |> Repo.update()
+
     {:ok, invoice} =
       invoice
-      |> Ecto.Changeset.change(%{status: status, orders: [%{status: status, id: order.id}]})
+      |> Ecto.Changeset.change(%{status: status, orders: [order]})
       |> Ecto.Changeset.put_assoc(:employees, [employee | invoice.employees])
       |> Repo.update()
 

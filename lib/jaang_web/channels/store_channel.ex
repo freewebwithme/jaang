@@ -2,6 +2,7 @@ defmodule JaangWeb.StoreChannel do
   use Phoenix.Channel
   alias Jaang.Admin.Invoice.Invoices
   alias Jaang.Admin.EmployeeAccountManager
+  alias Jaang.Admin.EmployeeTask.EmployeeTasks
 
   intercept ["invoice_updated"]
 
@@ -34,16 +35,20 @@ defmodule JaangWeb.StoreChannel do
   def handle_in("get_order_info", _payload, %{assigns: %{store_id: store_id}} = socket) do
     IO.puts("Incoming event from client: 'get_order_info'")
 
-    {submitted, shopping, packed, on_the_way} = return_grouped_invoices(store_id)
+    case return_grouped_invoices(store_id) do
+      {:ok, grouped_invoices} ->
+        {:reply,
+         {:ok,
+          %{
+            submitted: grouped_invoices.submitted,
+            shopping: grouped_invoices.shopping,
+            packed: grouped_invoices.packed,
+            on_the_way: grouped_invoices.on_the_way
+          }}, socket}
 
-    {:reply,
-     {:ok,
-      %{
-        submitted: submitted,
-        shopping: shopping,
-        packed: packed,
-        on_the_way: on_the_way
-      }}, socket}
+      {:empty, %{}} ->
+        {:reply, {:ok, %{has_data: false}}, socket}
+    end
   end
 
   @impl true
@@ -54,8 +59,16 @@ defmodule JaangWeb.StoreChannel do
 
     {:ok, invoice} = Invoices.assign_employee_to_invoice(invoice_id, employee_id, :shopping)
 
+    # Create employee task
+    {:ok, employee_task} =
+      EmployeeTasks.create_employee_task(invoice, employee_id, "shopping", "in_progress")
+
+    # employee = EmployeeAccountManager.get_employee(employee_id)
+
+    IO.puts("Printing employee task")
+    IO.inspect(employee_task)
     # Send reply with updated invoice
-    {:reply, {:ok, %{invoice: invoice}}, socket}
+    {:reply, {:ok, %{employee_task: employee_task}}, socket}
   end
 
   @impl true
@@ -66,18 +79,38 @@ defmodule JaangWeb.StoreChannel do
   def handle_out("invoice_updated", _message, %{assigns: %{store_id: store_id}} = socket) do
     IO.puts("invoice updated handle out: ")
 
-    {submitted, shopping, packed, on_the_way} = return_grouped_invoices(store_id)
+    case return_grouped_invoices(store_id) do
+      {:ok, grouped_invoices} ->
+        push(socket, "invoice_updated", %{
+          # invoice: invoice,
+          submitted: grouped_invoices.submitted,
+          shopping: grouped_invoices.shopping,
+          packed: grouped_invoices.packed,
+          on_the_way: grouped_invoices.on_the_way
+        })
 
-    push(socket, "invoice_updated", %{
-      # invoice: invoice,
-      submitted: submitted,
-      shopping: shopping,
-      packed: packed,
-      on_the_way: on_the_way
-    })
+        {:noreply, socket}
 
-    {:noreply, socket}
+      {:empty, %{}} ->
+        push(socket, "invoice_updated", %{has_data: false})
+        {:noreply, socket}
+    end
   end
+
+  # @impl true
+  # def handle_info({:send_order_info, event}, %{assigns: %{store_id: store_id}} = socket) do
+  #   IO.puts("Printing store_id #{store_id}")
+  #   {submitted, shopping, packed, on_the_way} = return_grouped_invoices(store_id)
+
+  #   push(socket, event, %{
+  #     submitted: submitted,
+  #     shopping: shopping,
+  #     packed: packed,
+  #     on_the_way: on_the_way
+  #   })
+
+  #   {:noreply, socket}
+  # end
 
   @impl true
   def handle_info(_message, socket) do
@@ -87,12 +120,11 @@ defmodule JaangWeb.StoreChannel do
   defp return_grouped_invoices(store_id) do
     grouped_invoices = Invoices.get_unfulfilled_invoices(store_id)
 
-    {
-      grouped_invoices.submitted,
-      grouped_invoices.shopping,
-      grouped_invoices.packed,
-      grouped_invoices.on_the_way
-    }
+    if grouped_invoices == %{} do
+      {:empty, %{}}
+    else
+      {:ok, grouped_invoices}
+    end
   end
 
   defp employee_belongs_to_store?(employee, store_id) do

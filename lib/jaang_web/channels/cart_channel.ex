@@ -233,48 +233,49 @@ defmodule JaangWeb.CartChannel do
     sorted_carts =
       Enum.map(carts, fn %{line_items: line_items, total: total, required_amount: required_amount} =
                            cart ->
-        total = Money.to_string(total)
-        cart = Map.put(cart, :total, total)
-        required_amount = Money.to_string(required_amount)
-        cart = Map.put(cart, :required_amount, required_amount)
+        # total = Money.to_string(total)
+        # cart = Map.put(cart, :total, total)
+        # required_amount = Money.to_string(required_amount)
+        # cart = Map.put(cart, :required_amount, required_amount)
 
         # Sort the line item by inserted at
         line_items = Enum.sort(line_items, &(&1.inserted_at <= &2.inserted_at))
 
         # convert %Money{} to string "$13.00"
-        line_items =
-          Enum.map(line_items, fn line_item ->
-            # Get Money.Ecto.Amount.Type from line item and
-            # convert to string before sending to client
+        # line_items =
+        #  Enum.map(line_items, fn line_item ->
+        #    # Get Money.Ecto.Amount.Type from line item and
+        #    # convert to string before sending to client
 
-            %{
-              price: price,
-              total: total,
-              original_price: original_price,
-              original_total: original_total
-            } = line_item
+        #    %{
+        #      price: price,
+        #      total: total,
+        #      original_price: original_price,
+        #      original_total: original_total
+        #    } = line_item
 
-            price = Money.to_string(price)
-            total = Money.to_string(total)
-            original_price = Money.to_string(original_price)
-            original_total = Money.to_string(original_total)
+        #    price = Money.to_string(price)
+        #    total = Money.to_string(total)
+        #    original_price = Money.to_string(original_price)
+        #    original_total = Money.to_string(original_total)
 
-            line_item =
-              Map.put(line_item, :price, price)
-              |> Map.put(:total, total)
-              |> Map.put(:original_price, original_price)
-              |> Map.put(:original_total, original_total)
+        #    line_item =
+        #      Map.put(line_item, :price, price)
+        #      |> Map.put(:total, total)
+        #      |> Map.put(:original_price, original_price)
+        #      |> Map.put(:original_total, original_total)
 
-            line_item
-          end)
+        #    line_item
+        #  end)
 
         Map.put(cart, :line_items, line_items)
       end)
 
     total_items = OrderManager.count_total_item(sorted_carts)
-    # I can't use sorted_carts because it's price and total is converted string
+    # I can't use sorted_carts because its price and total is converted string
     # so use original carts
-    total_price = OrderManager.calculate_total_price(carts)
+    # total_price = OrderManager.calculate_total_price(carts)
+    total_price = OrderManager.calculate_total_price(sorted_carts)
     {sorted_carts, total_items, Money.to_string(total_price)}
   end
 end

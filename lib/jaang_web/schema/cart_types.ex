@@ -115,7 +115,7 @@ defmodule JaangWeb.Schema.CartTypes do
   end
 
   object :invoice do
-    field :id, :id
+    field :id, :integer
     field :invoice_number, :string
     field :subtotal, :string
     field :driver_tip, :string
@@ -165,7 +165,7 @@ defmodule JaangWeb.Schema.CartTypes do
   end
 
   object :order do
-    field :id, :id
+    field :id, :integer
     field :store_id, :id
     field :store_name, :string
     field :store_logo, :string
