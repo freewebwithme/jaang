@@ -1,8 +1,8 @@
 defmodule JaangWeb.StoreChannel do
   use Phoenix.Channel
   alias Jaang.Admin.Invoice.Invoices
-  alias Jaang.Admin.EmployeeAccountManager
   alias Jaang.Admin.EmployeeTask.EmployeeTasks
+  alias Jaang.Admin.EmployeeTask
 
   intercept ["invoice_updated"]
 
@@ -36,18 +36,49 @@ defmodule JaangWeb.StoreChannel do
     IO.puts("Incoming event from client: 'get_order_info'")
 
     case return_grouped_invoices(store_id) do
-      {:ok, grouped_invoices} ->
+      {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
         {:reply,
          {:ok,
           %{
-            submitted: grouped_invoices.submitted,
-            shopping: grouped_invoices.shopping,
-            packed: grouped_invoices.packed,
-            on_the_way: grouped_invoices.on_the_way
+            submitted: submitted,
+            shopping: shopping,
+            packed: packed,
+            on_the_way: on_the_way
           }}, socket}
 
       {:empty, %{}} ->
         {:reply, {:ok, %{has_data: false}}, socket}
+    end
+  end
+
+  # This handle_in function to check if employee has in-progress task that must finish
+  @impl true
+  def handle_in("check_employee_task", %{"employee_id" => employee_id} = _payload, socket) do
+    IO.puts("Incoming event from client: 'check_employee_task'")
+    IO.inspect(employee_id)
+
+    case EmployeeTasks.get_in_progress_employee_task(employee_id) do
+      nil ->
+        {:reply, {:ok, %{has_in_progress_task: false}}, socket}
+
+      employee_task ->
+        # get invoice and return with employee_task
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+
+        # Group by line items' status
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        {:reply,
+         {:ok,
+          %{
+            has_in_progress_task: true,
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
     end
   end
 
@@ -63,12 +94,48 @@ defmodule JaangWeb.StoreChannel do
     {:ok, employee_task} =
       EmployeeTasks.create_employee_task(invoice, employee_id, "shopping", "in_progress")
 
-    # employee = EmployeeAccountManager.get_employee(employee_id)
+    # Group by line items' status
+    %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+      group_by_line_item_status(employee_task)
 
     IO.puts("Printing employee task")
     IO.inspect(employee_task)
     # Send reply with updated invoice
-    {:reply, {:ok, %{employee_task: employee_task}}, socket}
+    {:reply,
+     {:ok,
+      %{
+        employee_task: employee_task,
+        invoice: invoice,
+        ready: ready,
+        not_ready: not_ready,
+        sold_out: sold_out
+      }}, socket}
+  end
+
+  @impl true
+  def handle_in(
+        "continue_shopping",
+        %{"invoice_id" => invoice_id, "employee_id" => employee_id} = _payload,
+        socket
+      ) do
+    IO.puts("Calling handle_in(`continue_shopping')")
+    employee_task = EmployeeTasks.get_employee_task(employee_id)
+    # Group by line items' status
+    %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+      group_by_line_item_status(employee_task)
+
+    invoice = Invoices.get_invoice(invoice_id)
+    IO.inspect(ready)
+    # Send reply with updated invoice
+    {:reply,
+     {:ok,
+      %{
+        employee_task: employee_task,
+        invoice: invoice,
+        ready: ready,
+        not_ready: not_ready,
+        sold_out: sold_out
+      }}, socket}
   end
 
   @impl true
@@ -80,13 +147,13 @@ defmodule JaangWeb.StoreChannel do
     IO.puts("invoice updated handle out: ")
 
     case return_grouped_invoices(store_id) do
-      {:ok, grouped_invoices} ->
+      {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
         push(socket, "invoice_updated", %{
           # invoice: invoice,
-          submitted: grouped_invoices.submitted,
-          shopping: grouped_invoices.shopping,
-          packed: grouped_invoices.packed,
-          on_the_way: grouped_invoices.on_the_way
+          submitted: submitted,
+          shopping: shopping,
+          packed: packed,
+          on_the_way: on_the_way
         })
 
         {:noreply, socket}
@@ -123,7 +190,13 @@ defmodule JaangWeb.StoreChannel do
     if grouped_invoices == %{} do
       {:empty, %{}}
     else
-      {:ok, grouped_invoices}
+      {:ok,
+       %{
+         submitted: Map.get(grouped_invoices, :submitted) || [],
+         shopping: Map.get(grouped_invoices, :shopping) || [],
+         packed: Map.get(grouped_invoices, :packed) || [],
+         on_the_way: Map.get(grouped_invoices, :on_the_way) || []
+       }}
     end
   end
 
@@ -142,5 +215,46 @@ defmodule JaangWeb.StoreChannel do
       end
 
     result
+  end
+
+  defp group_by_line_item_status(%EmployeeTask{} = employee_task) do
+    {ready, not_ready, sold_out} =
+      Enum.group_by(employee_task.line_items, & &1.status)
+      |> group_by_category_name()
+
+    %{
+      ready: ready,
+      not_ready: not_ready,
+      sold_out: sold_out
+    }
+  end
+
+  defp group_by_category_name(grouped_line_items) do
+    ready_line_items = Map.get(grouped_line_items, :ready)
+    not_ready_line_items = Map.get(grouped_line_items, :not_ready)
+    sold_out_line_items = Map.get(grouped_line_items, :sold_out)
+
+    ready_line_items =
+      if ready_line_items do
+        Enum.group_by(ready_line_items, & &1.category_name)
+      else
+        %{}
+      end
+
+    not_ready_line_items =
+      if not_ready_line_items do
+        Enum.group_by(not_ready_line_items, & &1.category_name)
+      else
+        %{}
+      end
+
+    sold_out_line_items =
+      if sold_out_line_items do
+        Enum.group_by(sold_out_line_items, & &1.category_name)
+      else
+        %{}
+      end
+
+    {ready_line_items, not_ready_line_items, sold_out_line_items}
   end
 end

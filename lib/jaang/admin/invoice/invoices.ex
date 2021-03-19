@@ -15,7 +15,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
   There will be only one order because I filters with store_id
   """
   def get_unfulfilled_invoices(store_id) do
-    today = Timex.today()
+    today = Timex.to_date(Timex.now("America/Los_Angeles"))
 
     query =
       from i in Invoice,

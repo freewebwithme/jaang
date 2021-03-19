@@ -22,6 +22,7 @@ defmodule Jaang.Checkout.LineItem do
     field :price, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
     field :barcode, :string
+    field :status, Ecto.Enum, values: [:ready, :not_ready, :sold_out], default: :not_ready
 
     timestamps(type: :utc_datetime)
   end
@@ -46,9 +47,10 @@ defmodule Jaang.Checkout.LineItem do
       :total,
       :inserted_at,
       :updated_at,
-      :barcode
+      :barcode,
+      :status
     ])
-    |> set_product_details()
+    # |> set_product_details()
     |> set_total()
     |> validate_required([
       :product_id,
@@ -61,6 +63,17 @@ defmodule Jaang.Checkout.LineItem do
       :quantity,
       :price
     ])
+  end
+
+  @doc """
+  Update status, quantity(could be 1 if unit is pack, or could be float(1.5) if unit is lb or oz)
+  and total.
+  Include :price, :original_price field to set_total()
+  """
+  def changeset_for_employee_task(%LineItem{} = line_item, attrs) do
+    line_item
+    |> cast(attrs, [:quantity, :total, :status, :price, :original_price])
+    |> set_total()
   end
 
   def set_product_details(changeset) do

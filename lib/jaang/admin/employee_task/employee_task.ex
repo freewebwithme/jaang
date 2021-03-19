@@ -4,6 +4,7 @@ defmodule Jaang.Admin.EmployeeTask do
   alias __MODULE__
   alias Jaang.Checkout.LineItem
 
+  @derive {Jason.Encoder, except: [:__meta__, :employee]}
   schema "employee_tasks" do
     field :task_type, Ecto.Enum, values: [:shopping, :delivery]
     field :task_status, Ecto.Enum, values: [:in_progress, :done]
@@ -40,17 +41,6 @@ defmodule Jaang.Admin.EmployeeTask do
       :order_id,
       :employee_id
     ]
-
-    line_items = Map.get(attrs, :line_items)
-
-    # Convert %LineItem{} to map %{}
-    attrs =
-      if line_items do
-        line_items = Enum.map(line_items, &Map.from_struct/1)
-        Map.put(attrs, :line_items, line_items)
-      else
-        attrs
-      end
 
     employee_task
     |> cast(attrs, fields)
