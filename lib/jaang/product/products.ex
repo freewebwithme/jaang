@@ -78,9 +78,12 @@ defmodule Jaang.Product.Products do
         join: pp in assoc(p, :product_prices),
         on: pp.product_id == p.id,
         where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
+        join: mp in assoc(p, :market_prices),
+        on: mp.product_id == p.id,
+        where: fragment("now() between ? and ?", mp.start_date, mp.end_date),
         join: pi in assoc(p, :product_images),
         on: pi.product_id == p.id,
-        preload: [product_images: pi, product_prices: pp]
+        preload: [product_images: pi, product_prices: pp, market_prices: mp]
 
     Repo.one(query)
   end

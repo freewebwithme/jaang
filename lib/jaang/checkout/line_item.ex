@@ -15,6 +15,7 @@ defmodule Jaang.Checkout.LineItem do
     field :sub_category_name, :string
     field :unit_name, :string
     field :on_sale, :boolean
+    field :market_price, Money.Ecto.Amount.Type
     field :original_price, Money.Ecto.Amount.Type
     field :original_total, Money.Ecto.Amount.Type
     field :discount_percentage, :string
@@ -48,7 +49,8 @@ defmodule Jaang.Checkout.LineItem do
       :inserted_at,
       :updated_at,
       :barcode,
-      :status
+      :status,
+      :market_price
     ])
     # |> set_product_details()
     |> set_total()
@@ -90,6 +92,9 @@ defmodule Jaang.Checkout.LineItem do
         # check if current product is on sale
         [product_price] = product.product_prices
 
+        # Get market price to display it in employee app
+        [market_price] = product.market_prices
+
         # Set price depends on on_sale value
         current_price =
           if(product_price.on_sale) do
@@ -110,6 +115,8 @@ defmodule Jaang.Checkout.LineItem do
         # In case product is on sale, I will display original price in the client.
         # that is why I keep original_price
         |> put_change(:original_price, product_price.original_price)
+        # put market price for employee app
+        |> put_change(:market_price, market_price.original_price)
         |> put_change(:discount_percentage, product_price.discount_percentage)
         |> put_change(:barcode, product.barcode)
     end
