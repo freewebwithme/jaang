@@ -139,6 +139,23 @@ defmodule JaangWeb.StoreChannel do
   end
 
   @impl true
+  def handle_in(
+        "update_line_item",
+        %{"employee_id" => employee_id, "line_item_id" => line_item_id, "status" => status},
+        socket
+      ) do
+    IO.puts("Calling handle_in(`update_line_item`")
+
+    case EmployeeTasks.update_employee_task_line_item_status(employee_id, line_item_id, status) do
+      {:ok, _employee_task} ->
+        {:reply, :ok, socket}
+
+      {:error, _changeset} ->
+        {:reply, :error, socket}
+    end
+  end
+
+  @impl true
   @doc """
   Whenever invoice is updated, send updated invoice and updated invoice list
   using handle_in

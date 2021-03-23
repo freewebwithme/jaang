@@ -51,8 +51,8 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
   This function updates line_items' status in EmployeeTask
   This function will be used when shopper(in client app) fulfills orders
   """
-  def update_employee_task_line_item_status(employee_task_id, line_item_id, status) do
-    employee_task = Repo.get_by(EmployeeTask, id: employee_task_id)
+  def update_employee_task_line_item_status(employee_id, line_item_id, status) do
+    employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
     existing_line_items = employee_task.line_items
 
     # exclude selected line item from existing line_items then convert to map

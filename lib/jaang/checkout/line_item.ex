@@ -52,7 +52,7 @@ defmodule Jaang.Checkout.LineItem do
       :status,
       :market_price
     ])
-    # |> set_product_details()
+    |> set_product_details()
     |> set_total()
     |> validate_required([
       :product_id,
