@@ -162,6 +162,45 @@ defmodule JaangWeb.StoreChannel do
         socket
       ) do
     IO.puts("Calling handle_in(`update_line_item_quantity_or_weight`)")
+
+    case EmployeeTasks.check_quantity_for_line_item(
+           :quantity,
+           employee_id,
+           line_item_id,
+           quantity
+         ) do
+      {:ok, _employeeTask} ->
+        {:reply, :ok, socket}
+
+      {:error, message} ->
+        IO.puts("Updating line_item quantity error")
+        IO.inspect(message)
+        {:reply, {:error, message}, socket}
+    end
+  end
+
+  @impl true
+  def handle_in(
+        "update_line_item_quantity_or_weight",
+        %{"employee_id" => employee_id, "line_item_id" => line_item_id, "weight" => weight},
+        socket
+      ) do
+    IO.puts("Calling handle_in(`update_line_item_quantity_or_weight`)")
+
+    case EmployeeTasks.check_quantity_for_line_item(
+           :weight,
+           employee_id,
+           line_item_id,
+           weight
+         ) do
+      {:ok, _employeeTask} ->
+        {:reply, :ok, socket}
+
+      {:error, message} ->
+        IO.puts("Updating line_item weight error")
+        IO.inspect(message)
+        {:reply, {:error, message}, socket}
+    end
   end
 
   @impl true

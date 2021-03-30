@@ -79,7 +79,7 @@ defmodule Jaang.Checkout.LineItem do
   """
   def changeset_for_employee_task(%LineItem{} = line_item, attrs) do
     line_item
-    |> cast(attrs, [:quantity, :total, :status, :price, :original_price])
+    |> cast(attrs, [:quantity, :total, :status, :price, :original_price, :weight])
     |> set_total()
   end
 
@@ -128,16 +128,43 @@ defmodule Jaang.Checkout.LineItem do
     end
   end
 
+  # def set_total(changeset) do
+  #  quantity = get_field(changeset, :quantity)
+  #  price = get_field(changeset, :price)
+  #  total = Money.multiply(price, quantity)
+
+  #  original_price = get_field(changeset, :original_price)
+  #  original_total = Money.multiply(original_price, quantity)
+
+  #  changeset
+  #  |> put_change(:total, total)
+  #  |> put_change(:original_total, original_total)
+  # end
+
   def set_total(changeset) do
-    quantity = get_field(changeset, :quantity)
-    price = get_field(changeset, :price)
-    total = Money.multiply(price, quantity)
+    case get_change(changeset, :weight) do
+      nil ->
+        quantity = get_field(changeset, :quantity)
+        price = get_field(changeset, :price)
+        total = Money.multiply(price, quantity)
 
-    original_price = get_field(changeset, :original_price)
-    original_total = Money.multiply(original_price, quantity)
+        original_price = get_field(changeset, :original_price)
+        original_total = Money.multiply(original_price, quantity)
 
-    changeset
-    |> put_change(:total, total)
-    |> put_change(:original_total, original_total)
+        changeset
+        |> put_change(:total, total)
+        |> put_change(:original_total, original_total)
+
+      weight ->
+        price = get_field(changeset, :price)
+        total = Money.multiply(price, weight)
+
+        original_price = get_field(changeset, :original_price)
+        original_total = Money.multiply(original_price, weight)
+
+        changeset
+        |> put_change(:total, total)
+        |> put_change(:original_total, original_total)
+    end
   end
 end
