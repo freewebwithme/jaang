@@ -49,18 +49,21 @@ names = [
 ]
 
 available_hours = [
-  "3 pm to 5 pm on Fri, Mar 19, 2021",
-  "5 pm to 7 pm on Fri, Mar 19, 2021",
-  "7 pm to 9 pm on Fri, Mar 19, 2021",
-  "3 pm to 5 pm on Sat, Mar 20, 2021",
-  "5 pm to 7 pm on Sat, Mar 20, 2021",
-  "7 pm to 9 pm on Sat, Mar 20, 2021",
-  "3 pm to 5 pm on Mon, Mar 21, 2021",
-  "5 pm to 7 pm on Mon, Mar 21, 2021",
-  "7 pm to 9 pm on Mon, Mar 21, 2021",
-  "3 pm to 5 pm on Tue, Mar 22, 2021",
-  "5 pm to 7 pm on Tue, Mar 22, 2021",
-  "7 pm to 9 pm on Tue, Mar 22, 2021"
+  "3 pm to 5 pm on Mon, Mar 29, 2021",
+  "5 pm to 7 pm on Mon, Mar 29, 2021",
+  "7 pm to 9 pm on Mon, Mar 29, 2021",
+  "3 pm to 5 pm on Tue, Mar 30, 2021",
+  "5 pm to 7 pm on Tue, Mar 30, 2021",
+  "7 pm to 9 pm on Tue, Mar 30, 2021",
+  "3 pm to 5 pm on Wed, Mar 31, 2021",
+  "5 pm to 7 pm on Wed, Mar 31, 2021",
+  "7 pm to 9 pm on Wed, Mar 31, 2021",
+  "3 pm to 5 pm on Thu, Apr 1, 2021",
+  "5 pm to 7 pm on Thu, Apr 1, 2021",
+  "7 pm to 9 pm on Thu, Apr 1, 2021",
+  "3 pm to 5 pm on Fri, Apr 2, 2021",
+  "5 pm to 7 pm on Fri, Apr 2, 2021",
+  "7 pm to 9 pm on Fri, Apr 2, 2021"
 ]
 
 phone_numbers = [
@@ -78,12 +81,17 @@ for user_id <- 1..11 do
     invoice = Invoices.create_invoice(user_id)
     {:ok, cart} = Carts.create_cart(user_id, 1, invoice.id)
     # add items to cart
-    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 306, quantity: 1})
-    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 307, quantity: 1})
-    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 308, quantity: 1})
-    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 300, quantity: 1})
-    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 297, quantity: 1})
-    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 298, quantity: 1})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 307, quantity: 2})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 306, quantity: 2})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 305, quantity: 2})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 304, quantity: 1})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 303, quantity: 1})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 302, quantity: 1})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: 301, quantity: 1})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: Enum.random(1..299), quantity: 1})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: Enum.random(1..299), quantity: 3})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: Enum.random(1..299), quantity: 3})
+    {:ok, cart} = Carts.add_to_cart(cart, %{product_id: Enum.random(1..299), quantity: 1})
     delivery_time = Enum.random(available_hours)
     {delivery_order, delivery_date} = DeliveryDateTimes.parse_delivery_datetime(delivery_time)
     order_placed_at = DateTime.utc_now() |> DateTime.truncate(:second)

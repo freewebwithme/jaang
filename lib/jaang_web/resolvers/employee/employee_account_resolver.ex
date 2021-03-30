@@ -83,9 +83,6 @@ defmodule JaangWeb.Resolvers.Employee.EmployeeAccountResolver do
   def verify_token(_, %{token: token}, _) do
     case EmployeeAuthMobile.get_employee_by_session_token(token) do
       {:ok, employee} ->
-        # get cart or create new
-        # carts = OrderManager.get_all_carts_or_create_new(user)
-
         {:ok, %{employee: employee, token: token, expired: false}}
 
       {:error, _} ->

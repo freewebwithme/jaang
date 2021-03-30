@@ -159,34 +159,34 @@ prices = [
 ]
 
 product_image_urls = [
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Japchae-Potstickers.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/Live-Fluke.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/al-sae-woo.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/bacon.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/bcd-tofu.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/cabbage.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/coffee.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/coke.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/cold-noodle.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/cup-ban.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/curry.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/eggs.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/greek-yogurt.JPG",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/horizon-milk.JPG",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/ice-cream-2.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/ice-cream.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/lemonade.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/nutella.png",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/oj.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/onion-ring.jpeg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/pocky.png",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/pork-shoulder.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/red-cabbage.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/red-grape.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/salmon-filet.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/strawberry.png",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/tofu.jpg",
-  "https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/yogurt.png"
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/Japchae-Potstickers.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/Live-Fluke.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/al-sae-woo.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/bacon.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/bcd-tofu.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/cabbage.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/coffee.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/coke.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/cold-noodle.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/cup-ban.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/curry.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/eggs.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/greek-yogurt.JPG",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/horizon-milk.JPG",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/ice-cream-2.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/ice-cream.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/lemonade.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/nutella.png",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/oj.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/onion-ring.jpeg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/pocky.png",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/pork-shoulder.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/red-cabbage.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/red-grape.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/salmon-filet.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/strawberry.png",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/tofu.jpg",
+  "https://jaang-la.s3-us-west-1.amazonaws.com/product-images/yogurt.png"
 ]
 
 units = [
@@ -279,6 +279,8 @@ product_names = [
   "ramen"
 ]
 
+weight_baseds = [true, false]
+
 # Create Products for store 1
 IO.puts("Start to create PRODUCTS for Store 1")
 
@@ -309,7 +311,8 @@ for x <- 0..99 do
     sub_category_name: sub_category.name,
     sub_category_id: sub_category.id,
     tags: Enum.random(tags),
-    recipe_tags: Enum.random(recipe_tags)
+    recipe_tags: Enum.random(recipe_tags),
+    weight_based: Enum.random(weight_baseds)
   }
 
   {:ok, product} = Products.create_product_for_seeds(attrs)
@@ -377,7 +380,8 @@ for x <- 0..99 do
     sub_category_name: sub_category.name,
     sub_category_id: sub_category.id,
     tags: Enum.random(tags),
-    recipe_tags: Enum.random(recipe_tags)
+    recipe_tags: Enum.random(recipe_tags),
+    weight_based: Enum.random(weight_baseds)
   }
 
   {:ok, product} = Products.create_product_for_seeds(attrs)
@@ -444,7 +448,8 @@ for x <- 0..99 do
     sub_category_name: sub_category.name,
     sub_category_id: sub_category.id,
     tags: Enum.random(tags),
-    recipe_tags: Enum.random(recipe_tags)
+    recipe_tags: Enum.random(recipe_tags),
+    weight_based: Enum.random(weight_baseds)
   }
 
   {:ok, product} = Products.create_product_for_seeds(attrs)

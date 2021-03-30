@@ -20,6 +20,8 @@ defmodule Jaang.Checkout.LineItem do
     field :original_total, Money.Ecto.Amount.Type
     field :discount_percentage, :string
     field :quantity, :integer
+    field :weight, :float
+    field :weight_based, :boolean
     field :price, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
     field :barcode, :string
@@ -42,6 +44,7 @@ defmodule Jaang.Checkout.LineItem do
       :original_total,
       :discount_percentage,
       :quantity,
+      :weight,
       :category_name,
       :sub_category_name,
       :price,
@@ -50,7 +53,8 @@ defmodule Jaang.Checkout.LineItem do
       :updated_at,
       :barcode,
       :status,
-      :market_price
+      :market_price,
+      :weight_based
     ])
     |> set_product_details()
     |> set_total()
@@ -63,7 +67,8 @@ defmodule Jaang.Checkout.LineItem do
       :image_url,
       :unit_name,
       :quantity,
-      :price
+      :price,
+      :weight_based
     ])
   end
 
@@ -119,6 +124,7 @@ defmodule Jaang.Checkout.LineItem do
         |> put_change(:market_price, market_price.original_price)
         |> put_change(:discount_percentage, product_price.discount_percentage)
         |> put_change(:barcode, product.barcode)
+        |> put_change(:weight_based, product.weight_based)
     end
   end
 

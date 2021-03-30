@@ -19,6 +19,7 @@ defmodule Jaang.Product do
     field :store_name, :string
     field :category_name, :string
     field :sub_category_name, :string
+    field :weight_based, :boolean, default: false
 
     has_many :market_prices, Jaang.Product.MarketPrice
     has_many :product_prices, Jaang.Product.ProductPrice
@@ -50,6 +51,7 @@ defmodule Jaang.Product do
       :warnings,
       :vendor,
       :published,
+      :weight_based,
       :barcode,
       :store_id,
       :category_id,

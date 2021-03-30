@@ -69,7 +69,8 @@ defmodule Jaang.MixProject do
       {:uuid, "~> 1.1"},
       {:timex, "~> 3.6"},
       {:ex_signal, "~> 0.3.0"},
-      {:date_time_parser, "~> 1.1.1"}
+      {:date_time_parser, "~> 1.1.1"},
+      {:xlsxir, "~> 1.6.4"}
     ]
   end
 

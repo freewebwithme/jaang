@@ -156,6 +156,15 @@ defmodule JaangWeb.StoreChannel do
   end
 
   @impl true
+  def handle_in(
+        "update_line_item_quantity_or_weight",
+        %{"employee_id" => employee_id, "line_item_id" => line_item_id, "quantity" => quantity},
+        socket
+      ) do
+    IO.puts("Calling handle_in(`update_line_item_quantity_or_weight`)")
+  end
+
+  @impl true
   @doc """
   Whenever invoice is updated, send updated invoice and updated invoice list
   using handle_in

@@ -151,8 +151,11 @@
     - Scan product item barcode and check if it matches with ordered item(compare barcode number)
 
   [ Week's plan(3/15/2021 - 3/19/2021)]
-    - Finish fulfilling an orde by shopper 
+    - Finish fulfilling an order by shopper 
     - Check out screen 
+
+  [TODOs]
+    - Import product information from xlsx file.
 
   [Features]
     - Admin has to view, update and search order
