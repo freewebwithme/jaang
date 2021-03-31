@@ -50,6 +50,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
   @doc """
   This function updates line_items' status in EmployeeTask
   This function will be used when shopper(in client app) fulfills orders
+  This function is also called when barcode scan success, so it is not weight-based product
   """
   def update_employee_task_line_item_status(employee_id, line_item_id, status) do
     employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
@@ -63,13 +64,31 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
     # Get selected line_item
     [line_item] = Enum.filter(existing_line_items, &(&1.id == line_item_id))
-    # Convert to map and update status value
-    line_item_map = line_item |> Map.from_struct() |> Map.put(:status, status)
+
+    line_item_map =
+      if(status == "not_ready") do
+        # Reset final_quantity to nil and weight to nil
+        # and Convert to map and update status value
+        line_item
+        |> Map.from_struct()
+        |> Map.put(:status, status)
+        |> Map.put(:final_quantity, nil)
+        |> Map.put(:weight, nil)
+      else
+        # ready case, it's called from barcode scan so it is not weight based
+        # copy quantity into final_quantity.
+        # more than 1 quantity will call update_quantity_or_weight_for_line_item function
+        line_item
+        |> Map.from_struct()
+        |> Map.put(:status, status)
+        |> Map.put(:final_quantity, line_item.quantity)
+      end
+
     employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
     update_employee_task(employee_task, employee_task_attrs)
   end
 
-  def check_quantity_for_line_item(:quantity, employee_id, line_item_id, quantity) do
+  def update_quantity_or_weight_for_line_item(:quantity, employee_id, line_item_id, quantity) do
     IO.puts("Calling check_quantity_for_line_item function")
     employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
     existing_line_items = employee_task.line_items
@@ -82,30 +101,30 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
     # Get selected line_item
     [line_item] = Enum.filter(existing_line_items, &(&1.id == line_item_id))
-    quantity = String.to_integer(quantity)
 
-    IO.puts("Printing lineItems")
-    IO.inspect(line_item)
+    case Integer.parse(quantity) do
+      {quantity_int, _rest} ->
+        if(quantity_int > 0 && quantity_int <= line_item.quantity) do
+          # update line_item along with employee task
+          # Convert to map and update value
+          line_item_map =
+            line_item
+            |> Map.from_struct()
+            |> Map.put(:final_quantity, quantity_int)
+            |> Map.put(:status, :ready)
 
-    if(quantity > 0 && quantity <= line_item.quantity) do
-      # update line_item along with employee task
-      # Convert to map and update value
-      line_item_map =
-        line_item
-        |> Map.from_struct()
-        |> Map.put(:quantity, quantity)
-        |> Map.put(:status, :ready)
+          employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
+          update_employee_task(employee_task, employee_task_attrs)
+        else
+          {:error, "상품의 수량을 확인하세요"}
+        end
 
-      IO.puts("Printing new line_item map")
-      IO.inspect(line_item_map)
-      employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
-      update_employee_task(employee_task, employee_task_attrs)
-    else
-      {:error, "상품의 수량을 확인하세요"}
+      :error ->
+        {:error, "상품의 수량을 확인하세요"}
     end
   end
 
-  def check_quantity_for_line_item(:weight, employee_id, line_item_id, weight) do
+  def update_quantity_or_weight_for_line_item(:weight, employee_id, line_item_id, weight) do
     IO.puts("Calling check_quantity_for_line_item function")
     employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
     existing_line_items = employee_task.line_items
@@ -118,31 +137,31 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
     # Get selected line_item
     [line_item] = Enum.filter(existing_line_items, &(&1.id == line_item_id))
-    weight = String.to_float(weight)
 
-    IO.puts("Printing lineItems")
-    IO.inspect(line_item)
+    case Float.parse(weight) do
+      {weight_float, _rest} ->
+        weight_limit = line_item.quantity + 1.0
+
+        if(weight_float > 0 && weight_float <= weight_limit) do
+          # update line_item along with employee task
+          # Convert to map and update value
+          line_item_map =
+            line_item
+            |> Map.from_struct()
+            |> Map.put(:weight, weight_float)
+            |> Map.put(:status, :ready)
+
+          employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
+          update_employee_task(employee_task, employee_task_attrs)
+        else
+          {:error, "상품의 무게를 확인하세요"}
+        end
+
+      :error ->
+        {:error, "상품의 무게를 확인하세요"}
+    end
 
     # Even though line item is weight based,
     # quantity means weight for this product.
-
-    weight_limit = line_item.quantity + 1.0
-
-    if(weight > 0 && weight <= weight_limit) do
-      # update line_item along with employee task
-      # Convert to map and update value
-      line_item_map =
-        line_item
-        |> Map.from_struct()
-        |> Map.put(:weight, weight)
-        |> Map.put(:status, :ready)
-
-      IO.puts("Printing new line_item map")
-      IO.inspect(line_item_map)
-      employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
-      update_employee_task(employee_task, employee_task_attrs)
-    else
-      {:error, "상품의 무게를 확인하세요"}
-    end
   end
 end

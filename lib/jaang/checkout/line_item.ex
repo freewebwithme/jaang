@@ -20,6 +20,7 @@ defmodule Jaang.Checkout.LineItem do
     field :original_total, Money.Ecto.Amount.Type
     field :discount_percentage, :string
     field :quantity, :integer
+    field :final_quantity, :integer
     field :weight, :float
     field :weight_based, :boolean
     field :price, Money.Ecto.Amount.Type
@@ -44,6 +45,7 @@ defmodule Jaang.Checkout.LineItem do
       :original_total,
       :discount_percentage,
       :quantity,
+      :final_quantity,
       :weight,
       :category_name,
       :sub_category_name,
@@ -79,7 +81,7 @@ defmodule Jaang.Checkout.LineItem do
   """
   def changeset_for_employee_task(%LineItem{} = line_item, attrs) do
     line_item
-    |> cast(attrs, [:quantity, :total, :status, :price, :original_price, :weight])
+    |> cast(attrs, [:quantity, :total, :status, :price, :original_price, :weight, :final_quantity])
     |> set_total()
   end
 
@@ -144,7 +146,22 @@ defmodule Jaang.Checkout.LineItem do
   def set_total(changeset) do
     case get_change(changeset, :weight) do
       nil ->
-        quantity = get_field(changeset, :quantity)
+        # Check if final_quantity value is available
+        # and if available using it to calculate the total
+        quantity =
+          case get_field(changeset, :final_quantity) do
+            nil ->
+              # no final_quantity return :quantity
+              get_field(changeset, :quantity)
+
+            0 ->
+              # no final_quantity return :quantity
+              get_field(changeset, :quantity)
+
+            final_quantity when is_integer(final_quantity) ->
+              final_quantity
+          end
+
         price = get_field(changeset, :price)
         total = Money.multiply(price, quantity)
 

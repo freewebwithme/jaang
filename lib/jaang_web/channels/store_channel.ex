@@ -163,7 +163,7 @@ defmodule JaangWeb.StoreChannel do
       ) do
     IO.puts("Calling handle_in(`update_line_item_quantity_or_weight`)")
 
-    case EmployeeTasks.check_quantity_for_line_item(
+    case EmployeeTasks.update_quantity_or_weight_for_line_item(
            :quantity,
            employee_id,
            line_item_id,
@@ -187,7 +187,7 @@ defmodule JaangWeb.StoreChannel do
       ) do
     IO.puts("Calling handle_in(`update_line_item_quantity_or_weight`)")
 
-    case EmployeeTasks.check_quantity_for_line_item(
+    case EmployeeTasks.update_quantity_or_weight_for_line_item(
            :weight,
            employee_id,
            line_item_id,
