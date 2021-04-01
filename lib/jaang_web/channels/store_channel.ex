@@ -141,12 +141,22 @@ defmodule JaangWeb.StoreChannel do
   @impl true
   def handle_in(
         "update_line_item",
-        %{"employee_id" => employee_id, "line_item_id" => line_item_id, "status" => status},
+        %{
+          "employee_id" => employee_id,
+          "line_item_id" => line_item_id,
+          "status" => status,
+          "refund_reason" => refund_reason
+        },
         socket
       ) do
     IO.puts("Calling handle_in(`update_line_item`")
 
-    case EmployeeTasks.update_employee_task_line_item_status(employee_id, line_item_id, status) do
+    case EmployeeTasks.update_employee_task_line_item_status(
+           employee_id,
+           line_item_id,
+           status,
+           refund_reason
+         ) do
       {:ok, _employee_task} ->
         {:reply, :ok, socket}
 

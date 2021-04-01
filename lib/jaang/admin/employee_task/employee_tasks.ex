@@ -52,7 +52,12 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
   This function will be used when shopper(in client app) fulfills orders
   This function is also called when barcode scan success, so it is not weight-based product
   """
-  def update_employee_task_line_item_status(employee_id, line_item_id, status) do
+  def update_employee_task_line_item_status(
+        employee_id,
+        line_item_id,
+        status,
+        refund_reason \\ nil
+      ) do
     employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
     existing_line_items = employee_task.line_items
 
@@ -66,22 +71,32 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     [line_item] = Enum.filter(existing_line_items, &(&1.id == line_item_id))
 
     line_item_map =
-      if(status == "not_ready") do
+      cond do
         # Reset final_quantity to nil and weight to nil
         # and Convert to map and update status value
-        line_item
-        |> Map.from_struct()
-        |> Map.put(:status, status)
-        |> Map.put(:final_quantity, nil)
-        |> Map.put(:weight, nil)
-      else
-        # ready case, it's called from barcode scan so it is not weight based
-        # copy quantity into final_quantity.
-        # more than 1 quantity will call update_quantity_or_weight_for_line_item function
-        line_item
-        |> Map.from_struct()
-        |> Map.put(:status, status)
-        |> Map.put(:final_quantity, line_item.quantity)
+        status == "not_ready" ->
+          line_item
+          |> Map.from_struct()
+          |> Map.put(:status, status)
+          |> Map.put(:final_quantity, nil)
+          |> Map.put(:weight, nil)
+
+        status == "sold_out" ->
+          line_item
+          |> Map.from_struct()
+          |> Map.put(:status, status)
+          |> Map.put(:refund_reason, refund_reason)
+          |> Map.put(:final_quantity, 0)
+          |> Map.put(:weight, 0.0)
+
+        status == "ready" ->
+          # ready case, it's called from barcode scan so it is not weight based
+          # copy quantity into final_quantity.
+          # more than 1 quantity will call update_quantity_or_weight_for_line_item function
+          line_item
+          |> Map.from_struct()
+          |> Map.put(:status, status)
+          |> Map.put(:final_quantity, line_item.quantity)
       end
 
     employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}

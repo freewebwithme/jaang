@@ -27,6 +27,11 @@ defmodule Jaang.Checkout.LineItem do
     field :total, Money.Ecto.Amount.Type
     field :barcode, :string
     field :status, Ecto.Enum, values: [:ready, :not_ready, :sold_out], default: :not_ready
+    field :replacement_id, :integer
+    field :has_replacement, :boolean
+    field :refund_reason, :string
+
+    # embeds_many :replacements, LineItem, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
@@ -56,7 +61,10 @@ defmodule Jaang.Checkout.LineItem do
       :barcode,
       :status,
       :market_price,
-      :weight_based
+      :weight_based,
+      :replacement_id,
+      :has_replacement,
+      :refund_reason
     ])
     |> set_product_details()
     |> set_total()
@@ -81,7 +89,18 @@ defmodule Jaang.Checkout.LineItem do
   """
   def changeset_for_employee_task(%LineItem{} = line_item, attrs) do
     line_item
-    |> cast(attrs, [:quantity, :total, :status, :price, :original_price, :weight, :final_quantity])
+    |> cast(attrs, [
+      :quantity,
+      :total,
+      :status,
+      :price,
+      :original_price,
+      :weight,
+      :final_quantity,
+      :refund_reason,
+      :replacement_id,
+      :has_replacement
+    ])
     |> set_total()
   end
 
