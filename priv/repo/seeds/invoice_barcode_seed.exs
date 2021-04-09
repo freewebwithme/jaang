@@ -49,21 +49,33 @@ names = [
 ]
 
 available_hours = [
-  "3 pm to 5 pm on Mon, Mar 29, 2021",
-  "5 pm to 7 pm on Mon, Mar 29, 2021",
-  "7 pm to 9 pm on Mon, Mar 29, 2021",
-  "3 pm to 5 pm on Tue, Mar 30, 2021",
-  "5 pm to 7 pm on Tue, Mar 30, 2021",
-  "7 pm to 9 pm on Tue, Mar 30, 2021",
-  "3 pm to 5 pm on Wed, Mar 31, 2021",
-  "5 pm to 7 pm on Wed, Mar 31, 2021",
-  "7 pm to 9 pm on Wed, Mar 31, 2021",
-  "3 pm to 5 pm on Thu, Apr 1, 2021",
-  "5 pm to 7 pm on Thu, Apr 1, 2021",
-  "7 pm to 9 pm on Thu, Apr 1, 2021",
-  "3 pm to 5 pm on Fri, Apr 2, 2021",
-  "5 pm to 7 pm on Fri, Apr 2, 2021",
-  "7 pm to 9 pm on Fri, Apr 2, 2021"
+  "3 pm to 5 pm on Tue, Apr 6, 2021",
+  "5 pm to 7 pm on Tue, Apr 6, 2021",
+  "7 pm to 9 pm on Tue, Apr 6, 2021",
+  "3 pm to 5 pm on Wed, Apr 7, 2021",
+  "5 pm to 7 pm on Wed, Apr 7, 2021",
+  "7 pm to 9 pm on Wed, Apr 7, 2021",
+  "3 pm to 5 pm on Thu, Apr 8, 2021",
+  "5 pm to 7 pm on Thu, Apr 8, 2021",
+  "7 pm to 9 pm on Thu, Apr 8, 2021",
+  "3 pm to 5 pm on Fri, Apr 8, 2021",
+  "5 pm to 7 pm on Fri, Apr 8, 2021",
+  "7 pm to 9 pm on Fri, Apr 8, 2021",
+  "3 pm to 5 pm on Mon, Apr 12, 2021",
+  "5 pm to 7 pm on Mon, Apr 12, 2021",
+  "7 pm to 9 pm on Mon, Apr 12, 2021",
+  "3 pm to 5 pm on Tue, Apr 13, 2021",
+  "5 pm to 7 pm on Tue, Apr 13, 2021",
+  "7 pm to 9 pm on Tue, Apr 13, 2021",
+  "3 pm to 5 pm on Wed, Apr 14, 2021",
+  "5 pm to 7 pm on Wed, Apr 14, 2021",
+  "7 pm to 9 pm on Wed, Apr 14, 2021",
+  "3 pm to 5 pm on Thu, Apr 15, 2021",
+  "5 pm to 7 pm on Thu, Apr 15, 2021",
+  "7 pm to 9 pm on Thu, Apr 15, 2021",
+  "3 pm to 5 pm on Fri, Apr 16, 2021",
+  "5 pm to 7 pm on Fri, Apr 16, 2021",
+  "7 pm to 9 pm on Fri, Apr 16, 2021"
 ]
 
 phone_numbers = [

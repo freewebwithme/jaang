@@ -180,6 +180,7 @@ defmodule JaangWeb.Schema.CartTypes do
   end
 
   object :line_item do
+    field :id, :string
     field :product_id, :id
     field :store_id, :integer
     field :image_url, :string

@@ -3,6 +3,7 @@ defmodule JaangWeb.StoreChannel do
   alias Jaang.Admin.Invoice.Invoices
   alias Jaang.Admin.EmployeeTask.EmployeeTasks
   alias Jaang.Admin.EmployeeTask
+  alias Jaang.Amazon.S3
 
   intercept ["invoice_updated"]
 
@@ -211,6 +212,26 @@ defmodule JaangWeb.StoreChannel do
         IO.inspect(message)
         {:reply, {:error, message}, socket}
     end
+  end
+
+  @impl true
+  def handle_in("request_presigned_url", %{"file_names" => file_names}, socket) do
+    IO.puts("Inspecting filenames")
+    IO.inspect(file_names)
+
+    presigned_urls =
+      Enum.map(file_names, fn file_name ->
+        {:ok, url} = S3.create_presigned_url(:put, file_name, "receipts")
+        url
+      end)
+
+    {:reply, {:ok, presigned_urls}, socket}
+  end
+
+  @impl true
+  def handle_in("receipt_photo_urls", %{"urls" => urls}, socket) do
+    IO.puts("handle_in('receipt_photo_url')")
+    {:reply, :ok, socket}
   end
 
   @impl true
