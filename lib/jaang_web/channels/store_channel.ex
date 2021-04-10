@@ -229,9 +229,17 @@ defmodule JaangWeb.StoreChannel do
   end
 
   @impl true
-  def handle_in("receipt_photo_urls", %{"urls" => urls}, socket) do
+  def handle_in("receipt_photo_urls", %{"urls" => urls, "invoice_id" => invoice_id}, socket) do
     IO.puts("handle_in('receipt_photo_url')")
-    {:reply, :ok, socket}
+    IO.inspect(urls)
+
+    case Invoices.update_invoice_with_receipt_photos(invoice_id, urls) do
+      {:ok, invoice} ->
+        {:reply, {:ok, %{invoice: invoice}}, socket}
+
+      {:error, _changeset} ->
+        {:reply, :error, socket}
+    end
   end
 
   @impl true

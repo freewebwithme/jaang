@@ -128,6 +128,26 @@ defmodule Jaang.Admin.Invoice.Invoices do
     |> Repo.update()
   end
 
+  @doc """
+  Update invoice with photo urls
+  Convert list of string photo_urls to
+  photo_urls = [%{photo_url: ""}]
+  """
+  def update_invoice_with_receipt_photos(invoice_id, photo_urls) do
+    converted_photo_urls =
+      Enum.map(photo_urls, fn photo_url ->
+        %{photo_url: photo_url}
+      end)
+
+    attrs = %{receipt_photos: converted_photo_urls}
+
+    invoice = get_invoice(invoice_id)
+
+    invoice
+    |> Invoice.changeset(attrs)
+    |> Repo.update()
+  end
+
   def update_invoice_status(invoice_id, :shopping = status) do
     invoice = get_invoice(invoice_id)
     IO.puts("Status is changed Shopping")

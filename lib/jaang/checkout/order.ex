@@ -19,6 +19,7 @@ defmodule Jaang.Checkout.Order do
              :order_placed_at,
              :required_amount
            ]}
+
   defprotocol MoneyProtocol do
     Protocol.derive(Jason.Encoder, Money)
   end

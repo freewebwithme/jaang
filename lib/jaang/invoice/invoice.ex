@@ -2,6 +2,7 @@ defmodule Jaang.Invoice do
   use Ecto.Schema
   import Ecto.Changeset
   alias Jaang.Invoice
+  alias Jaang.Invoice.ReceiptPhoto
 
   @derive {Jason.Encoder, except: [:__meta__, :employees]}
   schema "invoices" do
@@ -41,6 +42,7 @@ defmodule Jaang.Invoice do
     field :driver_id, :id
     belongs_to :user, Jaang.Account.User
     has_many :orders, Jaang.Checkout.Order
+    embeds_many :receipt_photos, Jaang.Invoice.ReceiptPhoto, on_replace: :delete
 
     many_to_many :employees, Jaang.Admin.Account.Employee.Employee,
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedInvoice,
@@ -90,6 +92,7 @@ defmodule Jaang.Invoice do
 
     invoice
     |> cast(attrs, fields)
+    |> cast_embed(:receipt_photos, required: false, with: &ReceiptPhoto.changeset/2)
     |> validate_required([
       :subtotal,
       :driver_tip,
