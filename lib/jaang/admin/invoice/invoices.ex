@@ -2,9 +2,11 @@ defmodule Jaang.Admin.Invoice.Invoices do
   alias Jaang.{Invoice, Repo}
   import Ecto.Query
   alias Jaang.Invoice.Invoices
-  alias Jaang.Checkout.Order
+  alias Jaang.Checkout.{Order, Calculate, Carts}
+  alias Jaang.OrderManager
   alias Jaang.Notification.OneSignal
   alias Jaang.Admin.EmployeeAccountManager
+  alias Jaang.Admin.EmployeeTask.EmployeeTasks
 
   # 1 Get all invoices whose status is submitted, packed, on_the_way, delivered
   # set up per page option
@@ -126,6 +128,78 @@ defmodule Jaang.Admin.Invoice.Invoices do
     invoice
     |> Invoice.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Finalize invoice.
+  copy final line_items from employee_task to same order
+  1. update order
+  2. update invoice(sales_tax, item_adjustment(0), total, total_items, number_of_bags)
+  3. Invoice's status updated when all orders(from different store) are packed.  then
+     updated invoice's status to packed.  If every orders not ready, keep it :shopping status
+
+  """
+  def finalize_invoice(invoice_id, employee_id) do
+    invoice = get_invoice(invoice_id)
+    employee_task = EmployeeTasks.get_employee_task(employee_id)
+
+    # Copy employee_task.line_items to order.line_items
+    # Get correct order from invoice
+    [order] = Enum.filter(invoice.orders, &(&1.id == employee_task.order_id))
+
+    # Convert line_items to map
+    line_item_maps = Enum.map(employee_task.line_items, &Map.from_struct/1)
+    # Copy(updated) line items
+    {:ok, _updated_order} =
+      OrderManager.update_cart(order, %{line_items: line_item_maps, status: :packed})
+
+    # Get updated invoice
+    updated_invoice = get_invoice(invoice_id)
+    sales_tax = Calculate.calculate_sales_tax(updated_invoice.orders)
+    subtotal = Calculate.calculate_subtotals(updated_invoice.orders)
+    # set to 0
+    item_adjustment = Money.new(0)
+    # Count only ready items(not sold out items)
+    total_items = Carts.count_total_item(updated_invoice.orders, :ready)
+    status = check_all_orders_status(updated_invoice.orders)
+
+    total =
+      Calculate.calculate_final_total(
+        updated_invoice.driver_tip,
+        subtotal,
+        updated_invoice.delivery_fee,
+        sales_tax,
+        item_adjustment
+      )
+
+    # Now update invoice
+    attrs = %{
+      subtotal: subtotal,
+      sales_tax: sales_tax,
+      item_adjustment: item_adjustment,
+      total: total,
+      total_items: total_items,
+      status: status
+    }
+
+    {:ok, invoice} = Jaang.Invoice.Invoices.update_invoice(updated_invoice, attrs)
+
+    # Finalize payment
+
+    {:ok, invoice}
+  end
+
+  defp check_all_orders_status(orders) do
+    statuses =
+      Enum.reduce(orders, [], fn order, acc ->
+        [order.status | acc]
+      end)
+      |> Enum.uniq()
+
+    if(Enum.any?(statuses, &(&1 == :refunded || &1 == :submitted || &1 == :shopping))) do
+      # this invoice is not ready
+    else
+    end
   end
 
   @doc """

@@ -216,8 +216,7 @@ defmodule JaangWeb.StoreChannel do
 
   @impl true
   def handle_in("request_presigned_url", %{"file_names" => file_names}, socket) do
-    IO.puts("Inspecting filenames")
-    IO.inspect(file_names)
+    IO.puts("handle_in('request_presigned_url')")
 
     presigned_urls =
       Enum.map(file_names, fn file_name ->
@@ -231,7 +230,6 @@ defmodule JaangWeb.StoreChannel do
   @impl true
   def handle_in("receipt_photo_urls", %{"urls" => urls, "invoice_id" => invoice_id}, socket) do
     IO.puts("handle_in('receipt_photo_url')")
-    IO.inspect(urls)
 
     case Invoices.update_invoice_with_receipt_photos(invoice_id, urls) do
       {:ok, invoice} ->
@@ -240,6 +238,15 @@ defmodule JaangWeb.StoreChannel do
       {:error, _changeset} ->
         {:reply, :error, socket}
     end
+  end
+
+  @impl true
+  def handle_in(
+        "finalize_invoice",
+        %{"invoice_id" => invoice_id, "number_of_bags" => numb_bags},
+        socket
+      ) do
+    IO.puts("handle_in('finalize_invocie'")
   end
 
   @impl true

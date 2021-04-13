@@ -179,6 +179,14 @@ defmodule Jaang.Checkout.Carts do
     Enum.reduce(carts, 0, fn cart, acc -> Enum.count(cart.line_items) + acc end)
   end
 
+  def count_total_item(carts, status) do
+    Enum.reduce(carts, 0, fn cart, acc ->
+      # get only ready items
+      ready_items = Enum.filter(cart.line_items, &(&1.status == status))
+      Enum.count(ready_items) + acc
+    end)
+  end
+
   @doc """
   Calculate total price in the all carts
   """

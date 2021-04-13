@@ -38,8 +38,8 @@ defmodule Jaang.Invoice do
     field :phone_number, :string
 
     field :invoice_placed_at, :utc_datetime
-    field :shopper_id, :id
-    field :driver_id, :id
+    field :number_of_bags, :integer, default: 0
+
     belongs_to :user, Jaang.Account.User
     has_many :orders, Jaang.Checkout.Order
     embeds_many :receipt_photos, Jaang.Invoice.ReceiptPhoto, on_replace: :delete
@@ -87,7 +87,8 @@ defmodule Jaang.Invoice do
       :delivery_time,
       :delivery_date,
       :delivery_order,
-      :invoice_placed_at
+      :invoice_placed_at,
+      :number_of_bags
     ]
 
     invoice

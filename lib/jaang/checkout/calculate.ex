@@ -15,7 +15,7 @@ defmodule Jaang.Checkout.Calculate do
   @doc """
   Los Angeles city tax rate is 9.5%
   Exclude produce product from tax
-  params: carts
+  params: carts(list of order)
 
   return: tax = Money{amount: tax, currency: :USD}
   """
