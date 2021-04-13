@@ -26,7 +26,7 @@ defmodule Jaang.Account.User do
 
   def registration_changeset(%Jaang.Account.User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :stripe_id])
     |> Validator.validate_email()
     |> Validator.validate_password()
     |> cast_assoc(:profile, with: &Jaang.Account.Profile.changeset/2)
@@ -34,7 +34,7 @@ defmodule Jaang.Account.User do
 
   def google_changeset(%Jaang.Account.User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :stripe_id])
     |> Validator.validate_email()
     |> generate_password()
     |> cast_assoc(:profile)

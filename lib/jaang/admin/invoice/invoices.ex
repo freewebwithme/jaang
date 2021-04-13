@@ -3,7 +3,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
   import Ecto.Query
   alias Jaang.Invoice.Invoices
   alias Jaang.Checkout.{Order, Calculate, Carts}
-  alias Jaang.OrderManager
+  alias Jaang.{OrderManager, StripeManager}
   alias Jaang.Notification.OneSignal
   alias Jaang.Admin.EmployeeAccountManager
   alias Jaang.Admin.EmployeeTask.EmployeeTasks
@@ -161,7 +161,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
     item_adjustment = Money.new(0)
     # Count only ready items(not sold out items)
     total_items = Carts.count_total_item(updated_invoice.orders, :ready)
-    status = check_all_orders_status(updated_invoice.orders)
+    status = check_all_orders_status(updated_invoice)
 
     total =
       Calculate.calculate_final_total(
@@ -182,23 +182,33 @@ defmodule Jaang.Admin.Invoice.Invoices do
       status: status
     }
 
-    {:ok, invoice} = Jaang.Invoice.Invoices.update_invoice(updated_invoice, attrs)
-
-    # Finalize payment
-
-    {:ok, invoice}
+    with {:ok, invoice} <- Jaang.Invoice.Invoices.update_invoice(updated_invoice, attrs),
+         {:ok, _} <-
+           StripeManager.capture_payment_intent(updated_invoice.pm_intent_id, total.amount) do
+      {:ok, invoice}
+    else
+      {:error, _error} ->
+        {:error, "Can't finalize invoice"}
+    end
   end
 
-  defp check_all_orders_status(orders) do
-    statuses =
-      Enum.reduce(orders, [], fn order, acc ->
-        [order.status | acc]
-      end)
-      |> Enum.uniq()
-
-    if(Enum.any?(statuses, &(&1 == :refunded || &1 == :submitted || &1 == :shopping))) do
-      # this invoice is not ready
+  def check_all_orders_status(invoice) do
+    if(Enum.count(invoice.orders) <= 1) do
+      [status] = Enum.map(invoice.orders, & &1.status)
+      status
     else
+      statuses =
+        Enum.reduce(invoice.orders, [], fn order, acc ->
+          [order.status | acc]
+        end)
+        |> Enum.uniq()
+
+      if(Enum.any?(statuses, &(&1 == :refunded || &1 == :submitted || &1 == :shopping))) do
+        # this invoice is not ready just return current invoice's status
+        invoice.status
+      else
+        :packed
+      end
     end
   end
 

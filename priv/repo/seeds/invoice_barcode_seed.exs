@@ -2,6 +2,9 @@ alias Jaang.Checkout.Carts
 alias Jaang.Checkout.Order
 alias Jaang.Invoice.Invoices
 alias Jaang.Store.DeliveryDateTimes
+alias Jaang.Checkout.Calculate
+alias Jaang.{OrderManager, StripeManager, AccountManager}
+alias Jaang.Repo
 
 # Create order(cart)
 # loop through each user
@@ -86,9 +89,9 @@ phone_numbers = [
   "2139073454"
 ]
 
-for user_id <- 1..11 do
+for user_id <- 31..40 do
   # Store 1
-  for x <- 0..9 do
+  for x <- 0..3 do
     IO.puts("Creating for Store 1")
     invoice = Invoices.create_invoice(user_id)
     {:ok, cart} = Carts.create_cart(user_id, 1, invoice.id)
@@ -109,19 +112,49 @@ for user_id <- 1..11 do
     order_placed_at = DateTime.utc_now() |> DateTime.truncate(:second)
     status = Enum.random(statuses)
 
+    invoice = Jaang.Admin.Invoice.Invoices.get_invoice(invoice.id)
+
+    # Calculate carts
+    sales_tax = Calculate.calculate_sales_tax(invoice.orders)
+    subtotal = Calculate.calculate_subtotals(invoice.orders)
+    delivery_fee = Money.new(499)
+    tip = Money.new(Enum.random(driver_tips))
+    item_adjustment = Money.new(Enum.random(item_adjustments))
+
+    total =
+      Calculate.calculate_final_total(tip, subtotal, delivery_fee, sales_tax, item_adjustment)
+
+    IO.puts("Working on for Stripe")
+    # Create payment method
+    {:ok, payment_method_id} =
+      StripeManager.create_payment_method("4242424242424242", 9, 2025, "123")
+
+    user = AccountManager.get_user(user_id)
+
+    # attach payment method to user
+    StripeManager.attach_to_customer(payment_method_id, user.stripe_id)
+    # Set default payment method
+    StripeManager.set_default_payment_method(user.stripe_id, payment_method_id)
+
+    # Create payment intent
+    {:ok, payment_intent} =
+      StripeManager.create_payment_intent(total.amount, user.stripe_id, payment_method_id)
+
+    IO.puts("Finished Stripe jobs")
+
     {:ok, invoice} =
       Invoices.update_invoice(invoice, %{
-        delivery_fee: Money.new(499),
-        driver_tip: Money.new(Enum.random(driver_tips)),
-        sales_tax: Money.new(599),
-        subtotal: Money.new(Enum.random(subtotals)),
-        total: Money.new(Enum.random(totals)),
-        item_adjustment: Money.new(Enum.random(item_adjustments)),
+        delivery_fee: delivery_fee,
+        driver_tip: tip,
+        sales_tax: sales_tax,
+        subtotal: subtotal,
+        total: total,
+        item_adjustment: item_adjustment,
         delivery_time: delivery_time,
         delivery_date: delivery_date,
         delivery_order: delivery_order,
         invoice_placed_at: order_placed_at,
-        pm_intent_id: "somePaymentMethodID",
+        pm_intent_id: payment_intent.id,
         payment_method: "Ending with 4242",
         status: status,
         total_items: 5,
