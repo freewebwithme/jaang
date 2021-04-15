@@ -120,7 +120,7 @@ defmodule JaangWeb.StoreChannel do
         socket
       ) do
     IO.puts("Calling handle_in(`continue_shopping')")
-    employee_task = EmployeeTasks.get_employee_task(employee_id)
+    employee_task = EmployeeTasks.get_in_progress_employee_task(employee_id)
     # Group by line items' status
     %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
       group_by_line_item_status(employee_task)
@@ -243,10 +243,30 @@ defmodule JaangWeb.StoreChannel do
   @impl true
   def handle_in(
         "finalize_invoice",
-        %{"invoice_id" => invoice_id, "number_of_bags" => numb_bags},
+        %{
+          "invoice_id" => invoice_id,
+          "number_of_bags" => numb_bags,
+          "employee_id" => employee_id,
+          "employee_task_id" => employee_task_id
+        },
         socket
       ) do
     IO.puts("handle_in('finalize_invocie'")
+    {numb_bags, ""} = Integer.parse(numb_bags)
+    employee_task = EmployeeTasks.get_employee_task_by_id(employee_task_id)
+
+    with {:ok, _invoice} <- Invoices.finalize_invoice(invoice_id, employee_task_id, numb_bags),
+         {:ok, _employee_task} <-
+           EmployeeTasks.update_employee_task(employee_task, %{
+             task_status: :done,
+             end_datetime: Timex.now(),
+             duration: Timex.diff(Timex.now(), employee_task.start_datetime, :minutes)
+           }) do
+      {:reply, :ok, socket}
+    else
+      {:error, _error} ->
+        {:reply, :error, socket}
+    end
   end
 
   @impl true

@@ -139,9 +139,9 @@ defmodule Jaang.Admin.Invoice.Invoices do
      updated invoice's status to packed.  If every orders not ready, keep it :shopping status
 
   """
-  def finalize_invoice(invoice_id, employee_id) do
+  def finalize_invoice(invoice_id, employee_task_id, number_of_bags) do
     invoice = get_invoice(invoice_id)
-    employee_task = EmployeeTasks.get_employee_task(employee_id)
+    employee_task = EmployeeTasks.get_employee_task_by_id(employee_task_id)
 
     # Copy employee_task.line_items to order.line_items
     # Get correct order from invoice
@@ -155,7 +155,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
     # Get updated invoice
     updated_invoice = get_invoice(invoice_id)
-    sales_tax = Calculate.calculate_sales_tax(updated_invoice.orders)
+    sales_tax = Calculate.calculate_sales_tax(updated_invoice.orders, :ready)
     subtotal = Calculate.calculate_subtotals(updated_invoice.orders)
     # set to 0
     item_adjustment = Money.new(0)
@@ -179,7 +179,8 @@ defmodule Jaang.Admin.Invoice.Invoices do
       item_adjustment: item_adjustment,
       total: total,
       total_items: total_items,
-      status: status
+      status: status,
+      number_of_bags: number_of_bags
     }
 
     with {:ok, invoice} <- Jaang.Invoice.Invoices.update_invoice(updated_invoice, attrs),

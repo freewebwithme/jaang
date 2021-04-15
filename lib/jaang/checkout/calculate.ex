@@ -19,12 +19,13 @@ defmodule Jaang.Checkout.Calculate do
 
   return: tax = Money{amount: tax, currency: :USD}
   """
-  def calculate_sales_tax(carts) do
+  def calculate_sales_tax(carts, status) do
     # Get total of carts exclude produce product total
     # get all lineItems excluding Produce
     total_excluding_produce =
       Enum.flat_map(carts, & &1.line_items)
       |> Enum.filter(&(&1.category_name != "Produce"))
+      |> Enum.filter(&(&1.status == status))
       |> Enum.reduce(Money.new(0), fn line_item, acc ->
         Money.add(line_item.total, acc)
       end)

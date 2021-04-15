@@ -31,6 +31,10 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     Repo.get_by(EmployeeTask, employee_id: employee_id)
   end
 
+  def get_employee_task_by_id(employee_task_id) do
+    Repo.get_by(EmployeeTask, id: employee_task_id)
+  end
+
   def get_in_progress_employee_task(employee_id) do
     query =
       from et in EmployeeTask,
@@ -58,7 +62,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
         status,
         refund_reason \\ nil
       ) do
-    employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
+    employee_task = get_in_progress_employee_task(employee_id)
     existing_line_items = employee_task.line_items
 
     # exclude selected line item from existing line_items then convert to map
@@ -105,7 +109,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
   def update_quantity_or_weight_for_line_item(:quantity, employee_id, line_item_id, quantity) do
     IO.puts("Calling check_quantity_for_line_item function")
-    employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
+    employee_task = get_in_progress_employee_task(employee_id)
     existing_line_items = employee_task.line_items
 
     # exclude selected line item from existing line_items then convert to map
@@ -141,7 +145,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
   def update_quantity_or_weight_for_line_item(:weight, employee_id, line_item_id, weight) do
     IO.puts("Calling check_quantity_for_line_item function")
-    employee_task = Repo.get_by(EmployeeTask, employee_id: employee_id)
+    employee_task = get_in_progress_employee_task(employee_id)
     existing_line_items = employee_task.line_items
 
     # exclude selected line item from existing line_items then convert to map

@@ -115,7 +115,7 @@ for user_id <- 31..40 do
     invoice = Jaang.Admin.Invoice.Invoices.get_invoice(invoice.id)
 
     # Calculate carts
-    sales_tax = Calculate.calculate_sales_tax(invoice.orders)
+    sales_tax = Calculate.calculate_sales_tax(invoice.orders, :not_ready)
     subtotal = Calculate.calculate_subtotals(invoice.orders)
     delivery_fee = Money.new(499)
     tip = Money.new(Enum.random(driver_tips))

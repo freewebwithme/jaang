@@ -23,7 +23,7 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
     total = OrderManager.calculate_total_price(carts)
     # service_fee = Calculate.calculate_service_fee(total)
 
-    tax = Calculate.calculate_sales_tax(carts)
+    tax = Calculate.calculate_sales_tax(carts, :not_ready)
     delivery_fee = Calculate.calculate_delivery_fee(carts)
 
     # %{store_name: "", total: %Money{}}
