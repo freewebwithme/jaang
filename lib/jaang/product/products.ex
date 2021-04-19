@@ -168,6 +168,44 @@ defmodule Jaang.Product.Products do
     Repo.all(query)
   end
 
+  def get_replacement_products(product_id, limit) do
+    product = Repo.get_by(Product, id: product_id) |> Repo.preload(:tags)
+    tag_ids = Enum.map(product.tags, & &1.id)
+
+    # get all products that has same tag with requested product
+    products =
+      get_product_ids_using_tag_ids(:product_tag, product_id, tag_ids)
+      |> get_products_by_ids(product.store_id)
+
+    # Filter by category name
+    same_category_products = Enum.filter(products, &(&1.category_name == product.category_name))
+
+    # Filter by product name
+    requested_product_name = String.split(product.name)
+
+    same_product_name =
+      Enum.filter(same_category_products, fn product ->
+        String.contains?(product.name, requested_product_name)
+      end)
+
+    # Flatten merged list and return only 5 products
+    List.flatten([same_product_name | same_category_products]) |> Enum.take(limit)
+  end
+
+  @doc """
+  Get product ids using tag id
+  returns [3, 4, 5, 6, 10, 30]
+  This function is used for replacement products
+  """
+  def get_product_ids_using_tag_ids(:product_tag, product_id, tag_ids) do
+    query =
+      from pt in ProductTags,
+        where: pt.tag_id in ^tag_ids and pt.product_id != ^product_id,
+        select: pt.product_id
+
+    Repo.all(query)
+  end
+
   def data() do
     Dataloader.Ecto.new(Jaang.Repo, query: &query/2)
   end

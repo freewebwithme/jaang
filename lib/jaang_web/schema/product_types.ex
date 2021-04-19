@@ -122,6 +122,15 @@ defmodule JaangWeb.Schema.ProductTypes do
 
       resolve(&ProductResolver.get_all_sale_products/3)
     end
+
+    @desc "Get replacement products for product"
+    field :get_replacement_products, list_of(:product) do
+      arg(:product_id, non_null(:integer))
+      arg(:limit, :integer, default_value: 5)
+      # middleware(Middleware.Authenticate)
+
+      resolve(&ProductResolver.get_replacement_products/3)
+    end
   end
 
   object :product_mutations do

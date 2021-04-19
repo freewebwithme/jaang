@@ -13,6 +13,8 @@ defmodule Jaang.ProductManager do
   defdelegate get_related_products(product_id, tag_id, limit, store_id), to: Products
   defdelegate get_often_bought_with_products(product_id, tag_id, limit, store_id), to: Products
 
+  # Get replacement products
+  defdelegate get_replacement_products(product_id, limit), to: Products
   # Categories
   defdelegate list_categories(), to: Categories
 end
