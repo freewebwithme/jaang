@@ -165,6 +165,35 @@ defmodule JaangWeb.CartChannel do
     end
   end
 
+  def handle_in(
+        "add_note_or_replacement_item",
+        %{
+          "note" => note,
+          "replacement_item_id" => replacement_item_id,
+          "line_item_id" => line_item_id,
+          "user_id" => user_id,
+          "store_id" => store_id
+        },
+        socket
+      ) do
+    {replacement_item_id, ""} = Integer.parse(replacement_item_id)
+    # Get cart and line item from cart
+    cart = OrderManager.get_cart(user_id, store_id)
+
+    case OrderManager.add_note_or_replacement_item(cart, note, replacement_item_id, line_item_id) do
+      {:ok, _order} ->
+        {carts, total_items, total_price} = get_updated_carts(user_id)
+
+        broadcast_cart(carts, total_items, total_price, socket)
+
+        {:reply, {:ok, %{orders: carts, total_items: total_items, total_price: total_price}},
+         socket}
+
+      {:error, _changeset} ->
+        {:reply, :error, socket}
+    end
+  end
+
   def handle_in("get_cart", _payload, socket) do
     send(self(), {:send_cart, "get_cart"})
     {:noreply, socket}

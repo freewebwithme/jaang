@@ -28,7 +28,8 @@ defmodule Jaang.Checkout.LineItem do
     field :barcode, :string
     field :status, Ecto.Enum, values: [:ready, :not_ready, :sold_out], default: :not_ready
     field :replacement_id, :integer
-    field :has_replacement, :boolean
+    field :note, :string
+    field :has_replacement, :boolean, default: false
     field :refund_reason, :string
 
     # embeds_many :replacements, LineItem, on_replace: :delete
@@ -64,6 +65,7 @@ defmodule Jaang.Checkout.LineItem do
       :weight_based,
       :replacement_id,
       :has_replacement,
+      :note,
       :refund_reason
     ])
     |> set_product_details()

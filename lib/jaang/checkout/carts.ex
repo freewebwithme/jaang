@@ -172,6 +172,32 @@ defmodule Jaang.Checkout.Carts do
     end
   end
 
+  def add_note_or_replacement_item(
+        %Order{line_items: existing_line_items} = cart,
+        note,
+        replacement_item_id,
+        line_item_id
+      ) do
+    excluding_line_items =
+      existing_line_items
+      |> Enum.filter(&(&1.id != line_item_id))
+      |> Enum.map(&Map.from_struct/1)
+
+    [line_item] =
+      Enum.filter(existing_line_items, &(&1.id == line_item_id))
+      |> Enum.map(&Map.from_struct/1)
+      |> Enum.map(fn line_item ->
+        Map.update!(line_item, :replacement_id, fn _value -> replacement_item_id end)
+        |> Map.update!(:has_replacement, fn _value -> true end)
+        |> Map.update!(:note, fn _value -> note end)
+      end)
+
+    IO.inspect(line_item)
+
+    updated_line_items = [line_item | excluding_line_items]
+    update_cart(cart, %{line_items: updated_line_items})
+  end
+
   @doc """
   Count total items in the all carts
   """
