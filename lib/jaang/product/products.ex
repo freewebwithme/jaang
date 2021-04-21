@@ -112,9 +112,28 @@ defmodule Jaang.Product.Products do
   @doc """
   Get related products
   """
-  def get_related_products(product_id, tag_id, limit, store_id) do
-    get_product_ids_using_tags_id(:product_tag, product_id, tag_id, limit)
-    |> get_products_by_ids(store_id)
+  def get_related_products(product_id, limit) do
+    product = Repo.get_by(Product, id: product_id) |> Repo.preload(:tags)
+    tag_ids = Enum.map(product.tags, & &1.id)
+
+    # get all products that has same tag with requested product
+    products =
+      get_product_ids_using_tag_ids(:product_tag, product_id, tag_ids)
+      |> get_products_by_ids(product.store_id)
+
+    # Filter by category name
+    same_category_products = Enum.filter(products, &(&1.category_name == product.category_name))
+
+    # Filter by product name
+    requested_product_name = String.split(product.name)
+
+    same_product_name =
+      Enum.filter(same_category_products, fn product ->
+        String.contains?(product.name, requested_product_name)
+      end)
+
+    # Flatten merged list and return only 5 products
+    List.flatten([same_product_name | same_category_products]) |> Enum.uniq() |> Enum.take(limit)
   end
 
   @doc """
@@ -122,33 +141,28 @@ defmodule Jaang.Product.Products do
   If products share same recipe tags,
   I guess it is often bought with products
   """
-  def get_often_bought_with_products(product_id, tag_id, limit, store_id) do
-    get_product_ids_using_tags_id(:recipe_tag, product_id, tag_id, limit)
-    |> get_products_by_ids(store_id)
-  end
+  def get_often_bought_with_products(product_id, limit) do
+    product = Repo.get_by(Product, id: product_id) |> Repo.preload(:recipe_tags)
+    tag_ids = Enum.map(product.recipe_tags, & &1.id)
 
-  @doc """
-  Get product ids using tag id
-  returns [3, 4, 5, 6, 10, 30]
-  """
-  def get_product_ids_using_tags_id(:product_tag, product_id, tag_id, limit) do
-    query =
-      from pt in ProductTags,
-        where: pt.tag_id == ^tag_id and pt.product_id != ^product_id,
-        limit: ^limit,
-        select: pt.product_id
+    # get all products that has same tag with requested product
+    products =
+      get_product_ids_using_tag_ids(:recipe_tag, product_id, tag_ids)
+      |> get_products_by_ids(product.store_id)
 
-    Repo.all(query)
-  end
+    # Filter by category name
+    same_category_products = Enum.filter(products, &(&1.category_name == product.category_name))
 
-  def get_product_ids_using_tags_id(:recipe_tag, product_id, tag_id, limit) do
-    query =
-      from rt in ProductRecipeTags,
-        where: rt.recipe_tag_id == ^tag_id and rt.product_id != ^product_id,
-        limit: ^limit,
-        select: rt.product_id
+    # Filter by product name
+    requested_product_name = String.split(product.name)
 
-    Repo.all(query)
+    same_product_name =
+      Enum.filter(same_category_products, fn product ->
+        String.contains?(product.name, requested_product_name)
+      end)
+
+    # Flatten merged list and return only 5 products
+    List.flatten([same_product_name | same_category_products]) |> Enum.uniq() |> Enum.take(limit)
   end
 
   @doc """
@@ -202,6 +216,15 @@ defmodule Jaang.Product.Products do
       from pt in ProductTags,
         where: pt.tag_id in ^tag_ids and pt.product_id != ^product_id,
         select: pt.product_id
+
+    Repo.all(query)
+  end
+
+  def get_product_ids_using_tag_ids(:recipe_tag, product_id, tag_ids) do
+    query =
+      from prt in ProductRecipeTags,
+        where: prt.recipe_tag_id in ^tag_ids and prt.product_id != ^product_id,
+        select: prt.product_id
 
     Repo.all(query)
   end

@@ -176,7 +176,7 @@ defmodule JaangWeb.CartChannel do
         },
         socket
       ) do
-    {replacement_item_id, ""} = Integer.parse(replacement_item_id)
+    # {replacement_item_id, ""} = Integer.parse(replacement_item_id)
     # Get cart and line item from cart
     cart = OrderManager.get_cart(user_id, store_id)
 
@@ -226,6 +226,8 @@ defmodule JaangWeb.CartChannel do
 
           # Broadcast for new invoice
           Invoices.broadcast({:ok, invoice}, :new_order)
+
+          Invoices.broadcast_to_employee(invoice, "new_order")
 
           # Send invoice id to the flutter to join invoice channel in flutter(Not joining invoice channel currently)
           {:reply,

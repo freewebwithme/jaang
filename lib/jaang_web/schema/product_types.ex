@@ -74,9 +74,7 @@ defmodule JaangWeb.Schema.ProductTypes do
     @desc "Get related product using product tag"
     field :get_related_products, list_of(:product) do
       arg(:product_id, non_null(:string))
-      arg(:tag_id, non_null(:string))
       arg(:limit, :integer, default_value: 5)
-      arg(:store_id, non_null(:string))
       middleware(Middleware.Authenticate)
 
       resolve(&ProductResolver.get_related_products/3)
@@ -85,9 +83,7 @@ defmodule JaangWeb.Schema.ProductTypes do
     @desc "Get often bought with product using recipe tag"
     field :get_often_bought_with_products, list_of(:product) do
       arg(:product_id, non_null(:string))
-      arg(:tag_id, non_null(:string))
       arg(:limit, :integer, default_value: 5)
-      arg(:store_id, non_null(:string))
       middleware(Middleware.Authenticate)
 
       resolve(&ProductResolver.get_often_bought_with_products/3)

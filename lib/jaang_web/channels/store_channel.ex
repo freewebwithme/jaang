@@ -5,7 +5,7 @@ defmodule JaangWeb.StoreChannel do
   alias Jaang.Admin.EmployeeTask
   alias Jaang.Amazon.S3
 
-  intercept ["invoice_updated"]
+  intercept ["invoice_updated", "new_order"]
 
   @impl true
   def join("store:" <> store_id, _params, %{assigns: %{current_employee: employee}} = socket) do
@@ -291,6 +291,27 @@ defmodule JaangWeb.StoreChannel do
 
       {:empty, %{}} ->
         push(socket, "invoice_updated", %{has_data: false})
+        {:noreply, socket}
+    end
+  end
+
+  def handle_out("new_order", _message, %{assigns: %{store_id: store_id}} = socket) do
+    IO.puts("new order handle out")
+
+    case return_grouped_invoices(store_id) do
+      {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
+        push(socket, "invoice_order", %{
+          # invoice: invoice,
+          submitted: submitted,
+          shopping: shopping,
+          packed: packed,
+          on_the_way: on_the_way
+        })
+
+        {:noreply, socket}
+
+      {:empty, %{}} ->
+        push(socket, "invoice_order", %{has_data: false})
         {:noreply, socket}
     end
   end

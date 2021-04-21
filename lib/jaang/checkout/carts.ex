@@ -187,9 +187,14 @@ defmodule Jaang.Checkout.Carts do
       Enum.filter(existing_line_items, &(&1.id == line_item_id))
       |> Enum.map(&Map.from_struct/1)
       |> Enum.map(fn line_item ->
-        Map.update!(line_item, :replacement_id, fn _value -> replacement_item_id end)
-        |> Map.update!(:has_replacement, fn _value -> true end)
-        |> Map.update!(:note, fn _value -> note end)
+        if(replacement_item_id == "") do
+          # replacemnet_item_id is empty, just update note.
+          Map.update!(line_item, :note, fn _value -> note end)
+        else
+          Map.update!(line_item, :replacement_id, fn _value -> replacement_item_id end)
+          |> Map.update!(:has_replacement, fn _value -> true end)
+          |> Map.update!(:note, fn _value -> note end)
+        end
       end)
 
     IO.inspect(line_item)

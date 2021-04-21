@@ -12,10 +12,10 @@ defmodule JaangWeb.Resolvers.ProductResolver do
 
   def get_related_products(
         _,
-        %{product_id: product_id, tag_id: tag_id, limit: limit, store_id: store_id},
+        %{product_id: product_id, limit: limit},
         _
       ) do
-    products = ProductManager.get_related_products(product_id, tag_id, limit, store_id)
+    products = ProductManager.get_related_products(product_id, limit)
     {:ok, products}
   end
 
@@ -27,10 +27,10 @@ defmodule JaangWeb.Resolvers.ProductResolver do
 
   def get_often_bought_with_products(
         _,
-        %{product_id: product_id, tag_id: tag_id, limit: limit, store_id: store_id},
+        %{product_id: product_id, limit: limit},
         _
       ) do
-    products = ProductManager.get_often_bought_with_products(product_id, tag_id, limit, store_id)
+    products = ProductManager.get_often_bought_with_products(product_id, limit)
     {:ok, products}
   end
 
