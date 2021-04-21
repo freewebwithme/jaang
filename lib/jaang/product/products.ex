@@ -189,7 +189,7 @@ defmodule Jaang.Product.Products do
       end)
 
     # Flatten merged list and return only 5 products
-    List.flatten([same_product_name | same_category_products]) |> Enum.take(limit)
+    List.flatten([same_product_name | same_category_products]) |> Enum.uniq() |> Enum.take(limit)
   end
 
   @doc """

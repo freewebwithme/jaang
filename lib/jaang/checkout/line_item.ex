@@ -7,6 +7,7 @@ defmodule Jaang.Checkout.LineItem do
 
   @derive Jason.Encoder
   embedded_schema do
+    # field :id, :string
     field :product_id, :integer
     field :store_id, :integer
     field :image_url, :string

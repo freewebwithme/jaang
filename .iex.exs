@@ -65,7 +65,8 @@ alias Jaang.{
   OrderManager,
   ProfileManager,
   StripeManager,
-  InvoiceManager
+  InvoiceManager,
+  SearchManager
 }
 
 alias Jaang.Account.{User, Account, Profile, Address, Addresses}

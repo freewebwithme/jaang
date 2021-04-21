@@ -131,9 +131,7 @@ defmodule JaangWeb.Schema.ProductTypes do
 
       resolve(&ProductResolver.get_replacement_products/3)
     end
-  end
 
-  object :product_mutations do
     @desc "Return suggest search term"
     field :suggest_search, list_of(:search_term) do
       arg(:token, non_null(:string))
@@ -141,6 +139,9 @@ defmodule JaangWeb.Schema.ProductTypes do
       # middleware(Middleware.Authenticate)
       resolve(&SearchResolver.get_suggest_search/3)
     end
+  end
+
+  object :product_mutations do
   end
 
   object :category do
