@@ -89,28 +89,51 @@ defmodule JaangWeb.StoreChannel do
     %{"invoice_id" => invoice_id, "employee_id" => employee_id} = payload
     # IO.puts("invoice_id #{invoice_id}, employee_id: #{employee_id}")
 
-    {:ok, invoice} = Invoices.assign_employee_to_invoice(invoice_id, employee_id, :shopping)
+    # Check if employee has currently working invoice.
+    case EmployeeTasks.get_in_progress_employee_task(employee_id) do
+      nil ->
+        {:ok, invoice} = Invoices.assign_employee_to_invoice(invoice_id, employee_id, :shopping)
 
-    # Create employee task
-    {:ok, employee_task} =
-      EmployeeTasks.create_employee_task(invoice, employee_id, "shopping", "in_progress")
+        # Create employee task
+        {:ok, employee_task} =
+          EmployeeTasks.create_employee_task(invoice, employee_id, "shopping", "in_progress")
 
-    # Group by line items' status
-    %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
-      group_by_line_item_status(employee_task)
+        # Group by line items' status
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
 
-    IO.puts("Printing employee task")
-    IO.inspect(employee_task)
-    # Send reply with updated invoice
-    {:reply,
-     {:ok,
-      %{
-        employee_task: employee_task,
-        invoice: invoice,
-        ready: ready,
-        not_ready: not_ready,
-        sold_out: sold_out
-      }}, socket}
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
+
+      employee_task = %EmployeeTask{} ->
+        # Employee has currently working tasks return existing employee task
+
+        # Get invoice
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+
+        # Group by line items' status
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
+    end
   end
 
   @impl true
@@ -296,11 +319,11 @@ defmodule JaangWeb.StoreChannel do
   end
 
   def handle_out("new_order", _message, %{assigns: %{store_id: store_id}} = socket) do
-    IO.puts("new order handle out")
+    IO.puts("new order handle out(store_id): #{store_id}")
 
     case return_grouped_invoices(store_id) do
       {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
-        push(socket, "invoice_order", %{
+        push(socket, "new_order", %{
           # invoice: invoice,
           submitted: submitted,
           shopping: shopping,
@@ -311,7 +334,7 @@ defmodule JaangWeb.StoreChannel do
         {:noreply, socket}
 
       {:empty, %{}} ->
-        push(socket, "invoice_order", %{has_data: false})
+        push(socket, "new_order", %{has_data: false})
         {:noreply, socket}
     end
   end

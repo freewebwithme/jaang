@@ -90,6 +90,7 @@ defmodule Jaang.Invoice.Invoices do
   """
 
   def broadcast_to_employee(invoice, event) do
+    IO.puts("Broadcasting to employee(event name) : #{event}")
     store_ids = Enum.map(invoice.orders, & &1.store_id)
 
     Enum.map(store_ids, fn store_id ->

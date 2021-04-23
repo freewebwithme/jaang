@@ -172,6 +172,9 @@ defmodule Jaang.Checkout.Carts do
     end
   end
 
+  @doc """
+  Add a note or replacement item
+  """
   def add_note_or_replacement_item(
         %Order{line_items: existing_line_items} = cart,
         note,
@@ -191,8 +194,14 @@ defmodule Jaang.Checkout.Carts do
           # replacemnet_item_id is empty, just update note.
           Map.update!(line_item, :note, fn _value -> note end)
         else
+          # Create replacement line_item inside existing line_item
+          {product_id, ""} = Integer.parse(replacement_item_id)
+
           Map.update!(line_item, :replacement_id, fn _value -> replacement_item_id end)
           |> Map.update!(:has_replacement, fn _value -> true end)
+          |> Map.update!(:replacement_item, fn _value ->
+            %{product_id: product_id, quantity: line_item.quantity}
+          end)
           |> Map.update!(:note, fn _value -> note end)
         end
       end)
@@ -233,7 +242,7 @@ defmodule Jaang.Checkout.Carts do
   @doc """
   This function is called whenever fetch carts(orders).
   I need to check current product price to update line_item
-  because price could be changed due to sale.
+  because price could be changed because of sale event.
   If product is on sale, show sale price
   if not show original price
   params: List of %Order{}
@@ -272,15 +281,33 @@ defmodule Jaang.Checkout.Carts do
           # Just check if product is still on sale or not.
           if(product_price.on_sale == line_item.on_sale) do
             # I don't need a change
-            line_item
+            if(line_item.has_replacement) do
+              line_item
+              |> Map.update!(:replacement_item, fn value ->
+                Map.from_struct(value)
+              end)
+            else
+              line_item
+            end
           else
-            line_item
-            |> Map.update!(:on_sale, fn _value -> product_price.on_sale end)
-            |> Map.update!(:discount_percentage, fn _value -> nil end)
-            |> Map.update!(:price, fn _value -> product_price.original_price end)
-            |> Map.update!(:total, fn _value ->
-              Money.multiply(product_price.original_price, line_item.quantity)
-            end)
+            if(line_item.has_replacement) do
+              line_item
+              |> Map.update!(:replacement_item, fn value -> Map.from_struct(value) end)
+              |> Map.update!(:on_sale, fn _value -> product_price.on_sale end)
+              |> Map.update!(:discount_percentage, fn _value -> nil end)
+              |> Map.update!(:price, fn _value -> product_price.original_price end)
+              |> Map.update!(:total, fn _value ->
+                Money.multiply(product_price.original_price, line_item.quantity)
+              end)
+            else
+              line_item
+              |> Map.update!(:on_sale, fn _value -> product_price.on_sale end)
+              |> Map.update!(:discount_percentage, fn _value -> nil end)
+              |> Map.update!(:price, fn _value -> product_price.original_price end)
+              |> Map.update!(:total, fn _value ->
+                Money.multiply(product_price.original_price, line_item.quantity)
+              end)
+            end
           end
         end)
 
