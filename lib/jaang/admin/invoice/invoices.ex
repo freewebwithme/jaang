@@ -148,7 +148,18 @@ defmodule Jaang.Admin.Invoice.Invoices do
     [order] = Enum.filter(invoice.orders, &(&1.id == employee_task.order_id))
 
     # Convert line_items to map
-    line_item_maps = Enum.map(employee_task.line_items, &Map.from_struct/1)
+    line_item_maps =
+      Enum.map(employee_task.line_items, fn line_item ->
+        if(line_item.has_replacement) do
+          Map.update!(line_item, :replacement_item, fn value ->
+            Map.from_struct(value)
+          end)
+          |> Map.from_struct()
+        else
+          Map.from_struct(line_item)
+        end
+      end)
+
     # Copy(updated) line items
     {:ok, _updated_order} =
       OrderManager.update_cart(order, %{line_items: line_item_maps, status: :packed})

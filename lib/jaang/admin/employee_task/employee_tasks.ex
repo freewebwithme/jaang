@@ -12,7 +12,18 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
   def create_employee_task(%Invoice{} = invoice, employee_id, task_type, task_status) do
     [order] = invoice.orders
-    line_items_maps = Enum.map(order.line_items, &Map.from_struct/1)
+    # if there is a replacement item, convert it to map
+    line_items_maps =
+      Enum.map(order.line_items, fn line_item ->
+        if(line_item.has_replacement) do
+          updated_line_item =
+            Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
+
+          Map.from_struct(updated_line_item)
+        else
+          Map.from_struct(line_item)
+        end
+      end)
 
     attrs = %{
       task_type: task_type,
@@ -65,14 +76,27 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     employee_task = get_in_progress_employee_task(employee_id)
     existing_line_items = employee_task.line_items
 
-    # exclude selected line item from existing line_items then convert to map
     existing_line_items_map =
       existing_line_items
+      |> Enum.map(fn line_item ->
+        # check if line_item has replacement item
+        if(line_item.has_replacement) do
+          Map.update!(line_item, :replacement_item, fn value ->
+            Map.from_struct(value)
+          end)
+          |> Map.from_struct()
+        else
+          Map.from_struct(line_item)
+        end
+      end)
+
+    # exclude selected line item from existing line_items then convert to map
+    rest_line_items =
+      existing_line_items_map
       |> Enum.filter(fn line_item -> line_item.id != line_item_id end)
-      |> Enum.map(&Map.from_struct/1)
 
     # Get selected line_item
-    [line_item] = Enum.filter(existing_line_items, &(&1.id == line_item_id))
+    [line_item] = Enum.filter(existing_line_items_map, &(&1.id == line_item_id))
 
     line_item_map =
       cond do
@@ -80,14 +104,12 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
         # and Convert to map and update status value
         status == "not_ready" ->
           line_item
-          |> Map.from_struct()
           |> Map.put(:status, status)
           |> Map.put(:final_quantity, nil)
           |> Map.put(:weight, nil)
 
         status == "sold_out" ->
           line_item
-          |> Map.from_struct()
           |> Map.put(:status, status)
           |> Map.put(:refund_reason, refund_reason)
           |> Map.put(:final_quantity, 0)
@@ -98,12 +120,11 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
           # copy quantity into final_quantity.
           # more than 1 quantity will call update_quantity_or_weight_for_line_item function
           line_item
-          |> Map.from_struct()
           |> Map.put(:status, status)
           |> Map.put(:final_quantity, line_item.quantity)
       end
 
-    employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
+    employee_task_attrs = %{line_items: [line_item_map | rest_line_items]}
     update_employee_task(employee_task, employee_task_attrs)
   end
 
@@ -112,14 +133,27 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     employee_task = get_in_progress_employee_task(employee_id)
     existing_line_items = employee_task.line_items
 
-    # exclude selected line item from existing line_items then convert to map
     existing_line_items_map =
       existing_line_items
+      |> Enum.map(fn line_item ->
+        # check if line_item has replacement item
+        if(line_item.has_replacement) do
+          Map.update!(line_item, :replacement_item, fn value ->
+            Map.from_struct(value)
+          end)
+          |> Map.from_struct()
+        else
+          Map.from_struct(line_item)
+        end
+      end)
+
+    # exclude selected line item from existing line_items then convert to map
+    rest_line_items =
+      existing_line_items_map
       |> Enum.filter(fn line_item -> line_item.id != line_item_id end)
-      |> Enum.map(&Map.from_struct/1)
 
     # Get selected line_item
-    [line_item] = Enum.filter(existing_line_items, &(&1.id == line_item_id))
+    [line_item] = Enum.filter(existing_line_items_map, &(&1.id == line_item_id))
 
     case Integer.parse(quantity) do
       {quantity_int, _rest} ->
@@ -128,11 +162,10 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
           # Convert to map and update value
           line_item_map =
             line_item
-            |> Map.from_struct()
             |> Map.put(:final_quantity, quantity_int)
             |> Map.put(:status, :ready)
 
-          employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
+          employee_task_attrs = %{line_items: [line_item_map | rest_line_items]}
           update_employee_task(employee_task, employee_task_attrs)
         else
           {:error, "상품의 수량을 확인하세요"}
@@ -148,14 +181,27 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     employee_task = get_in_progress_employee_task(employee_id)
     existing_line_items = employee_task.line_items
 
-    # exclude selected line item from existing line_items then convert to map
     existing_line_items_map =
       existing_line_items
+      |> Enum.map(fn line_item ->
+        # check if line_item has replacement item
+        if(line_item.has_replacement) do
+          Map.update!(line_item, :replacement_item, fn value ->
+            Map.from_struct(value)
+          end)
+          |> Map.from_struct()
+        else
+          Map.from_struct(line_item)
+        end
+      end)
+
+    # exclude selected line item from existing line_items then convert to map
+    rest_line_items_map =
+      existing_line_items_map
       |> Enum.filter(fn line_item -> line_item.id != line_item_id end)
-      |> Enum.map(&Map.from_struct/1)
 
     # Get selected line_item
-    [line_item] = Enum.filter(existing_line_items, &(&1.id == line_item_id))
+    [line_item] = Enum.filter(existing_line_items_map, &(&1.id == line_item_id))
 
     case Float.parse(weight) do
       {weight_float, _rest} ->
@@ -166,11 +212,11 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
           # Convert to map and update value
           line_item_map =
             line_item
-            |> Map.from_struct()
+            # |> Map.from_struct()
             |> Map.put(:weight, weight_float)
             |> Map.put(:status, :ready)
 
-          employee_task_attrs = %{line_items: [line_item_map | existing_line_items_map]}
+          employee_task_attrs = %{line_items: [line_item_map | rest_line_items_map]}
           update_employee_task(employee_task, employee_task_attrs)
         else
           {:error, "상품의 무게를 확인하세요"}

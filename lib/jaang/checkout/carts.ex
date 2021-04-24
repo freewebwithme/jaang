@@ -93,20 +93,48 @@ defmodule Jaang.Checkout.Carts do
       nil ->
         IO.puts("No current product in carts")
         # there is no same product in cart just add a product
-        existing_line_items = existing_line_items |> Enum.map(&Map.from_struct/1)
+        existing_line_items =
+          existing_line_items
+          |> Enum.map(fn line_item ->
+            # Check if there is a replacement item in existing line_items
+            if(line_item.has_replacement) do
+              updated_line_item =
+                Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
+
+              Map.from_struct(updated_line_item)
+            else
+              Map.from_struct(line_item)
+            end
+          end)
+
         attrs = %{line_items: [cart_attrs | existing_line_items]}
         update_cart(cart, attrs)
 
       line_item ->
+        new_quantity = line_item.quantity + quantity
         # Found same product then increase quantity and total price.
         IO.puts("Found a product in cart")
         # exclude same product
         existing_line_items =
           existing_line_items
           |> Enum.filter(fn line_item -> line_item.product_id != product_id end)
-          |> Enum.map(&Map.from_struct/1)
+          |> Enum.map(fn line_item ->
+            # Check if there is a replacement item in existing line_items
+            if(line_item.has_replacement) do
+              # if there is replacement item update replacement item's quantity also
 
-        new_quantity = line_item.quantity + quantity
+              updated_line_item =
+                Map.update!(line_item, :replacement_item, fn value ->
+                  Map.update!(value, :quantity, fn _value -> new_quantity end)
+                  |> Map.from_struct()
+                end)
+
+              Map.from_struct(updated_line_item)
+            else
+              Map.from_struct(line_item)
+            end
+          end)
+
         new_cart_attrs = %{product_id: product_id, quantity: new_quantity}
         attrs = %{line_items: [new_cart_attrs | existing_line_items]}
         update_cart(cart, attrs)
@@ -132,7 +160,16 @@ defmodule Jaang.Checkout.Carts do
         excluding_line_items =
           existing_line_items
           |> Enum.filter(fn line_item -> line_item.product_id != product_id end)
-          |> Enum.map(&Map.from_struct/1)
+          |> Enum.map(fn line_item ->
+            if(line_item.has_replacement) do
+              updated_line_item =
+                Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
+
+              Map.from_struct(updated_line_item)
+            else
+              Map.from_struct(line_item)
+            end
+          end)
 
         cond do
           quantity == 0 ->
@@ -155,9 +192,22 @@ defmodule Jaang.Checkout.Carts do
               Enum.filter(existing_line_items, fn line_item ->
                 line_item.product_id == product_id
               end)
-              |> Enum.map(&Map.from_struct/1)
+              # |> Enum.map(&Map.from_struct/1)
               |> Enum.map(fn line_item ->
-                Map.update!(line_item, :quantity, fn _value -> quantity end)
+                if(line_item.has_replacement) do
+                  updated_line_item =
+                    Map.update!(line_item, :replacement_item, fn value ->
+                      # if there is replacement item update replacement item's quantity also
+                      Map.update!(value, :quantity, fn _value -> quantity end)
+                      |> Map.from_struct()
+                    end)
+                    |> Map.update!(:quantity, fn _value -> quantity end)
+
+                  Map.from_struct(updated_line_item)
+                else
+                  updated_line_item = Map.update!(line_item, :quantity, fn _value -> quantity end)
+                  Map.from_struct(updated_line_item)
+                end
               end)
 
             # Merge updated line_item and excluding_line_items
@@ -181,10 +231,20 @@ defmodule Jaang.Checkout.Carts do
         replacement_item_id,
         line_item_id
       ) do
+    # Changing %LineItem to Map also
     excluding_line_items =
       existing_line_items
       |> Enum.filter(&(&1.id != line_item_id))
-      |> Enum.map(&Map.from_struct/1)
+      |> Enum.map(fn line_item ->
+        if(line_item.has_replacement) do
+          updated_line_item =
+            Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
+
+          Map.from_struct(updated_line_item)
+        else
+          Map.from_struct(line_item)
+        end
+      end)
 
     [line_item] =
       Enum.filter(existing_line_items, &(&1.id == line_item_id))
@@ -192,10 +252,28 @@ defmodule Jaang.Checkout.Carts do
       |> Enum.map(fn line_item ->
         if(replacement_item_id == "") do
           # replacemnet_item_id is empty, just update note.
-          Map.update!(line_item, :note, fn _value -> note end)
+          line_item = line_item |> Map.update!(:note, fn _value -> note end)
+          IO.puts("Adding a note")
+
+          updated_line_item =
+            if(line_item.has_replacement) do
+              # Or if line_item has already replacement_item, then remove it
+              IO.puts("Removing replacement item")
+
+              line_item
+              |> Map.update!(:replacement_item, fn _value -> nil end)
+              |> Map.update!(:has_replacement, fn _value -> false end)
+              |> Map.update!(:replacement_id, fn _value -> nil end)
+            else
+              line_item
+            end
+
+          IO.puts("Inspecting line_item in empty replacement id")
+          IO.inspect(updated_line_item)
         else
           # Create replacement line_item inside existing line_item
           {product_id, ""} = Integer.parse(replacement_item_id)
+          IO.puts("Adding a replacement item")
 
           Map.update!(line_item, :replacement_id, fn _value -> replacement_item_id end)
           |> Map.update!(:has_replacement, fn _value -> true end)
@@ -206,6 +284,7 @@ defmodule Jaang.Checkout.Carts do
         end
       end)
 
+    IO.puts("Inspecting line_item")
     IO.inspect(line_item)
 
     updated_line_items = [line_item | excluding_line_items]

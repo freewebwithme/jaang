@@ -32,7 +32,7 @@ defmodule Jaang.Checkout.LineItem do
     field :note, :string
     field :has_replacement, :boolean, default: false
     field :replacement_id, :integer
-    embeds_one :replacement_item, __MODULE__
+    embeds_one :replacement_item, __MODULE__, on_replace: :delete
 
     # embeds_many :replacements, LineItem, on_replace: :delete
 
