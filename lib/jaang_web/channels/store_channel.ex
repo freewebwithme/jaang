@@ -191,6 +191,34 @@ defmodule JaangWeb.StoreChannel do
 
   @impl true
   def handle_in(
+        "update_line_item_with_replacement_for_barcode_product",
+        %{
+          "employee_id" => employee_id,
+          "line_item_id" => line_item_id,
+          "status" => status,
+          "replacement_item_id" => replacement_item_id
+        },
+        socket
+      ) do
+    IO.puts("Calling handle_in(`update_line_item_with_replacement_for_barcode_product`)")
+    {:ok, socket}
+
+    case EmployeeTasks.update_employee_task_replacement_for_barcode_product(
+           employee_id,
+           line_item_id,
+           replacement_item_id,
+           status
+         ) do
+      {:ok, _employee_task} ->
+        {:reply, :ok, socket}
+
+      {:error, message} ->
+        {:reply, {:error, message}, socket}
+    end
+  end
+
+  @impl true
+  def handle_in(
         "update_line_item_quantity_or_weight",
         %{"employee_id" => employee_id, "line_item_id" => line_item_id, "quantity" => quantity},
         socket
@@ -233,6 +261,63 @@ defmodule JaangWeb.StoreChannel do
       {:error, message} ->
         IO.puts("Updating line_item weight error")
         IO.inspect(message)
+        {:reply, {:error, message}, socket}
+    end
+  end
+
+  # Update replacement item
+  @impl true
+  def handle_in(
+        "update_line_item_with_replacement",
+        %{
+          "employee_id" => employee_id,
+          "line_item_id" => line_item_id,
+          "quantity" => quantity,
+          "replacement_line_item_id" => replacement_line_item_id
+        },
+        socket
+      ) do
+    IO.puts("Calling handle_in(`update_line_item_with_replacement`)")
+
+    case EmployeeTasks.update_line_item_with_replacement_for_no_barcode(
+           :quantity,
+           employee_id,
+           line_item_id,
+           replacement_line_item_id,
+           quantity
+         ) do
+      {:ok, _employeeTask} ->
+        {:reply, :ok, socket}
+
+      {:error, message} ->
+        {:reply, {:error, message}, socket}
+    end
+  end
+
+  @impl true
+  def handle_in(
+        "update_line_item_with_replacement",
+        %{
+          "employee_id" => employee_id,
+          "line_item_id" => line_item_id,
+          "weight" => weight,
+          "replacement_line_item_id" => replacement_line_item_id
+        },
+        socket
+      ) do
+    IO.puts("Calling handle_in(`update_line_item_with_replacement`)")
+
+    case EmployeeTasks.update_line_item_with_replacement_for_no_barcode(
+           :weight,
+           employee_id,
+           line_item_id,
+           replacement_line_item_id,
+           weight
+         ) do
+      {:ok, _employeeTask} ->
+        {:reply, :ok, socket}
+
+      {:error, message} ->
         {:reply, {:error, message}, socket}
     end
   end

@@ -27,10 +27,15 @@ defmodule Jaang.Checkout.LineItem do
     field :price, Money.Ecto.Amount.Type
     field :total, Money.Ecto.Amount.Type
     field :barcode, :string
-    field :status, Ecto.Enum, values: [:ready, :not_ready, :sold_out], default: :not_ready
+
+    field :status, Ecto.Enum,
+      values: [:ready, :not_ready, :sold_out],
+      default: :not_ready
+
     field :refund_reason, :string
     field :note, :string
     field :has_replacement, :boolean, default: false
+    field :replaced, :boolean, default: false
     field :replacement_id, :integer
     embeds_one :replacement_item, __MODULE__, on_replace: :delete
 
@@ -68,7 +73,8 @@ defmodule Jaang.Checkout.LineItem do
       :replacement_id,
       :has_replacement,
       :note,
-      :refund_reason
+      :refund_reason,
+      :replaced
     ])
     |> cast_embed(:replacement_item, required: false, with: &__MODULE__.changeset/2)
     |> set_product_details()
