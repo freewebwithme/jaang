@@ -88,6 +88,9 @@ defmodule Jaang.Account.Accounts do
     changeset = change_profile(profile, attrs)
     store_id = Changeset.get_change(changeset, :store_id)
 
+    IO.puts("Inspecting profile update attrs")
+    IO.inspect(attrs)
+
     cond do
       store_id == nil ->
         changeset |> Repo.update!()

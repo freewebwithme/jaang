@@ -58,6 +58,17 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
 
       resolve(&EmployeeAccountResolver.verify_token/3)
     end
+
+    @desc "Update employee account info"
+    field :update_account_info, :employee_session do
+      arg(:token, non_null(:string))
+      arg(:first_name, non_null(:string))
+      arg(:last_name, non_null(:string))
+      arg(:email, non_null(:string))
+      arg(:phone_number, non_null(:string))
+
+      resolve(&EmployeeAccountResolver.update_account_info/3)
+    end
   end
 
   object :employee_session do

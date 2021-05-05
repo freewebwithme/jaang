@@ -11,7 +11,7 @@ defmodule Jaang.Admin.Account.Employee.Employee do
     field :confirmed_at, :utc_datetime
     field :active, :boolean, default: false
 
-    has_one :employee_profile, Jaang.Admin.Account.Employee.EmployeeProfile
+    has_one :employee_profile, Jaang.Admin.Account.Employee.EmployeeProfile, on_replace: :update
     has_many :employee_tasks, Jaang.Admin.EmployeeTask
 
     many_to_many :assigned_stores, Jaang.Store,

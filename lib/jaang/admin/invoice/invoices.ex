@@ -197,6 +197,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
     with {:ok, invoice} <- Jaang.Invoice.Invoices.update_invoice(updated_invoice, attrs),
          {:ok, _} <-
            StripeManager.capture_payment_intent(updated_invoice.pm_intent_id, total.amount) do
+      Invoices.broadcast_to_employee(invoice, "invoice_updated")
       {:ok, invoice}
     else
       {:error, _error} ->

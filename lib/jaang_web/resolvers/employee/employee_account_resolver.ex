@@ -1,6 +1,7 @@
 defmodule JaangWeb.Resolvers.Employee.EmployeeAccountResolver do
   alias Jaang.Admin.Account.EmployeeAuthMobile
   alias Jaang.Admin.EmployeeAccountManager
+  alias Jaang.Admin.Account.Employee.Employee
 
   def sign_up_employee(_, args, _) do
     %{
@@ -101,6 +102,38 @@ defmodule JaangWeb.Resolvers.Employee.EmployeeAccountResolver do
 
       {:error, _changeset} ->
         {:error, "Can't delete session token"}
+    end
+  end
+
+  @doc """
+  Update account info
+  """
+  def update_account_info(
+        _,
+        %{
+          token: token,
+          email: email,
+          first_name: first_name,
+          last_name: last_name,
+          phone_number: phone_number
+        },
+        _
+      ) do
+    attrs = %{
+      email: email,
+      employee_profile: %{
+        phone: phone_number,
+        first_name: first_name,
+        last_name: last_name
+      }
+    }
+
+    with {:ok, employee} <- EmployeeAuthMobile.get_employee_by_session_token(token),
+         updated_employee = %Employee{} <- EmployeeAccountManager.update_employee(employee, attrs) do
+      {:ok, %{employee: updated_employee, token: token, expired: false}}
+    else
+      {:error, _} ->
+        {:error, "Can't update employee account info"}
     end
   end
 end

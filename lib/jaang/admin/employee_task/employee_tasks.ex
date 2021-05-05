@@ -245,6 +245,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
         |> Map.update!(:replaced, fn _value -> true end)
         |> Map.update!(:status, fn _value -> :ready end)
         |> Map.update!(:final_quantity, fn _value -> 0 end)
+        |> Map.update!(:weight, fn _value -> 0.0 end)
 
       employee_task_attrs = %{line_items: [updated_line_item | rest_line_items]}
       update_employee_task(employee_task, employee_task_attrs)
@@ -283,6 +284,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
         |> Map.update!(:replaced, fn _value -> true end)
         |> Map.update!(:status, fn _value -> :ready end)
         |> Map.update!(:weight, fn _value -> 0.0 end)
+        |> Map.update!(:final_quantity, fn _value -> 0 end)
 
       employee_task_attrs = %{line_items: [updated_line_item | rest_line_items]}
       update_employee_task(employee_task, employee_task_attrs)

@@ -149,7 +149,6 @@ defmodule JaangWeb.StoreChannel do
       group_by_line_item_status(employee_task)
 
     invoice = Invoices.get_invoice(invoice_id)
-    IO.inspect(ready)
     # Send reply with updated invoice
     {:reply,
      {:ok,
@@ -181,8 +180,21 @@ defmodule JaangWeb.StoreChannel do
            status,
            refund_reason
          ) do
-      {:ok, _employee_task} ->
-        {:reply, :ok, socket}
+      {:ok, employee_task} ->
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
 
       {:error, _changeset} ->
         {:reply, :error, socket}
@@ -209,8 +221,21 @@ defmodule JaangWeb.StoreChannel do
            replacement_item_id,
            status
          ) do
-      {:ok, _employee_task} ->
-        {:reply, :ok, socket}
+      {:ok, employee_task} ->
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
 
       {:error, message} ->
         {:reply, {:error, message}, socket}
@@ -231,8 +256,21 @@ defmodule JaangWeb.StoreChannel do
            line_item_id,
            quantity
          ) do
-      {:ok, _employeeTask} ->
-        {:reply, :ok, socket}
+      {:ok, employee_task} ->
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
 
       {:error, message} ->
         IO.puts("Updating line_item quantity error")
@@ -255,8 +293,21 @@ defmodule JaangWeb.StoreChannel do
            line_item_id,
            weight
          ) do
-      {:ok, _employeeTask} ->
-        {:reply, :ok, socket}
+      {:ok, employee_task} ->
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
 
       {:error, message} ->
         IO.puts("Updating line_item weight error")
@@ -286,8 +337,21 @@ defmodule JaangWeb.StoreChannel do
            replacement_line_item_id,
            quantity
          ) do
-      {:ok, _employeeTask} ->
-        {:reply, :ok, socket}
+      {:ok, employee_task} ->
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
 
       {:error, message} ->
         {:reply, {:error, message}, socket}
@@ -314,8 +378,21 @@ defmodule JaangWeb.StoreChannel do
            replacement_line_item_id,
            weight
          ) do
-      {:ok, _employeeTask} ->
-        {:reply, :ok, socket}
+      {:ok, employee_task} ->
+        %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
+          group_by_line_item_status(employee_task)
+
+        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # Send reply with updated invoice
+        {:reply,
+         {:ok,
+          %{
+            employee_task: employee_task,
+            invoice: invoice,
+            ready: ready,
+            not_ready: not_ready,
+            sold_out: sold_out
+          }}, socket}
 
       {:error, message} ->
         {:reply, {:error, message}, socket}
