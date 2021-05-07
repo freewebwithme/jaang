@@ -97,6 +97,18 @@ defmodule Jaang.Admin.Invoice.Invoices do
     Repo.one(query) |> Repo.preload([[orders: :employees], [user: :profile], :employees])
   end
 
+  def get_assigned_invoices(employee_id, limit) do
+    query =
+      from i in Invoice,
+        join: e in assoc(i, :employees),
+        where: e.id == ^employee_id,
+        limit: ^limit,
+        order_by: [desc: i.inserted_at],
+        preload: [employees: e]
+
+    Repo.all(query)
+  end
+
   @doc """
   Assigns employees to invoice with invoice status.
   Update order's status too.

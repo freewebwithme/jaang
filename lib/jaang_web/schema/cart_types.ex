@@ -1,6 +1,8 @@
 defmodule JaangWeb.Schema.CartTypes do
   use Absinthe.Schema.Notation
 
+  alias Jaang.Admin.Account.Employee.EmployeeAccounts
+
   alias JaangWeb.Schema.Middleware
   alias JaangWeb.Resolvers.{CartResolver, PaymentResolver, OrderResolver, CheckoutResolver}
   alias Jaang.Utility
@@ -150,6 +152,8 @@ defmodule JaangWeb.Schema.CartTypes do
         Utility.convert_and_format_datetime(updated_at)
       end)
     end
+
+    field :employees, list_of(:employee), resolve: dataloader(EmployeeAccounts)
   end
 
   object :carts do

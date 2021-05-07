@@ -15,11 +15,15 @@ defmodule JaangWeb.Schema do
 
   # Employee
   import_types(JaangWeb.Schema.Employee.EmployeeAccountTypes)
+  import_types(JaangWeb.Schema.Employee.EmployeeInvoiceTypes)
 
   query do
     import_fields(:store_queries)
     import_fields(:product_queries)
     import_fields(:cart_queries)
+
+    # Employee
+    import_fields(:employee_invoice_queries)
   end
 
   mutation do
