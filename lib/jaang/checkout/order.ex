@@ -80,9 +80,15 @@ defmodule Jaang.Checkout.Order do
   def set_order_total(changeset) do
     items = get_field(changeset, :line_items)
 
+    # if line_item is replaced, get total from
+    # replacement item
     total =
       Enum.reduce(items, Money.new(0), fn item, acc ->
-        Money.add(acc, item.total)
+        if(item.replaced) do
+          Money.add(acc, item.replacement_item.total)
+        else
+          Money.add(acc, item.total)
+        end
       end)
 
     changeset

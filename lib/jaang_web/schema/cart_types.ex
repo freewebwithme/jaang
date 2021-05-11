@@ -191,6 +191,17 @@ defmodule JaangWeb.Schema.CartTypes do
     field :product_name, :string
     field :unit_name, :string
     field :quantity, :integer
+    field :category_name, :string
+    field :weight, :float
+    field :barcode, :string
+    field :weight_based, :boolean
+    field :final_quantity, :integer
+    field :note, :string
+    field :has_replacement, :boolean
+    field :replacement_id, :integer
+    field :replaced, :boolean
+    field :replacement_item, :line_item
+    field :status, :string
 
     field :price, :string do
       resolve(fn parent, _, _ ->
