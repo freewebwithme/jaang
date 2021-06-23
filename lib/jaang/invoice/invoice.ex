@@ -19,7 +19,17 @@ defmodule Jaang.Invoice do
     field :pm_intent_id, :string
 
     field :status, Ecto.Enum,
-      values: [:cart, :refunded, :submitted, :shopping, :packed, :on_the_way, :delivered]
+      values: [
+        :cart,
+        :refunded,
+        :submitted,
+        :shopping,
+        :partially_packed,
+        :packed,
+        :on_the_way,
+        :partially_delivered,
+        :delivered
+      ]
 
     field :delivery_time, :string
     field :delivery_date, :date
@@ -39,6 +49,7 @@ defmodule Jaang.Invoice do
 
     field :invoice_placed_at, :utc_datetime
     field :number_of_bags, :integer, default: 0
+    field :delivery_method, :string
 
     belongs_to :user, Jaang.Account.User
     has_many :orders, Jaang.Checkout.Order
@@ -88,7 +99,8 @@ defmodule Jaang.Invoice do
       :delivery_date,
       :delivery_order,
       :invoice_placed_at,
-      :number_of_bags
+      :number_of_bags,
+      :delivery_method
     ]
 
     invoice

@@ -33,10 +33,15 @@ defmodule JaangWeb.StoreChannel do
   end
 
   @impl true
-  def handle_in("get_order_info", _payload, %{assigns: %{store_id: store_id}} = socket) do
+  def handle_in(
+        "get_order_info",
+        _payload,
+        %{assigns: %{store_id: store_id, current_employee: employee}} = socket
+      ) do
     IO.puts("Incoming event from client: 'get_order_info'")
+    IO.puts("Printing employee id #{employee.id}")
 
-    case return_grouped_invoices(store_id) do
+    case return_grouped_invoices(store_id, employee.id) do
       {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
         {:reply,
          {:ok,
@@ -84,19 +89,29 @@ defmodule JaangWeb.StoreChannel do
   end
 
   @impl true
-  def handle_in("start_shopping", payload, socket) do
+  def handle_in("start_shopping", payload, %{assigns: %{store_id: store_id}} = socket) do
     IO.puts("Calling handle_in('start_shopping')")
     %{"invoice_id" => invoice_id, "employee_id" => employee_id} = payload
     # IO.puts("invoice_id #{invoice_id}, employee_id: #{employee_id}")
 
     # Check if employee has currently working invoice.
+    store_id = String.to_integer(store_id)
+
     case EmployeeTasks.get_in_progress_employee_task(employee_id) do
       nil ->
-        {:ok, invoice} = Invoices.assign_employee_to_invoice(invoice_id, employee_id, :shopping)
+        {:ok, invoice} =
+          Invoices.assign_employee_to_invoice(invoice_id, employee_id, :shopping, store_id)
 
+        IO.puts("Creating employee task...")
         # Create employee task
         {:ok, employee_task} =
-          EmployeeTasks.create_employee_task(invoice, employee_id, "shopping", "in_progress")
+          EmployeeTasks.create_employee_task(
+            invoice,
+            employee_id,
+            "shopping",
+            "in_progress",
+            store_id
+          )
 
         # Group by line items' status
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
@@ -447,9 +462,30 @@ defmodule JaangWeb.StoreChannel do
              end_datetime: Timex.now(),
              duration: Timex.diff(Timex.now(), employee_task.start_datetime, :minutes)
            }) do
-      {:reply, :ok, socket}
+      # Get packed invoice for employee
+      packed_invoices = Jaang.Invoice.Invoices.count_packed_invoice_for_employee(employee_id)
+      {:reply, {:ok, %{packed_invoices_count: packed_invoices}}, socket}
     else
       {:error, _error} ->
+        {:reply, :error, socket}
+    end
+  end
+
+  @impl true
+  def handle_in(
+        "update_invoice_status",
+        %{"invoice_id" => invoice_id, "status" => status},
+        %{assigns: %{store_id: store_id}} = socket
+      ) do
+    IO.puts("handle_in('update_invoice_status')")
+    status = String.to_atom(status)
+
+    store_id = String.to_integer(store_id)
+
+    with {:ok, _invoice} <- Invoices.update_invoice_status(invoice_id, status, store_id) do
+      {:reply, :ok, socket}
+    else
+      :error ->
         {:reply, :error, socket}
     end
   end
@@ -459,10 +495,14 @@ defmodule JaangWeb.StoreChannel do
   Whenever invoice is updated, send updated invoice and updated invoice list
   using handle_in
   """
-  def handle_out("invoice_updated", _message, %{assigns: %{store_id: store_id}} = socket) do
+  def handle_out(
+        "invoice_updated",
+        _message,
+        %{assigns: %{store_id: store_id, current_employee: employee}} = socket
+      ) do
     IO.puts("invoice updated handle out: ")
 
-    case return_grouped_invoices(store_id) do
+    case return_grouped_invoices(store_id, employee.id) do
       {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
         push(socket, "invoice_updated", %{
           # invoice: invoice,
@@ -480,10 +520,14 @@ defmodule JaangWeb.StoreChannel do
     end
   end
 
-  def handle_out("new_order", _message, %{assigns: %{store_id: store_id}} = socket) do
+  def handle_out(
+        "new_order",
+        _message,
+        %{assigns: %{store_id: store_id, current_employee: employee}} = socket
+      ) do
     IO.puts("new order handle out(store_id): #{store_id}")
 
-    case return_grouped_invoices(store_id) do
+    case return_grouped_invoices(store_id, employee.id) do
       {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
         push(socket, "new_order", %{
           # invoice: invoice,
@@ -521,20 +565,65 @@ defmodule JaangWeb.StoreChannel do
     {:noreply, socket}
   end
 
-  defp return_grouped_invoices(store_id) do
+  defp return_grouped_invoices(store_id, employee_id) do
     grouped_invoices = Invoices.get_unfulfilled_invoices(store_id)
 
     if grouped_invoices == %{} do
       {:empty, %{}}
     else
+      # Filter each invoice by employee id
+      shopping_invoices =
+        filter_invoices_by_employee_id_and_status(
+          grouped_invoices,
+          :shopping,
+          employee_id,
+          store_id
+        )
+
+      packed_invoices =
+        filter_invoices_by_employee_id_and_status(
+          grouped_invoices,
+          :packed,
+          employee_id,
+          store_id
+        )
+
+      ontheway_invoices =
+        filter_invoices_by_employee_id_and_status(
+          grouped_invoices,
+          :on_the_way,
+          employee_id,
+          store_id
+        )
+
       {:ok,
        %{
          submitted: Map.get(grouped_invoices, :submitted) || [],
-         shopping: Map.get(grouped_invoices, :shopping) || [],
-         packed: Map.get(grouped_invoices, :packed) || [],
-         on_the_way: Map.get(grouped_invoices, :on_the_way) || []
+         shopping: shopping_invoices,
+         packed: packed_invoices,
+         on_the_way: ontheway_invoices
        }}
     end
+  end
+
+  defp filter_invoices_by_employee_id_and_status(invoices, invoice_status, employee_id, store_id) do
+    # Check if invoices list has key(:shopping, :packed, :on_the_way)
+    # if no key exist, just return empty list
+    invoices =
+      if(Map.has_key?(invoices, invoice_status)) do
+        Map.get(invoices, invoice_status)
+        |> Enum.filter(fn invoice ->
+          Enum.any?(invoice.employees, fn employee -> employee.id == employee_id end)
+        end)
+      else
+        []
+      end
+
+    invoices
+    |> Enum.map(fn invoice ->
+      filtered_orders = Enum.filter(invoice.orders, fn order -> order.store_id == store_id end)
+      Map.update!(invoice, :orders, fn _order -> filtered_orders end)
+    end)
   end
 
   defp employee_belongs_to_store?(employee, store_id) do

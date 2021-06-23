@@ -10,8 +10,9 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     |> Repo.insert()
   end
 
-  def create_employee_task(%Invoice{} = invoice, employee_id, task_type, task_status) do
-    [order] = invoice.orders
+  def create_employee_task(%Invoice{} = invoice, employee_id, task_type, task_status, store_id) do
+    [order] = Enum.filter(invoice.orders, fn order -> order.store_id == store_id end)
+
     # if there is a replacement item, convert it to map
     line_items_maps =
       Enum.map(order.line_items, fn line_item ->

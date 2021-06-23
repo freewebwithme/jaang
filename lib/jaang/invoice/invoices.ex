@@ -1,6 +1,7 @@
 defmodule Jaang.Invoice.Invoices do
   alias Jaang.{Invoice, Repo}
   import Ecto.Query
+  alias Jaang.Admin.Account.Employee.Employee
 
   @doc """
   Create empty invoice
@@ -64,6 +65,24 @@ defmodule Jaang.Invoice.Invoices do
     Repo.all(query)
   end
 
+  @doc """
+  Get packed invoice count for employee
+  """
+  def count_packed_invoice_for_employee(employee_id) do
+    employee = Repo.get_by(Employee, id: employee_id) |> Repo.preload(:invoices)
+
+    invoices =
+      Enum.reduce(employee.invoices, [], fn invoice, acc ->
+        if(invoice.status == :packed) do
+          [invoice | acc]
+        else
+          acc
+        end
+      end)
+
+    Enum.count(invoices)
+  end
+
   @topic inspect(__MODULE__)
 
   def subscribe() do
@@ -92,6 +111,8 @@ defmodule Jaang.Invoice.Invoices do
   def broadcast_to_employee(invoice, event) do
     IO.puts("Broadcasting to employee(event name) : #{event}")
     store_ids = Enum.map(invoice.orders, & &1.store_id)
+
+    IO.puts("Store id counts: #{Enum.count(store_ids)}")
 
     Enum.map(store_ids, fn store_id ->
       # conver it string

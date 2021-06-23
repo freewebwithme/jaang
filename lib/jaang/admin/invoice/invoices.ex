@@ -30,6 +30,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
         preload: [orders: o]
 
     Repo.all(query)
+    |> Repo.preload(:employees)
     |> Repo.preload(user: :profile)
     |> Enum.group_by(fn invoice -> invoice.status end)
   end
@@ -116,17 +117,20 @@ defmodule Jaang.Admin.Invoice.Invoices do
   It will be used when a shopper starts shopping(:shopping) and
   a driver picked up the order(:on_the_way)
   """
-  def assign_employee_to_invoice(invoice_id, employee_id, status) do
+  def assign_employee_to_invoice(invoice_id, employee_id, status, store_id) do
     employee = EmployeeAccountManager.get_employee(employee_id)
     invoice = get_invoice(invoice_id)
     # get order from invoice to update order's status
-    # There will always be only 1 order in invoice at this moment
-    [order] = Enum.take(invoice.orders, 1)
-    {:ok, order} = Order.assign_employee_changeset(order, employee, status) |> Repo.update()
+    IO.puts("Printing store id: #{store_id}")
+    [order] = Enum.filter(invoice.orders, fn order -> order.store_id == store_id end)
+    not_updated_order = Enum.filter(invoice.orders, fn order -> order.store_id != store_id end)
+
+    {:ok, updated_order} =
+      Order.assign_employee_changeset(order, employee, status) |> Repo.update()
 
     {:ok, invoice} =
       invoice
-      |> Ecto.Changeset.change(%{status: status, orders: [order]})
+      |> Ecto.Changeset.change(%{status: status, orders: [updated_order | not_updated_order]})
       |> Ecto.Changeset.put_assoc(:employees, [employee | invoice.employees])
       |> Repo.update()
 
@@ -156,7 +160,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
     employee_task = EmployeeTasks.get_employee_task_by_id(employee_task_id)
 
     # Copy employee_task.line_items to order.line_items
-    # Get correct order from invoice
+    # ! Get correct order from invoice
     [order] = Enum.filter(invoice.orders, &(&1.id == employee_task.order_id))
 
     # Convert line_items to map
@@ -178,6 +182,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
     # Get updated invoice
     updated_invoice = get_invoice(invoice_id)
+
     sales_tax = Calculate.calculate_sales_tax(updated_invoice.orders, :ready)
     subtotal = Calculate.calculate_subtotals(updated_invoice.orders)
     # set to 0
@@ -312,8 +317,6 @@ defmodule Jaang.Admin.Invoice.Invoices do
         Invoices.broadcast_to_employee(invoice, "invoice_updated")
 
         # Send push notification to flutter client
-        # Broadcast to store employee
-        Invoices.broadcast_to_employee(invoice, "invoice_updated")
         OneSignal.create_notification("JaangCart", "Your order is on the way!", invoice.user_id)
         {:ok, invoice}
 
@@ -328,6 +331,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
     case update_and_broadcast_invoice(invoice, status) do
       {:ok, invoice} ->
+        # !TODO: update invoice.orders status also
         # Broadcast to store employee
         Invoices.broadcast_to_employee(invoice, "invoice_updated")
 
@@ -344,6 +348,33 @@ defmodule Jaang.Admin.Invoice.Invoices do
   def update_invoice_status(invoice_id, status) do
     invoice = get_invoice(invoice_id)
     update_and_broadcast_invoice(invoice, status)
+  end
+
+  @doc """
+  This function is used jaangcart_worker app
+  Update invoice status and also order(cart) status together
+  """
+
+  def update_invoice_status(invoice_id, :on_the_way = status, store_id) do
+    IO.puts("Status is changing to on the way")
+    invoice = get_invoice(invoice_id)
+    # filter order by store_id
+    order =
+      Enum.find(invoice.orders, nil, fn order ->
+        order.store_id == store_id
+      end)
+
+    with {:ok, _order} <- Carts.update_cart(order, %{status: status}),
+         {:ok, invoice} <- update_and_broadcast_invoice(invoice, status) do
+      # Broadcast to store employee
+      Invoices.broadcast_to_employee(invoice, "invoice_updated")
+
+      # Send push notification to flutter client
+      OneSignal.create_notification("JaangCart", "Your order is on the way!", invoice.user_id)
+      {:ok, invoice}
+    else
+      {:error, _changeset} -> :error
+    end
   end
 
   # This function is for Admin Dashboard

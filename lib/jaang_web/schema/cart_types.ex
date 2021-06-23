@@ -143,6 +143,7 @@ defmodule JaangWeb.Schema.CartTypes do
 
     field :phone_number, :string
     field :delivery_time, :string
+    field :delivery_method, :string
     # Orders
     field :orders, list_of(:order), resolve: dataloader(Carts)
 

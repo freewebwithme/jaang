@@ -52,4 +52,24 @@ defmodule Jaang.Admin.Order.Orders do
 
     Repo.one(query)
   end
+
+  #! TODO: Change this function for Order
+  def get_unfulfilled_orders(store_id) do
+    today = Timex.to_date(Timex.now("America/Los_Angeles"))
+
+    query =
+      from o in Order,
+        where:
+          o.status not in [:cart, :refunded, :delivered] and
+            i.delivery_date == ^today,
+        order_by: i.delivery_order,
+        join: o in assoc(i, :orders),
+        where: o.store_id == ^store_id,
+        preload: [orders: o]
+
+    Repo.all(query)
+    |> Repo.preload(:employees)
+    |> Repo.preload(user: :profile)
+    |> Enum.group_by(fn invoice -> invoice.status end)
+  end
 end
