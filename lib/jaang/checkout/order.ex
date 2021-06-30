@@ -41,6 +41,33 @@ defmodule Jaang.Checkout.Order do
     field :required_amount, Money.Ecto.Amount.Type
     belongs_to :user, Jaang.Account.User
 
+    # New fields
+    field :delivery_time, :string
+    field :delivery_date, :date
+    field :delivery_order, :integer
+    field :delivery_fee, :string
+    field :delivery_tip, Money.Ecto.Amount.Type
+    field :sales_tax, Money.Ecto.Amount.Type
+    field :item_adjustment, Money.Ecto.Amount.Type
+    field :total_itmes, :integer
+    field :number_of_bags, :integer, default: 0
+    field :instruction, :string
+
+    field :recipient, :string
+    field :address_line_one, :string
+    field :address_line_two, :string
+    field :business_name, :string
+    field :zipcode, :string
+    field :city, :string
+    field :state, :string
+
+    field :phone_number, :string
+
+    # ex) hand over to customer, leave at the front door
+    field :delivery_method, :string
+
+    embeds_many :receipt_photos, Jaang.Invoice.ReceiptPhoto, on_replace: :delete
+
     many_to_many :employees, Jaang.Admin.Account.Employee.Employee,
       join_through: Jaang.Admin.Account.Employee.EmployeeAssignedOrder
 
