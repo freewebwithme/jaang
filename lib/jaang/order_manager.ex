@@ -5,6 +5,7 @@ defmodule Jaang.OrderManager do
   Create an cart(order) and attach to the invoice
   """
   defdelegate create_cart(user_id, store_id, invoice_id), to: Carts
+  defdelegate get_cart(order_id), to: Carts
   defdelegate get_cart(user_id, store_id), to: Carts
   defdelegate get_all_carts_or_create_new(user), to: Carts
   defdelegate get_all_carts(user_id), to: Carts

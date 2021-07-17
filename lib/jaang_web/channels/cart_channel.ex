@@ -199,6 +199,38 @@ defmodule JaangWeb.CartChannel do
     {:noreply, socket}
   end
 
+  # !Not using this function
+  def handle_in(
+        "save_delivery_schedule",
+        %{"order_id" => order_id, "delivery_schedule" => delivery_schedule, "user_id" => user_id},
+        socket
+      ) do
+    IO.puts("handle in - save_delivery_schedule")
+    # get order
+    order = OrderManager.get_cart(order_id)
+
+    case OrderManager.update_cart(order, %{delivery_time: delivery_schedule}) do
+      {:ok, order} ->
+        IO.puts("saved delivery time.")
+        {carts, total_items, total_price} = get_updated_carts(user_id)
+
+        broadcast_cart(carts, total_items, total_price, socket)
+
+        {:reply,
+         {:ok,
+          %{
+            orders: carts,
+            total_items: total_items,
+            total_price: total_price,
+            delivery_schedule: order.delivery_time
+          }}, socket}
+
+      {:error, _changeset} ->
+        IO.puts("Failed to save delivery time")
+        {:reply, :error, socket}
+    end
+  end
+
   ### *** Place an Order ***
 
   def handle_in("place_an_order", payload, %{assigns: %{current_user: user}} = socket) do

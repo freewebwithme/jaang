@@ -19,6 +19,7 @@ defmodule Jaang.Checkout.Calculate do
 
   return: tax = Money{amount: tax, currency: :USD}
   """
+  # ! TODO: Remove this function
   def calculate_sales_tax(carts, status) do
     # Get total of carts exclude produce product total
     # get all lineItems excluding Produce
@@ -32,6 +33,26 @@ defmodule Jaang.Checkout.Calculate do
 
     Money.multiply(total_excluding_produce, @tax_rate)
   end
+
+  @doc """
+  Los Angeles city tax rate is 9.5%
+  Exclude produce product from tax
+  params: cart(order) for each store
+
+  return: tax = Money{amount: tax, currency: :USD}
+  """
+  def calculate_sales_tax_for_store(order, status) do
+    total_price_excluding_produce_product =
+      Enum.filter(order.line_items, &(&1.category_name != "Produce"))
+      |> Enum.filter(&(&1.status == status))
+      |> Enum.reduce(Money.new(0), fn line_item, acc ->
+        Money.add(line_item.total, acc)
+      end)
+
+    Money.multiply(total_price_excluding_produce_product, @tax_rate)
+  end
+
+  def get_delivery_fee(), do: Money.new(@delivery_fee)
 
   def calculate_delivery_fee(carts) do
     store_count = Enum.count(carts)
@@ -50,6 +71,17 @@ defmodule Jaang.Checkout.Calculate do
     Enum.map(carts, fn order ->
       %{store_name: order.store_name, total: order.total}
     end)
+  end
+
+  @doc """
+  This function sums up all cost including
+  total, tax, item_adjustment, driver_tip and delivery fee
+  """
+  def calculate_grand_total_for_store(total, sales_tax, item_adjustment, driver_tip, delivery_fee) do
+    Money.add(total, sales_tax)
+    |> Money.add(item_adjustment)
+    |> Money.add(driver_tip)
+    |> Money.add(delivery_fee)
   end
 
   def calculate_subtotals(carts) do

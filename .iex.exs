@@ -70,7 +70,7 @@ alias Jaang.{
 }
 
 alias Jaang.Account.{User, Account, Profile, Address, Addresses}
-alias Jaang.Checkout.{Carts, Order, LineItem}
+alias Jaang.Checkout.{Carts, Order, LineItem, Calculate}
 alias Jaang.Invoice
 alias Jaang.Invoice.Invoices
 

@@ -2,12 +2,14 @@ defmodule Jaang.Checkout.Order do
   use Ecto.Schema
   import Ecto.Changeset
   alias Jaang.Checkout.{Order, LineItem}
+  alias Jaang.Invoice.ReceiptPhoto
 
   @doc """
   This is for channel
   """
   @derive {Jason.Encoder,
            only: [
+             :id,
              :status,
              :total,
              :line_items,
@@ -17,7 +19,29 @@ defmodule Jaang.Checkout.Order do
              :user_id,
              :available_checkout,
              :order_placed_at,
-             :required_amount
+             :required_amount,
+             :delivery_time,
+             :delivery_date,
+             :delivery_order,
+             :delivery_fee,
+             :delivery_tip,
+             :sales_tax,
+             :item_adjustment,
+             :total_items,
+             :number_of_bags,
+             :instruction,
+             :recipient,
+             :address_line_one,
+             :address_line_two,
+             :business_name,
+             :zipcode,
+             :city,
+             :state,
+             :phone_number,
+             :delivery_method,
+             :receipt_photos,
+             :employees,
+             :grand_total
            ]}
 
   defprotocol MoneyProtocol do
@@ -45,11 +69,12 @@ defmodule Jaang.Checkout.Order do
     field :delivery_time, :string
     field :delivery_date, :date
     field :delivery_order, :integer
-    field :delivery_fee, :string
+    field :delivery_fee, Money.Ecto.Amount.Type
     field :delivery_tip, Money.Ecto.Amount.Type
     field :sales_tax, Money.Ecto.Amount.Type
     field :item_adjustment, Money.Ecto.Amount.Type
-    field :total_itmes, :integer
+    field :total_items, :integer
+    field :grand_total, Money.Ecto.Amount.Type
     field :number_of_bags, :integer, default: 0
     field :instruction, :string
 
@@ -87,8 +112,29 @@ defmodule Jaang.Checkout.Order do
       :invoice_id,
       :available_checkout,
       :required_amount,
-      :order_placed_at
+      :order_placed_at,
+      :delivery_time,
+      :delivery_date,
+      :delivery_order,
+      :delivery_fee,
+      :delivery_tip,
+      :sales_tax,
+      :item_adjustment,
+      :total_items,
+      :number_of_bags,
+      :instruction,
+      :recipient,
+      :address_line_one,
+      :address_line_two,
+      :business_name,
+      :zipcode,
+      :city,
+      :state,
+      :phone_number,
+      :delivery_method,
+      :grand_total
     ])
+    |> cast_embed(:receipt_photos, required: false, with: &ReceiptPhoto.changeset/2)
     |> cast_embed(:line_items, required: true, with: &LineItem.changeset/2)
     |> set_order_total()
     |> set_checkout_available()

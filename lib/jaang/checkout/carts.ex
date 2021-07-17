@@ -30,6 +30,10 @@ defmodule Jaang.Checkout.Carts do
     Repo.get_by(Order, user_id: user_id, status: :cart, store_id: store_id)
   end
 
+  def get_cart(order_id) do
+    Repo.get_by(Order, id: order_id)
+  end
+
   @doc """
   Used to call in login or sign up
   to send carts info with session
@@ -57,6 +61,7 @@ defmodule Jaang.Checkout.Carts do
     Repo.all(
       from o in Order, where: o.user_id == ^user_id and o.status == :cart, order_by: o.store_id
     )
+    |> Repo.preload(:employees)
   end
 
   def update_cart(%Order{} = order, attrs) do
@@ -91,7 +96,7 @@ defmodule Jaang.Checkout.Carts do
     # Check if exisiting cart has same product id
     case Enum.find(existing_line_items, fn line_item -> line_item.product_id == product_id end) do
       nil ->
-        IO.puts("No current product in carts")
+        IO.puts("No current product in carts, This is a new product.")
         # there is no same product in cart just add a product
         existing_line_items =
           existing_line_items
@@ -246,10 +251,16 @@ defmodule Jaang.Checkout.Carts do
         end
       end)
 
+    IO.puts("Inspecting excluding_line_items")
+    IO.inspect(excluding_line_items)
+    IO.puts("Printing line_item_id: #{line_item_id}")
+
     [line_item] =
       Enum.filter(existing_line_items, &(&1.id == line_item_id))
       |> Enum.map(&Map.from_struct/1)
       |> Enum.map(fn line_item ->
+        IO.puts("Enumerating existing line items")
+
         if(replacement_item_id == "") do
           # replacemnet_item_id is empty, just update note.
           line_item = line_item |> Map.update!(:note, fn _value -> note end)

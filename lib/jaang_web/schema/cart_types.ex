@@ -106,6 +106,16 @@ defmodule JaangWeb.Schema.CartTypes do
       # middleware(Middleware.Authenticate)
       resolve(&CheckoutResolver.calculate_total/3)
     end
+
+    @desc "Calculate total amount for store for checkout screen"
+    field :calculate_total_amount_for_store, :store_total_amount do
+      arg(:tip, non_null(:string))
+      arg(:token, non_null(:string))
+      arg(:order_id, non_null(:integer))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&CheckoutResolver.calculate_total_for_store/3)
+    end
   end
 
   object :delivery_datetime do
@@ -182,6 +192,37 @@ defmodule JaangWeb.Schema.CartTypes do
     field :total, :string
 
     field :line_items, list_of(:line_item)
+
+    # add new information
+    field :delivery_time, :string
+    # field :delivery_date, :date
+    field :delivery_order, :integer
+    field :delivery_fee, :string
+    field :delivery_tip, :string
+    field :sales_tax, :string
+    field :item_adjustment, :string
+    field :total_items, :integer
+    field :number_of_bags, :integer, default_value: 0
+    field :instruction, :string
+
+    field :recipient, :string
+    field :address_line_one, :string
+    field :address_line_two, :string
+    field :business_name, :string
+    field :zipcode, :string
+    field :city, :string
+    field :state, :string
+
+    field :phone_number, :string
+
+    # ex) hand over to customer, leave at the front door
+    field :delivery_method, :string
+
+    field :receipt_photos, list_of(:receipt_photo)
+  end
+
+  object :receipt_photo do
+    field :photo_url, :string
   end
 
   object :line_item do
@@ -236,6 +277,15 @@ defmodule JaangWeb.Schema.CartTypes do
     field :sales_tax, :string
     field :item_adjustments, :string
     field :total, :string
+  end
+
+  object :store_total_amount do
+    field :driver_tip, :string
+    field :delivery_fee, :string
+    field :sales_tax, :string
+    field :item_adjustment, :string
+    field :total, :string
+    field :grand_total, :string
   end
 
   object :sub_total do
