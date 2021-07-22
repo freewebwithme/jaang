@@ -199,44 +199,11 @@ defmodule JaangWeb.CartChannel do
     {:noreply, socket}
   end
 
-  # !Not using this function
-  def handle_in(
-        "save_delivery_schedule",
-        %{"order_id" => order_id, "delivery_schedule" => delivery_schedule, "user_id" => user_id},
-        socket
-      ) do
-    IO.puts("handle in - save_delivery_schedule")
-    # get order
-    order = OrderManager.get_cart(order_id)
-
-    case OrderManager.update_cart(order, %{delivery_time: delivery_schedule}) do
-      {:ok, order} ->
-        IO.puts("saved delivery time.")
-        {carts, total_items, total_price} = get_updated_carts(user_id)
-
-        broadcast_cart(carts, total_items, total_price, socket)
-
-        {:reply,
-         {:ok,
-          %{
-            orders: carts,
-            total_items: total_items,
-            total_price: total_price,
-            delivery_schedule: order.delivery_time
-          }}, socket}
-
-      {:error, _changeset} ->
-        IO.puts("Failed to save delivery time")
-        {:reply, :error, socket}
-    end
-  end
-
   ### *** Place an Order ***
-
   def handle_in("place_an_order", payload, %{assigns: %{current_user: user}} = socket) do
     %{
       "token" => token,
-      "delivery_time" => delivery_time
+      "order_infos" => order_infos
     } = payload
 
     IO.puts("Placing an order in Cart channel")
@@ -244,7 +211,12 @@ defmodule JaangWeb.CartChannel do
 
     if(user.id == fetched_user.id) do
       # user matches, go ahead process an order
-      case OrderManager.place_an_order(fetched_user, delivery_time) do
+      IO.puts("Inspecting order infos")
+      IO.inspect(order_infos)
+
+      # Update order information
+
+      case OrderManager.place_an_order(order_infos, fetched_user) do
         {:ok, invoice} ->
           # Send empty cart
           {carts, total_items, total_price} = get_updated_carts(user.id)
@@ -287,57 +259,23 @@ defmodule JaangWeb.CartChannel do
     })
   end
 
-  # TODO: I don't need to convert Money to string manually.
   def get_updated_carts(user_id) do
     # Refresh product price in carts
     OrderManager.get_all_carts(user_id) |> OrderManager.refresh_product_price()
     carts = OrderManager.get_all_carts(user_id)
     # Extract line items and sort by inserted at
     sorted_carts =
-      Enum.map(carts, fn %{line_items: line_items, total: total, required_amount: required_amount} =
-                           cart ->
-        # total = Money.to_string(total)
-        # cart = Map.put(cart, :total, total)
-        # required_amount = Money.to_string(required_amount)
-        # cart = Map.put(cart, :required_amount, required_amount)
-
+      Enum.map(carts, fn %{
+                           line_items: line_items,
+                           total: _total,
+                           required_amount: _required_amount
+                         } = cart ->
         # Sort the line item by inserted at
         line_items = Enum.sort(line_items, &(&1.inserted_at <= &2.inserted_at))
-
-        # convert %Money{} to string "$13.00"
-        # line_items =
-        #  Enum.map(line_items, fn line_item ->
-        #    # Get Money.Ecto.Amount.Type from line item and
-        #    # convert to string before sending to client
-
-        #    %{
-        #      price: price,
-        #      total: total,
-        #      original_price: original_price,
-        #      original_total: original_total
-        #    } = line_item
-
-        #    price = Money.to_string(price)
-        #    total = Money.to_string(total)
-        #    original_price = Money.to_string(original_price)
-        #    original_total = Money.to_string(original_total)
-
-        #    line_item =
-        #      Map.put(line_item, :price, price)
-        #      |> Map.put(:total, total)
-        #      |> Map.put(:original_price, original_price)
-        #      |> Map.put(:original_total, original_total)
-
-        #    line_item
-        #  end)
-
         Map.put(cart, :line_items, line_items)
       end)
 
     total_items = OrderManager.count_total_item(sorted_carts)
-    # I can't use sorted_carts because its price and total is converted string
-    # so use original carts
-    # total_price = OrderManager.calculate_total_price(carts)
     total_price = OrderManager.calculate_total_price(sorted_carts)
     {sorted_carts, total_items, Money.to_string(total_price)}
   end

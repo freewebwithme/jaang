@@ -27,6 +27,15 @@ defmodule Jaang.OrderManager do
   defdelegate refresh_product_price(carts), to: Carts
 
   defdelegate count_total_item(carts), to: Carts
+
+  @doc """
+  Calculate grand total price in the all carts(including salex tax, etc)
+  """
+  defdelegate calculate_grand_total_price(carts), to: Carts
+
+  @doc """
+  Calculate total price in the all carts(not including salex tax, etc)
+  """
   defdelegate calculate_total_price(carts), to: Carts
 
   @doc """

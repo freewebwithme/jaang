@@ -153,8 +153,8 @@ defmodule Jaang.Admin.Invoice.Invoices do
   2. update invoice(sales_tax, item_adjustment(0), total, total_items, number_of_bags)
   3. Invoice's status updated when all orders(from different store) are packed.  then
      updated invoice's status to packed.  If every orders not ready, keep it :shopping status
-
   """
+  # TODO: Adjust this function
   def finalize_invoice(invoice_id, employee_task_id, number_of_bags) do
     invoice = get_invoice(invoice_id)
     employee_task = EmployeeTasks.get_employee_task_by_id(employee_task_id)

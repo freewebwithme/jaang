@@ -318,15 +318,18 @@ defmodule Jaang.Checkout.Carts do
   end
 
   @doc """
-  Calculate total price in the all carts
+  Calculate total price in the all carts(including sales tax, etc)
   """
-  def calculate_total_price(carts) do
-    Enum.map(carts, fn cart ->
-      Enum.reduce(cart.line_items, Money.new(0), fn line_item, acc ->
-        Money.add(line_item.total, acc)
-      end)
+  def calculate_grand_total_price(carts) do
+    Enum.reduce(carts, Money.new(0), fn cart, acc ->
+      Money.add(cart.grand_total, acc)
     end)
-    |> Enum.reduce(Money.new(0), fn price, acc -> Money.add(price, acc) end)
+  end
+
+  def calculate_total_price(carts) do
+    Enum.reduce(carts, Money.new(0), fn cart, acc ->
+      Money.add(cart.total, acc)
+    end)
   end
 
   @doc """
