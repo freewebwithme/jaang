@@ -67,7 +67,8 @@ defmodule Jaang.Checkout.Checkout do
             zipcode: address.zipcode,
             city: address.city,
             state: address.state,
-            phone_number: phone_number
+            phone_number: phone_number,
+            total_items: Enum.count(order.line_items)
           })
         end)
 

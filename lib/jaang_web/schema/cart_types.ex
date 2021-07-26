@@ -135,33 +135,21 @@ defmodule JaangWeb.Schema.CartTypes do
   object :invoice do
     field :id, :integer
     field :invoice_number, :string
-    field :subtotal, :string
-    field :driver_tip, :string
-    field :delivery_fee, :string
-    field :service_fee, :string
-    field :sales_tax, :string
-    field :item_adjustment, :string
-    field :total, :string
     field :payment_method, :string
     field :pm_intent_id, :string
     field :status, :string
     field :user_id, :id
     field :total_items, :integer
-    # Add delivery address information
-    field :recipient, :string
-    field :address_line_one, :string
-    field :address_line_two, :string
-    field :business_name, :string
-    field :zipcode, :string
-    field :city, :string
-    field :state, :string
-    field :instructions, :string
-
-    field :phone_number, :string
-    field :delivery_time, :string
-    field :delivery_method, :string
+    field :grand_total_price, :string
     # Orders
     field :orders, list_of(:order), resolve: dataloader(Carts)
+
+    field :invoice_placed_at, :string do
+      resolve(fn parent, _, _ ->
+        invoice_placed_at = Map.get(parent, :invoice_placed_at)
+        Utility.convert_and_format_datetime(invoice_placed_at)
+      end)
+    end
 
     field :updated_at, :string do
       resolve(fn parent, _, _ ->
@@ -219,7 +207,23 @@ defmodule JaangWeb.Schema.CartTypes do
     field :city, :string
     field :state, :string
 
+    field :grand_total, :string
+
     field :phone_number, :string
+
+    field :updated_at, :string do
+      resolve(fn parent, _, _ ->
+        updated_at = Map.get(parent, :updated_at)
+        Utility.convert_and_format_datetime(updated_at)
+      end)
+    end
+
+    field :order_placed_at, :string do
+      resolve(fn parent, _, _ ->
+        order_placed_at = Map.get(parent, :order_placed_at)
+        Utility.convert_and_format_datetime(order_placed_at)
+      end)
+    end
 
     # ex) hand over to customer, leave at the front door
     field :delivery_method, :string

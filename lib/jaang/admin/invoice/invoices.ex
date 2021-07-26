@@ -82,7 +82,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
         end
     end)
     |> Repo.all()
-    |> Repo.preload(user: :profile)
+    |> Repo.preload([:orders, user: [:profile]])
   end
 
   def get_invoices() do

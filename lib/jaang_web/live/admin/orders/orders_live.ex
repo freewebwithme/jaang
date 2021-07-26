@@ -1,13 +1,13 @@
 defmodule JaangWeb.Admin.Orders.OrdersLive do
   use JaangWeb, :dashboard_live_view
-  alias Jaang.Admin.Invoice.Invoices
-  alias JaangWeb.Admin.Components.{InvoiceComponent}
+  alias Jaang.Admin.Order.Orders
+  alias JaangWeb.Admin.Components.OrderComponent
   alias JaangWeb.Admin.Orders.OrderSearchResultLive
 
   def mount(_params, _session, socket) do
-    if connected?(socket), do: Jaang.Invoice.Invoices.subscribe()
+    if connected?(socket), do: Jaang.Checkout.Carts.subscribe()
 
-    {:ok, socket, temporary_assigns: [invoices: []]}
+    {:ok, socket, temporary_assigns: [orders: []]}
   end
 
   def handle_params(params, _url, socket) do
@@ -21,9 +21,9 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
     state = String.downcase(by_state) |> String.to_atom()
     filter_by = %{by_state: state}
 
-    invoices = Invoices.get_invoices(paginate: paginate_options, filter_by: filter_by)
+    orders = Orders.get_orders(paginate: paginate_options, filter_by: filter_by)
 
-    has_next_page = Helpers.has_next_page?(Enum.count(invoices), per_page)
+    has_next_page = Helpers.has_next_page?(Enum.count(orders), per_page)
 
     filter_by_list = [
       "All",
@@ -38,14 +38,14 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
 
     filter_by_default = params["filter_by"] || "All"
 
-    search_by_list = ["Invoice number"]
-    search_by_default = "Invoice number"
+    search_by_list = ["Order id"]
+    search_by_default = "Order Id"
 
     socket =
       assign(socket,
         has_next_page: has_next_page,
         options: paginate_options,
-        invoices: invoices,
+        orders: orders,
         current_page: "Orders",
         filter_by: filter_by_default,
         filter_by_list: filter_by_list,
@@ -59,7 +59,7 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
   def handle_event("select-per-page", %{"per-page" => per_page}, socket) do
     per_page = String.to_integer(per_page)
     IO.puts("Calling handle_event: select-per-page")
-    has_next_page = Helpers.has_next_page?(Enum.count(socket.assigns.invoices), per_page)
+    has_next_page = Helpers.has_next_page?(Enum.count(socket.assigns.orders), per_page)
 
     socket =
       push_patch(socket,
@@ -105,14 +105,14 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
     {:noreply, socket}
   end
 
-  def handle_info({:invoice_updated, invoice}, socket) do
-    IO.puts(":invoice updated handle info calling from OrdersLive")
-    socket = update(socket, :invoices, fn invoices -> [invoice | invoices] end)
+  def handle_info({:order_updated, order}, socket) do
+    IO.puts(":order updated handle info calling from OrdersLive")
+    socket = update(socket, :orders, fn orders -> [order | orders] end)
     {:noreply, socket}
   end
 
-  def handle_info({:new_order, invoice}, socket) do
-    socket = update(socket, :invoices, fn invoices -> [invoice | invoices] end)
+  def handle_info({:new_order, order}, socket) do
+    socket = update(socket, :orders, fn orders -> [order | orders] end)
     {:noreply, socket}
   end
 end

@@ -1,7 +1,7 @@
 defmodule JaangWeb.Admin.Customers.CustomerDetailLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Customer.Customers
-  alias JaangWeb.Admin.Components.{AddressComponent, OrderTableComponent}
+  alias JaangWeb.Admin.Components.{AddressComponent, InvoiceTableComponent}
   alias Jaang.Admin.Invoice.Invoices
   alias Jaang.StoreManager
 
@@ -20,7 +20,7 @@ defmodule JaangWeb.Admin.Customers.CustomerDetailLive do
         rest_addresses: rest_addresses
       )
 
-    {:ok, socket, temporary_assigns: [invoices: []]}
+    {:ok, socket, temporary_assigns: [orders: []]}
   end
 
   def handle_params(params, _url, socket) do
@@ -54,8 +54,8 @@ defmodule JaangWeb.Admin.Customers.CustomerDetailLive do
 
     filter_by_default = "ALL"
 
-    search_by_list = ["Invoice number"]
-    search_by_default = "Invoice number"
+    search_by_list = ["Invoice id"]
+    search_by_default = "Invoice id"
 
     socket =
       assign(socket,

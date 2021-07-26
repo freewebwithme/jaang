@@ -77,6 +77,37 @@ defmodule Jaang.Checkout.Carts do
     |> Repo.delete!()
   end
 
+  @topic inspect(__MODULE__)
+
+  def subscribe() do
+    IO.puts("Subscribe to #{@topic}")
+    Phoenix.PubSub.subscribe(Jaang.PubSub, @topic)
+  end
+
+  def subscribe(_), do: :error
+
+  def broadcast({:ok, cart}, event) do
+    Phoenix.PubSub.broadcast(
+      Jaang.PubSub,
+      @topic,
+      {event, cart}
+    )
+
+    {:ok, cart}
+  end
+
+  def broadcast({:error, _reason} = error, _event), do: error
+
+  def broadcast_to_employee(cart, event) do
+    IO.puts("Broadcasting to employee(event name) : #{event}")
+
+    JaangWeb.Endpoint.broadcast(
+      "store:" <> cart.store_id,
+      event,
+      %{}
+    )
+  end
+
   @doc """
   Minimum required attrs %{product_id: id, quantity: 1}
   """

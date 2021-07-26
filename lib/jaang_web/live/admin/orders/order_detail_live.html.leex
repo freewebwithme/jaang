@@ -3,15 +3,15 @@
   <div class="mt-3 py-5 px-10 bg-white shadow-md flex content-evenly gap-4">
     <div class="flex-1">
       <h2 class="text-gray-800 text-2xl ">Delivery schedule:
-         <span class="text-indigo-600"><%= @invoice.delivery_time %></span>
+         <span class="text-indigo-600"><%= @order.delivery_time %></span>
       </h2>
-      <p class="py-2">Invoice created and updated at:
-        <span class="text-indigo-600"> <%= Helpers.display_datetime(@invoice.updated_at) %></span>
+      <p class="py-2">Order created and updated at:
+        <span class="text-indigo-600"> <%= Helpers.display_datetime(@order.updated_at) %></span>
       </p>
     </div>
     <div class="flex-1 items-center ">
       <h2 class="text-gray-800 text-2xl">Current status:
-        <span class="text-indigo-600"><%= Helpers.capitalize_text(@invoice.status) %></span>
+        <span class="text-indigo-600"><%= Helpers.capitalize_text(@order.status) %></span>
       </h2>
     </div>
   </div>
@@ -22,36 +22,36 @@
     <div class="flex-1 bg-white shadow-md">
       <div class="py-7 px-10">
         <h2 class="text-xl text-gray-900 mb-5">Order summary</h2>
-        <p class="text-gray-500 text-sm">Invoice #: <span><%= @invoice.invoice_number %></span></p>
-        <p class="text-gray-500 text-sm mb-5">Ordered <span><%= @invoice.updated_at %></span></p>
+        <p class="text-gray-500 text-sm">Order Id: <span><%= @order.id %></span></p>
+        <p class="text-gray-500 text-sm mb-5">Ordered <span><%= @order.updated_at %></span></p>
 
         <div class="flex content-evenly">
           <p class="flex-1">Number of items:</p>
-          <p class="flex-1 text-right font-bold"><%= @invoice.total_items %></p>
+          <p class="flex-1 text-right font-bold"><%= @order.total_items %></p>
         </div>
         <div class="flex content-evenly">
           <p class="flex-1">Items subtotal:</p>
-          <p class="flex-1 text-right font-bold"><%= @invoice.subtotal %></p>
+          <p class="flex-1 text-right font-bold"><%= @order.total %></p>
         </div>
         <div class="flex content-evenly">
           <p class="flex-1">Delivery fee:</p>
-          <p class="flex-1 text-right font-bold"><%= @invoice.delivery_fee%></p>
+          <p class="flex-1 text-right font-bold"><%= @order.delivery_fee%></p>
         </div>
         <div class="flex content-evenly">
           <p class="flex-1">Sales tax:</p>
-          <p class="flex-1 text-right font-bold"><%= @invoice.sales_tax %></p>
+          <p class="flex-1 text-right font-bold"><%= @order.sales_tax %></p>
         </div>
         <div class="flex content-evenly">
           <p class="flex-1">Driver tip:</p>
-          <p class="flex-1 text-right font-bold"><%= @invoice.driver_tip%></p>
+          <p class="flex-1 text-right font-bold"><%= @order.delivery_tip %></p>
         </div>
         <div class="flex content-evenly">
           <p class="flex-1">Item adjustment:</p>
-          <p class="flex-1 text-right font-bold"><%= @invoice.item_adjustment%></p>
+          <p class="flex-1 text-right font-bold"><%= @order.item_adjustment%></p>
         </div>
         <div class="flex content-evenly">
           <p class="flex-1">Total:</p>
-          <p class="flex-1 text-right font-bold"><%= @invoice.total %></p>
+          <p class="flex-1 text-right font-bold"><%= @order.grand_total %></p>
         </div>
 
         <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
@@ -64,20 +64,20 @@
     <div class="flex-1 bg-white shadow-md">
       <div class="py-7 px-10">
         <h2 class="text-xl text-gray-900 mb-5">Delivery address</h2>
-        <p class="text-sm"><%= Helpers.uppercase_text(@invoice.recipient) %></p>
-        <p class="text-sm"><%= Helpers.uppercase_text(@invoice.business_name) %></p>
-        <p class="text-sm"><%= Helpers.uppercase_text(@invoice.address_line_one) %>
-          <span><%= Helpers.uppercase_text(@invoice.address_line_two) %> </span>
+        <p class="text-sm"><%= Helpers.uppercase_text(@order.recipient) %></p>
+        <p class="text-sm"><%= Helpers.uppercase_text(@order.business_name) %></p>
+        <p class="text-sm"><%= Helpers.uppercase_text(@order.address_line_one) %>
+          <span><%= Helpers.uppercase_text(@order.address_line_two) %> </span>
         </p>
-        <p class="text-sm"><%= Helpers.uppercase_text(@invoice.city) %>
-          <span><%= Helpers.uppercase_text(@invoice.state) %></span>
-          <span><%= @invoice.zipcode  %></span>
+        <p class="text-sm"><%= Helpers.uppercase_text(@order.city) %>
+          <span><%= Helpers.uppercase_text(@order.state) %></span>
+          <span><%= @order.zipcode  %></span>
         </p>
         <br>
-        <p class="text-sm"><%= Helpers.display_phone_number(@invoice.phone_number) %></p>
+        <p class="text-sm"><%= @order.phone_number %></p>
         <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
         <p class="font-bold text-gray-800 text-sm">Delivery instructions</p>
-        <p class="text-gray-800 text-sm mt-1"><%= @invoice.instructions %></p>
+        <p class="text-gray-800 text-sm mt-1"><%= @order.instruction %></p>
         <!-- Display shopper and driver --> 
         <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
         <p class="font-bold text-gray-800 text-sm">Shopper</p>
@@ -92,18 +92,18 @@
     <!-- Status change card -->
     <div class="flex-1 bg-white shadow-md">
       <div class="py-7 px-10">
-        <h2 class="text-xl text-gray-900 mb-5">Change invoice status</h2>
+        <h2 class="text-xl text-gray-900 mb-5">Change Order status</h2>
 
         <form phx-submit="change_state">
 
-          <input type="hidden" name="invoice-id" value="<%= @invoice.id %>">
+          <input type="hidden" name="order-id" value="<%= @order.id %>">
           <fieldset>
            <div class="bg-white rounded-md -space-y-px">
              <!-- On: "bg-indigo-50 border-indigo-200 z-10", Off: "border-gray-200" -->
              <%= for status <- @statuses do %>
              <div class="relative border rounded-tl-md rounded-tr-md p-4 flex">
                <div class="flex items-center h-5">
-                 <input id="<%= status.status %>" name="invoice-status" type="radio"
+                 <input id="<%= status.status %>" name="order-status" type="radio"
                         class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 cursor-pointer border-gray-300" 
                         value=<%= status.status %>
                        <%= if @current_status == status.status, do: "checked" %>>
@@ -142,15 +142,13 @@
       <span class="mt-5 mb-3 block text-xl text-center leading-8 font-medium tracking-tight text-gray-800 sm:text-4xl">Items in Orders</span>
     </h1>
   </div>
-  <%= for order <- @invoice.orders do %>
-
     <div class="flex items-center px-4 py-5 sm:px-6 bg-white">
       <div class="flex-shrink-0">
-        <img class="h-10 w-10 rounded-full" src="<%= order.store_logo %>">
+        <img class="h-10 w-10 rounded-full" src="<%= @order.store_logo %>">
       </div>
       <div class="ml-4">
         <h3 class="text-lg leading-6 font-medium text-gray-900">
-          <%= order.store_name %>
+          <%= @order.store_name %>
         </h3>
       </div>
     </div>
@@ -176,7 +174,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <%= for item <- order.line_items do %>
+                <%= for item <- @order.line_items do %>
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center">
@@ -208,6 +206,4 @@
         </div>
       </div>
     </div>
-  
-  <% end %>
 </div>

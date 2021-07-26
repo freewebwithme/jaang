@@ -1,11 +1,13 @@
 defmodule JaangWeb.Admin.Orders.OrderDetailLive do
   use JaangWeb, :dashboard_live_view
+  alias Jaang.Admin.Order.Orders
   alias Jaang.Admin.Invoice.Invoices
 
-  def mount(%{"id" => invoice_id}, _session, socket) do
-    if connected?(socket), do: Jaang.Invoice.Invoices.subscribe()
+  def mount(%{"id" => order_id}, _session, socket) do
+    if connected?(socket), do: Jaang.Checkout.Carts.subscribe()
 
-    invoice = Invoices.get_invoice(invoice_id)
+    order = Orders.get_order(order_id)
+    invoice = Invoices.get_invoice(order.invoice_id)
 
     statuses = [
       %{status: "Refunded", desc: "Invoice is refunded to customer"},
@@ -20,9 +22,10 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
       assign(
         socket,
         current_page: "Order Detail",
+        order: order,
         invoice: invoice,
         statuses: statuses,
-        current_status: Helpers.convert_atom_and_string(invoice.status)
+        current_status: Helpers.convert_atom_and_string(order.status)
       )
 
     {:ok, socket}
@@ -30,36 +33,36 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
 
   def handle_event(
         "change_state",
-        %{"invoice-status" => state, "invoice-id" => invoice_id},
+        %{"order-status" => state, "order-id" => order_id},
         socket
       ) do
     # Change string to atom
     new_state = Helpers.convert_atom_and_string(state)
-    {:ok, invoice} = Invoices.update_invoice_status(invoice_id, new_state)
+    {:ok, order} = Orders.update_order_status_and_notify(order_id, new_state)
 
     socket =
       assign(
         socket,
-        invoice: invoice,
-        current_status: Helpers.convert_atom_and_string(invoice.status)
+        order: order,
+        current_status: Helpers.convert_atom_and_string(order.status)
       )
 
     {:noreply, socket}
   end
 
-  def handle_info({:invoice_updated, invoice}, socket) do
-    IO.puts("Invoice is updated from OrderDetailLive: #{invoice.id}")
+  def handle_info({:order_updated, order}, socket) do
+    IO.puts("Order is updated from OrderDetailLive: #{order.id}")
 
     socket =
-      update(socket, :invoice, fn _invoice -> invoice end)
+      update(socket, :order, fn _order -> order end)
       |> update(:current_status, fn _invoice ->
-        Helpers.convert_atom_and_string(invoice.status)
+        Helpers.convert_atom_and_string(order.status)
       end)
 
     {:noreply, socket}
   end
 
-  def handle_info({:new_order, _invoice}, socket) do
+  def handle_info({:new_order, _order}, socket) do
     {:noreply, socket}
   end
 end
