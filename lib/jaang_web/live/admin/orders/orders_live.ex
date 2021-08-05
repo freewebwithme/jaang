@@ -1,7 +1,7 @@
 defmodule JaangWeb.Admin.Orders.OrdersLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Order.Orders
-  alias JaangWeb.Admin.Components.OrderComponent
+  alias JaangWeb.Admin.Components.OrderTableComponent
   alias JaangWeb.Admin.Orders.OrderSearchResultLive
 
   def mount(_params, _session, socket) do

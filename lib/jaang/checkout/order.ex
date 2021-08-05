@@ -40,7 +40,6 @@ defmodule Jaang.Checkout.Order do
              :phone_number,
              :delivery_method,
              :receipt_photos,
-             :employees,
              :grand_total
            ]}
 

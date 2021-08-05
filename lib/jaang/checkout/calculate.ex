@@ -1,4 +1,5 @@
 defmodule Jaang.Checkout.Calculate do
+  alias Jaang.Invoice
   @tax_rate 0.095
   @delivery_fee 499
   @item_adjustment 0.15
@@ -11,29 +12,6 @@ defmodule Jaang.Checkout.Calculate do
   def calculate_service_fee(total_amount) do
     Money.multiply(total_amount, @service_fee)
   end
-
-  @doc """
-  Los Angeles city tax rate is 9.5%
-  Exclude produce product from tax
-  params: carts(list of order)
-
-  return: tax = Money{amount: tax, currency: :USD}
-  """
-
-  # ! TODO: Remove this function
-  # def calculate_sales_tax(carts, status) do
-  #  # Get total of carts exclude produce product total
-  #  # get all lineItems excluding Produce
-  #  total_excluding_produce =
-  #    Enum.flat_map(carts, & &1.line_items)
-  #    |> Enum.filter(&(&1.category_name != "Produce"))
-  #    |> Enum.filter(&(&1.status == status))
-  #    |> Enum.reduce(Money.new(0), fn line_item, acc ->
-  #      Money.add(line_item.total, acc)
-  #    end)
-
-  #  Money.multiply(total_excluding_produce, @tax_rate)
-  # end
 
   @doc """
   Los Angeles city tax rate is 9.5%
@@ -85,19 +63,70 @@ defmodule Jaang.Checkout.Calculate do
     |> Money.add(delivery_fee)
   end
 
-  def calculate_subtotals(carts) do
-    Enum.reduce(carts, Money.new(0), fn cart, acc ->
-      Money.add(acc, cart.total)
+  @doc """
+  Sum up line_item total(Calculate total of order(cart))
+  """
+  def calculate_total(order, status) do
+    Enum.filter(order.line_items, &(&1.status == status))
+    |> Enum.reduce(Money.new(0), fn line_item, acc ->
+      Money.add(acc, line_item.total)
     end)
   end
 
   @doc """
-  Sum up every amount
+  Sum up every amount for one order
   """
   def calculate_final_total(tip, total, delivery_fee, tax, item_adjustments) do
     Money.add(tip, total)
     |> Money.add(delivery_fee)
     |> Money.add(tax)
     |> Money.add(item_adjustments)
+  end
+
+  def calculate_grand_final_for_invoice(invoice) do
+    Enum.reduce(invoice.orders, Money.new(0), fn order, acc ->
+      Money.add(order.grand_total, acc)
+    end)
+  end
+
+  @doc """
+  Count total items in the all carts
+  """
+  def count_all_total_items(invoice = %Invoice{}) do
+    Enum.reduce(invoice.orders, 0, fn order, acc ->
+      order.total_items + acc
+    end)
+  end
+
+  def count_total_item_all_carts(carts) do
+    Enum.reduce(carts, 0, fn cart, acc ->
+      Enum.count(cart.line_items) + acc
+    end)
+  end
+
+  @doc """
+  Count total items in 1 order
+  """
+  def count_total_item(order, status) do
+    Enum.filter(order.line_items, &(&1.status == status)) |> Enum.count()
+  end
+
+  @doc """
+  Calculate total price in the all carts(including sales tax, etc)
+  """
+  def calculate_grand_total_price(carts) do
+    Enum.reduce(carts, Money.new(0), fn cart, acc ->
+      if(cart.grand_total == nil) do
+        Money.add(Money.new(0), acc)
+      else
+        Money.add(cart.grand_total, acc)
+      end
+    end)
+  end
+
+  def calculate_total_price(carts) do
+    Enum.reduce(carts, Money.new(0), fn cart, acc ->
+      Money.add(cart.total, acc)
+    end)
   end
 end

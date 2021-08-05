@@ -2,6 +2,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
   alias Jaang.Repo
   alias Jaang.Admin.EmployeeTask
   alias Jaang.Invoice
+  alias Jaang.Admin.Order.Orders
   import Ecto.Query
 
   def create_employee_task(%{} = attrs) do
@@ -10,8 +11,8 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     |> Repo.insert()
   end
 
-  def create_employee_task(%Invoice{} = invoice, employee_id, task_type, task_status, store_id) do
-    [order] = Enum.filter(invoice.orders, fn order -> order.store_id == store_id end)
+  def create_employee_task(order_id, employee_id, task_type, task_status) do
+    order = Orders.get_order(order_id)
 
     # if there is a replacement item, convert it to map
     line_items_maps =
@@ -30,7 +31,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
       task_type: task_type,
       task_status: task_status,
       start_datetime: Timex.now(),
-      invoice_id: invoice.id,
+      invoice_id: order.invoice_id,
       order_id: order.id,
       employee_id: employee_id,
       line_items: line_items_maps
@@ -196,7 +197,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
     case Float.parse(weight) do
       {weight_float, _rest} ->
-        weight_limit = line_item.quantity + 1.0
+        weight_limit = line_item.quantity + 0.2
 
         if(weight_float > 0 && weight_float <= weight_limit) do
           # update line_item along with employee task

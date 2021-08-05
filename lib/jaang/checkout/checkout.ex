@@ -1,6 +1,7 @@
 defmodule Jaang.Checkout.Checkout do
   alias Jaang.{ProfileManager, InvoiceManager, StripeManager, OrderManager}
   alias Jaang.Store.DeliveryDateTimes
+  alias Jaang.Checkout.Calculate
 
   def make_payment(user, grand_total, default_payment_method_id) do
     # Send a payment to stripe backend
@@ -20,7 +21,7 @@ defmodule Jaang.Checkout.Checkout do
 
   def place_an_order(order_infos, user) do
     carts = OrderManager.get_all_carts(user.id)
-    grand_total_price = OrderManager.calculate_grand_total_price(carts)
+    grand_total_price = Calculate.calculate_grand_total_price(carts)
     default_payment_method_id = StripeManager.get_default_payment_method(user.stripe_id)
 
     # Get a payment method detail
@@ -76,12 +77,12 @@ defmodule Jaang.Checkout.Checkout do
         invoice = InvoiceManager.get_invoice_in_cart(user.id)
 
         # Calculate total items
-        total_items = OrderManager.count_total_item(invoice.orders)
+        total_items = Calculate.count_all_total_items(invoice)
 
         InvoiceManager.update_invoice(invoice, %{
           pm_intent_id: payment_intent.id,
           payment_method: "Ending with #{last4}",
-          status: :submitted,
+          status: "submitted",
           total_items: total_items,
           grand_total_price: grand_total_price,
           invoice_placed_at: order_placed_at

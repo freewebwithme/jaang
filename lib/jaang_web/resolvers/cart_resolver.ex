@@ -4,6 +4,7 @@ defmodule JaangWeb.Resolvers.CartResolver do
   Instead I use CartChannel
   """
   alias Jaang.OrderManager
+  alias Jaang.Checkout.Calculate
 
   def get_all_carts(_, %{user_id: user_id}, _) do
     {carts, total_items, total_price} = get_updated_carts(user_id)
@@ -66,8 +67,8 @@ defmodule JaangWeb.Resolvers.CartResolver do
         Map.put(cart, :line_items, line_items)
       end)
 
-    total_items = OrderManager.count_total_item(sorted_carts)
-    total_price = OrderManager.calculate_total_price(sorted_carts)
+    total_items = Calculate.count_total_item_all_carts(sorted_carts)
+    total_price = Calculate.calculate_total_price(sorted_carts)
     {sorted_carts, total_items, total_price}
   end
 end

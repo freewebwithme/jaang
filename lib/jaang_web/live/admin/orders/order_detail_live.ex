@@ -38,7 +38,7 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
       ) do
     # Change string to atom
     new_state = Helpers.convert_atom_and_string(state)
-    {:ok, order} = Orders.update_order_status_and_notify(order_id, new_state)
+    {:ok, order} = Orders.update_order_and_notify(order_id, %{status: new_state}, new_state)
 
     socket =
       assign(

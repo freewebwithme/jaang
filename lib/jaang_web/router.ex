@@ -39,6 +39,9 @@ defmodule JaangWeb.Router do
     live "/orders/detail/:id", Orders.OrderDetailLive
     live "/orders/search", Orders.OrderSearchResultLive
 
+    live "/invoices", Invoices.InvoiceLive.Index
+    live "/invoices/show/:id", Invoices.InvoiceLive.Show
+
     live "/partners", Partners.PartnersOverviewLive
     live "/partners/:store_id", Partners.PartnerLive
     live "/partners/orders/:store_name/:order_id/detail", Partners.PartnerOrderDetailLive

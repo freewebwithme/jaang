@@ -106,22 +106,6 @@ defmodule JaangWeb.Schema.CartTypes do
       # middleware(Middleware.Authenticate)
       resolve(&CheckoutResolver.calculate_total_for_store/3)
     end
-
-    @desc "Calculate grand total amount for display in final checkout"
-    field :calculate_grand_total, :grand_total do
-      arg(:token, non_null(:string))
-
-      resolve(&CheckoutResolver.calculate_grand_total/3)
-    end
-  end
-
-  object :grand_total do
-    field :amount, :string do
-      resolve(fn parent, _, _ ->
-        money = Map.get(parent, :amount)
-        {:ok, Money.to_string(money)}
-      end)
-    end
   end
 
   object :delivery_datetime do
@@ -279,16 +263,6 @@ defmodule JaangWeb.Schema.CartTypes do
     field :default_card, :boolean
   end
 
-  object :total_amount do
-    field :driver_tip, :string
-    field :sub_totals, list_of(:sub_total)
-    field :delivery_fee, :string
-    # field :service_fee, :string
-    field :sales_tax, :string
-    field :item_adjustments, :string
-    field :total, :string
-  end
-
   object :store_total_amount do
     field :driver_tip, :string
     field :delivery_fee, :string
@@ -296,6 +270,7 @@ defmodule JaangWeb.Schema.CartTypes do
     field :item_adjustment, :string
     field :total, :string
     field :grand_total, :string
+    field :grand_final_total, :string
   end
 
   object :sub_total do

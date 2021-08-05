@@ -98,14 +98,17 @@ defmodule Jaang.Checkout.Carts do
 
   def broadcast({:error, _reason} = error, _event), do: error
 
-  def broadcast_to_employee(cart, event) do
+  def broadcast_to_employee({:ok, cart}, event) do
     IO.puts("Broadcasting to employee(event name) : #{event}")
+    store_id = Integer.to_string(cart.store_id)
 
     JaangWeb.Endpoint.broadcast(
-      "store:" <> cart.store_id,
+      "store:" <> store_id,
       event,
       %{}
     )
+
+    {:ok, cart}
   end
 
   @doc """
@@ -331,36 +334,6 @@ defmodule Jaang.Checkout.Carts do
 
     updated_line_items = [line_item | excluding_line_items]
     update_cart(cart, %{line_items: updated_line_items})
-  end
-
-  @doc """
-  Count total items in the all carts
-  """
-  def count_total_item(carts) do
-    Enum.reduce(carts, 0, fn cart, acc -> Enum.count(cart.line_items) + acc end)
-  end
-
-  def count_total_item(carts, status) do
-    Enum.reduce(carts, 0, fn cart, acc ->
-      # get only ready items
-      ready_items = Enum.filter(cart.line_items, &(&1.status == status))
-      Enum.count(ready_items) + acc
-    end)
-  end
-
-  @doc """
-  Calculate total price in the all carts(including sales tax, etc)
-  """
-  def calculate_grand_total_price(carts) do
-    Enum.reduce(carts, Money.new(0), fn cart, acc ->
-      Money.add(cart.grand_total, acc)
-    end)
-  end
-
-  def calculate_total_price(carts) do
-    Enum.reduce(carts, Money.new(0), fn cart, acc ->
-      Money.add(cart.total, acc)
-    end)
   end
 
   @doc """

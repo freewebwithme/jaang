@@ -1,11 +1,12 @@
 defmodule JaangWeb.StoreChannel do
   use Phoenix.Channel
   alias Jaang.Admin.Invoice.Invoices
+  alias Jaang.Admin.Order.Orders
   alias Jaang.Admin.EmployeeTask.EmployeeTasks
   alias Jaang.Admin.EmployeeTask
   alias Jaang.Amazon.S3
 
-  intercept ["invoice_updated", "new_order"]
+  intercept ["order_updated", "new_order"]
 
   @impl true
   def join("store:" <> store_id, _params, %{assigns: %{current_employee: employee}} = socket) do
@@ -41,7 +42,7 @@ defmodule JaangWeb.StoreChannel do
     IO.puts("Incoming event from client: 'get_order_info'")
     IO.puts("Printing employee id #{employee.id}")
 
-    case return_grouped_invoices(store_id, employee.id) do
+    case return_grouped_orders(store_id, employee.id) do
       {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
         {:reply,
          {:ok,
@@ -69,7 +70,7 @@ defmodule JaangWeb.StoreChannel do
 
       employee_task ->
         # get invoice and return with employee_task
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        order = Orders.get_order(employee_task.order_id)
 
         # Group by line items' status
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
@@ -80,7 +81,7 @@ defmodule JaangWeb.StoreChannel do
           %{
             has_in_progress_task: true,
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -91,26 +92,23 @@ defmodule JaangWeb.StoreChannel do
   @impl true
   def handle_in("start_shopping", payload, %{assigns: %{store_id: store_id}} = socket) do
     IO.puts("Calling handle_in('start_shopping')")
-    %{"invoice_id" => invoice_id, "employee_id" => employee_id} = payload
-    # IO.puts("invoice_id #{invoice_id}, employee_id: #{employee_id}")
+    %{"order_id" => order_id, "employee_id" => employee_id} = payload
 
     # Check if employee has currently working invoice.
     store_id = String.to_integer(store_id)
 
     case EmployeeTasks.get_in_progress_employee_task(employee_id) do
       nil ->
-        {:ok, invoice} =
-          Invoices.assign_employee_to_invoice(invoice_id, employee_id, :shopping, store_id)
+        {:ok, order} = Orders.assign_employee_to_order(order_id, employee_id, :shopping, store_id)
 
         IO.puts("Creating employee task...")
         # Create employee task
         {:ok, employee_task} =
           EmployeeTasks.create_employee_task(
-            invoice,
+            order_id,
             employee_id,
             "shopping",
-            "in_progress",
-            store_id
+            "in_progress"
           )
 
         # Group by line items' status
@@ -122,7 +120,7 @@ defmodule JaangWeb.StoreChannel do
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -130,9 +128,8 @@ defmodule JaangWeb.StoreChannel do
 
       employee_task = %EmployeeTask{} ->
         # Employee has currently working tasks return existing employee task
-
-        # Get invoice
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # Get order
+        order = Orders.get_order(employee_task.order_id)
 
         # Group by line items' status
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
@@ -143,7 +140,7 @@ defmodule JaangWeb.StoreChannel do
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -154,7 +151,7 @@ defmodule JaangWeb.StoreChannel do
   @impl true
   def handle_in(
         "continue_shopping",
-        %{"invoice_id" => invoice_id, "employee_id" => employee_id} = _payload,
+        %{"order_id" => order_id, "employee_id" => employee_id} = _payload,
         socket
       ) do
     IO.puts("Calling handle_in(`continue_shopping')")
@@ -163,13 +160,13 @@ defmodule JaangWeb.StoreChannel do
     %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
       group_by_line_item_status(employee_task)
 
-    invoice = Invoices.get_invoice(invoice_id)
+    order = Orders.get_order(order_id)
     # Send reply with updated invoice
     {:reply,
      {:ok,
       %{
         employee_task: employee_task,
-        invoice: invoice,
+        order: order,
         ready: ready,
         not_ready: not_ready,
         sold_out: sold_out
@@ -199,13 +196,13 @@ defmodule JaangWeb.StoreChannel do
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
           group_by_line_item_status(employee_task)
 
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        order = Orders.get_order(employee_task.order_id)
         # Send reply with updated invoice
         {:reply,
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -240,13 +237,13 @@ defmodule JaangWeb.StoreChannel do
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
           group_by_line_item_status(employee_task)
 
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        order = Orders.get_order(employee_task.order_id)
         # Send reply with updated invoice
         {:reply,
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -275,13 +272,13 @@ defmodule JaangWeb.StoreChannel do
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
           group_by_line_item_status(employee_task)
 
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        order = Orders.get_order(employee_task.order_id)
         # Send reply with updated invoice
         {:reply,
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -312,13 +309,13 @@ defmodule JaangWeb.StoreChannel do
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
           group_by_line_item_status(employee_task)
 
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        order = Orders.get_order(employee_task.order_id)
         # Send reply with updated invoice
         {:reply,
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -356,13 +353,13 @@ defmodule JaangWeb.StoreChannel do
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
           group_by_line_item_status(employee_task)
 
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        order = Orders.get_order(employee_task.order_id)
         # Send reply with updated invoice
         {:reply,
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -397,13 +394,14 @@ defmodule JaangWeb.StoreChannel do
         %{ready: ready, not_ready: not_ready, sold_out: sold_out} =
           group_by_line_item_status(employee_task)
 
-        invoice = Invoices.get_invoice(employee_task.invoice_id)
+        # invoice = Invoices.get_invoice(employee_task.invoice_id)
+        order = Orders.get_order(employee_task.order_id)
         # Send reply with updated invoice
         {:reply,
          {:ok,
           %{
             employee_task: employee_task,
-            invoice: invoice,
+            order: order,
             ready: ready,
             not_ready: not_ready,
             sold_out: sold_out
@@ -428,61 +426,89 @@ defmodule JaangWeb.StoreChannel do
   end
 
   @impl true
-  def handle_in("receipt_photo_urls", %{"urls" => urls, "invoice_id" => invoice_id}, socket) do
+  def handle_in("receipt_photo_urls", %{"urls" => urls, "order_id" => order_id}, socket) do
     IO.puts("handle_in('receipt_photo_url')")
 
-    case Invoices.update_invoice_with_receipt_photos(invoice_id, urls) do
-      {:ok, invoice} ->
-        {:reply, {:ok, %{invoice: invoice}}, socket}
+    case Orders.update_order_with_receipt_photos(order_id, urls) do
+      {:ok, order} ->
+        {:reply, {:ok, %{order: order}}, socket}
 
       {:error, _changeset} ->
         {:reply, :error, socket}
     end
   end
 
+  @doc """
+  Finalize order from Worker app.
+  """
   @impl true
   def handle_in(
-        "finalize_invoice",
+        "finalize_order",
         %{
-          "invoice_id" => invoice_id,
+          "order_id" => order_id,
           "number_of_bags" => numb_bags,
           "employee_id" => employee_id,
           "employee_task_id" => employee_task_id
         },
         socket
       ) do
-    IO.puts("handle_in('finalize_invocie'")
+    IO.puts("handle_in('finalize_order')")
     {numb_bags, ""} = Integer.parse(numb_bags)
     employee_task = EmployeeTasks.get_employee_task_by_id(employee_task_id)
 
-    with {:ok, _invoice} <- Invoices.finalize_invoice(invoice_id, employee_task_id, numb_bags),
+    with {:ok, _order} <- Orders.finalize_order(order_id, employee_task_id, numb_bags),
          {:ok, _employee_task} <-
            EmployeeTasks.update_employee_task(employee_task, %{
              task_status: :done,
              end_datetime: Timex.now(),
              duration: Timex.diff(Timex.now(), employee_task.start_datetime, :minutes)
            }) do
+      IO.puts("Finalized order successful")
       # Get packed invoice for employee
-      packed_invoices = Jaang.Invoice.Invoices.count_packed_invoice_for_employee(employee_id)
-      {:reply, {:ok, %{packed_invoices_count: packed_invoices}}, socket}
+      packed_orders = Orders.count_packed_order_for_employee(employee_id)
+      {:reply, {:ok, %{packed_orders_count: packed_orders}}, socket}
     else
-      {:error, _error} ->
+      {:error, error} ->
+        IO.puts("Finalized order failure")
+        IO.inspect(error)
         {:reply, :error, socket}
     end
   end
 
   @impl true
   def handle_in(
-        "update_invoice_status",
-        %{"invoice_id" => invoice_id, "status" => status},
-        %{assigns: %{store_id: store_id}} = socket
+        "update_order_status",
+        %{"order_id" => order_id, "status" => status},
+        socket
       ) do
-    IO.puts("handle_in('update_invoice_status')")
+    IO.puts("handle_in('update_order_status')")
     status = String.to_atom(status)
 
-    store_id = String.to_integer(store_id)
+    with {:ok, _order} <-
+           Orders.update_order_and_notify(order_id, %{status: status}, status) do
+      {:reply, :ok, socket}
+    else
+      :error ->
+        {:reply, :error, socket}
+    end
+  end
 
-    with {:ok, _invoice} <- Invoices.update_invoice_status(invoice_id, status, store_id) do
+  @impl true
+  def handle_in(
+        "finish_order_delivery",
+        %{"order_id" => order_id, "delivery_method" => delivery_method},
+        socket
+      ) do
+    IO.puts("handle_in('finish_order_delivery')")
+
+    with {:ok, order} <-
+           Orders.update_order_and_notify(
+             order_id,
+             %{delivery_method: delivery_method, status: :delivered},
+             :delivered
+           ) do
+      invoice_status = Invoices.build_invoice_status(order.invoice_id)
+      Invoices.update_invoice_and_notify(order.invoice_id, %{status: invoice_status})
       {:reply, :ok, socket}
     else
       :error ->
@@ -492,20 +518,19 @@ defmodule JaangWeb.StoreChannel do
 
   @impl true
   @doc """
-  Whenever invoice is updated, send updated invoice and updated invoice list
+  Whenever order is updated, send updated order and updated order list
   using handle_in
   """
   def handle_out(
-        "invoice_updated",
+        "order_updated",
         _message,
         %{assigns: %{store_id: store_id, current_employee: employee}} = socket
       ) do
-    IO.puts("invoice updated handle out: ")
+    IO.puts("Order updated handle out: ")
 
-    case return_grouped_invoices(store_id, employee.id) do
+    case return_grouped_orders(store_id, employee.id) do
       {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
-        push(socket, "invoice_updated", %{
-          # invoice: invoice,
+        push(socket, "order_updated", %{
           submitted: submitted,
           shopping: shopping,
           packed: packed,
@@ -515,7 +540,7 @@ defmodule JaangWeb.StoreChannel do
         {:noreply, socket}
 
       {:empty, %{}} ->
-        push(socket, "invoice_updated", %{has_data: false})
+        push(socket, "order_updated", %{has_data: false})
         {:noreply, socket}
     end
   end
@@ -527,7 +552,7 @@ defmodule JaangWeb.StoreChannel do
       ) do
     IO.puts("new order handle out(store_id): #{store_id}")
 
-    case return_grouped_invoices(store_id, employee.id) do
+    case return_grouped_orders(store_id, employee.id) do
       {:ok, %{submitted: submitted, shopping: shopping, packed: packed, on_the_way: on_the_way}} ->
         push(socket, "new_order", %{
           # invoice: invoice,
@@ -545,52 +570,37 @@ defmodule JaangWeb.StoreChannel do
     end
   end
 
-  # @impl true
-  # def handle_info({:send_order_info, event}, %{assigns: %{store_id: store_id}} = socket) do
-  #   IO.puts("Printing store_id #{store_id}")
-  #   {submitted, shopping, packed, on_the_way} = return_grouped_invoices(store_id)
-
-  #   push(socket, event, %{
-  #     submitted: submitted,
-  #     shopping: shopping,
-  #     packed: packed,
-  #     on_the_way: on_the_way
-  #   })
-
-  #   {:noreply, socket}
-  # end
-
   @impl true
   def handle_info(_message, socket) do
     {:noreply, socket}
   end
 
-  defp return_grouped_invoices(store_id, employee_id) do
-    grouped_invoices = Invoices.get_unfulfilled_invoices(store_id)
+  defp return_grouped_orders(store_id, employee_id) do
+    grouped_orders = Orders.get_unfulfilled_orders(store_id)
 
-    if grouped_invoices == %{} do
+    if grouped_orders == %{} do
       {:empty, %{}}
     else
-      # Filter each invoice by employee id
-      shopping_invoices =
-        filter_invoices_by_employee_id_and_status(
-          grouped_invoices,
+      # Filter each order by employee id
+      shopping_orders =
+        filter_orders_by_employee_id_and_status(
+          grouped_orders,
           :shopping,
           employee_id,
           store_id
         )
 
-      packed_invoices =
-        filter_invoices_by_employee_id_and_status(
-          grouped_invoices,
+      packed_orders =
+        filter_orders_by_employee_id_and_status(
+          grouped_orders,
           :packed,
           employee_id,
           store_id
         )
 
-      ontheway_invoices =
-        filter_invoices_by_employee_id_and_status(
-          grouped_invoices,
+      ontheway_orders =
+        filter_orders_by_employee_id_and_status(
+          grouped_orders,
           :on_the_way,
           employee_id,
           store_id
@@ -598,32 +608,31 @@ defmodule JaangWeb.StoreChannel do
 
       {:ok,
        %{
-         submitted: Map.get(grouped_invoices, :submitted) || [],
-         shopping: shopping_invoices,
-         packed: packed_invoices,
-         on_the_way: ontheway_invoices
+         submitted: Map.get(grouped_orders, :submitted) || [],
+         shopping: shopping_orders,
+         packed: packed_orders,
+         on_the_way: ontheway_orders
        }}
     end
   end
 
-  defp filter_invoices_by_employee_id_and_status(invoices, invoice_status, employee_id, store_id) do
-    # Check if invoices list has key(:shopping, :packed, :on_the_way)
+  defp filter_orders_by_employee_id_and_status(orders, order_status, employee_id, store_id) do
+    # Check if orders list has key(:shopping, :packed, :on_the_way)
     # if no key exist, just return empty list
-    invoices =
-      if(Map.has_key?(invoices, invoice_status)) do
-        Map.get(invoices, invoice_status)
-        |> Enum.filter(fn invoice ->
-          Enum.any?(invoice.employees, fn employee -> employee.id == employee_id end)
+    store_id = String.to_integer(store_id)
+
+    orders =
+      if(Map.has_key?(orders, order_status)) do
+        Map.get(orders, order_status)
+        |> Enum.filter(fn order ->
+          Enum.any?(order.employees, fn employee -> employee.id == employee_id end)
         end)
       else
         []
       end
 
-    invoices
-    |> Enum.map(fn invoice ->
-      filtered_orders = Enum.filter(invoice.orders, fn order -> order.store_id == store_id end)
-      Map.update!(invoice, :orders, fn _order -> filtered_orders end)
-    end)
+    orders
+    |> Enum.filter(&(&1.store_id == store_id))
   end
 
   defp employee_belongs_to_store?(employee, store_id) do

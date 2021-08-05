@@ -59,26 +59,26 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
         #  item_adjustment: item_adjustments,
         #  delivery_time: delivery_time
         # })
+        carts = OrderManager.get_all_carts(user.id)
+        grand_final_total = Calculate.calculate_grand_total_price(carts)
+
         store_total_amount = %StoreTotalAmount{
           driver_tip: tip,
           delivery_fee: delivery_fee,
           sales_tax: tax,
           item_adjustment: item_adjustment,
           total: order.total,
-          grand_total: grand_total
+          grand_total: grand_total,
+          grand_final_total: grand_final_total
         }
+
+        IO.puts("Printing grand final total")
+        IO.inspect(store_total_amount)
 
         {:ok, store_total_amount}
 
       false ->
         {:error, "Failed to process your cart information"}
     end
-  end
-
-  def calculate_grand_total(_, %{token: token}, _) do
-    user = AccountManager.get_user_by_session_token(token)
-    carts = OrderManager.get_all_carts(user.id)
-    grand_total = OrderManager.calculate_grand_total_price(carts)
-    {:ok, %{amount: grand_total}}
   end
 end

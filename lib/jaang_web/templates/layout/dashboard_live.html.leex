@@ -94,6 +94,14 @@
                 </svg>
                 Orders 
               <% end %>
+
+              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Index),
+                  class: if @current_page == "Invoices", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+                  else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
+              do %>
+                <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Invoices 
+              <% end %>
             
               <div x-data="{ isExpanded: false }" class="space-y-1">
                 <button @click.prevent="isExpanded = !isExpanded" class="group w-full flex items-center pl-2 pr-1 py-2 text-base font-medium rounded-md  text-indigo-100 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -291,6 +299,16 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
                 Orders
+
+              <% end %>
+
+              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Index), 
+                  
+                  class: if @current_page == "Invoices", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                  else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+              do %>
+                <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Invoices
 
               <% end %>
               <div x-data="{ isExpanded: false}" class="space-y-1">

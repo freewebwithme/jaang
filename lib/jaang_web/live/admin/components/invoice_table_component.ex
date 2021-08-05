@@ -7,7 +7,7 @@ defmodule JaangWeb.Admin.Components.InvoiceTableComponent do
       <div class="flex justify-between items-center py-7 ">
         <!-- Search form -->
           <!-- TODO: Implement search functino for invoice -->
-        <form class="flex md:ml-0" phx-submit="">
+        <form class="flex md:ml-0" phx-submit="search">
           <label for="search_field" class="sr-only">Search</label>
           <div class="relative text-gray-400 focus-within:text-gray-600">
             <div class="absolute inset-y-0 left-5 flex items-center pointer-events-none">
@@ -57,7 +57,10 @@ defmodule JaangWeb.Admin.Components.InvoiceTableComponent do
               <thead class="bg-gray-50">
                 <tr>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Invoice Number
+                    Customer
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Invoice Id
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Number of Orders
@@ -87,7 +90,28 @@ defmodule JaangWeb.Admin.Components.InvoiceTableComponent do
                   <%= for invoice <- @invoices do %>
                     <tr id="<%= invoice.id %>">
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900"><%= invoice.invoice_number %></div>
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                          <%= if invoice.user.profile.photo_url == nil do %>
+                            <img class="h-10 w-10 rounded-full"
+                                 src="https://jaang-la.s3-us-west-1.amazonaws.com/sample-data/store-logos/costco.png" alt="">
+
+                          <% else %>
+
+                            <img class="h-10 w-10 rounded-full"
+                                 src="<%= invoice.user.profile.photo_url %>" alt="">
+
+                          <% end %>
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              <%= invoice.user.email %>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900"><%= invoice.id %></div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-900"><%= Enum.count(invoice.orders) %></div>
@@ -103,11 +127,11 @@ defmodule JaangWeb.Admin.Components.InvoiceTableComponent do
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          <%= Helpers.capitalize_text(invoice.status) %>
+                          display order's status
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <%= live_redirect "View", to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, invoice.id),
+                        <%= live_redirect "View", to: Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Show, invoice.id),
                             class: "text-indigo-600 hover:text-indigo-900" %>
                       </td>
                     </tr>

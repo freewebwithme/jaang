@@ -2,8 +2,14 @@ defmodule Jaang.Admin.Order.Orders do
   import Ecto.Query
   alias Jaang.Repo
 
+  alias Jaang.Admin.EmployeeTask.EmployeeTasks
+  alias Jaang.Admin.Invoice.Invoices
+  alias Jaang.StripeManager
   alias Jaang.Checkout.Order
   alias Jaang.Checkout.Carts
+  alias Jaang.OrderManager
+  alias Jaang.Checkout.Calculate
+  alias Jaang.Admin.EmployeeAccountManager
   alias Jaang.Notification.OneSignal
 
   @doc """
@@ -23,9 +29,9 @@ defmodule Jaang.Admin.Order.Orders do
 
     query =
       if is_nil(store_id) do
-        from(o in Order)
+        from o in Order, order_by: [desc: o.inserted_at]
       else
-        from(o in Order, where: o.store_id == ^store_id)
+        from(o in Order, where: o.store_id == ^store_id, order_by: [desc: o.inserted_at])
       end
 
     Enum.reduce(criteria, query, fn
@@ -84,6 +90,19 @@ defmodule Jaang.Admin.Order.Orders do
         where: o.id == ^order_id
 
     Repo.one(query)
+    |> Repo.preload([:employees, [user: :profile]])
+  end
+
+  def get_assigned_orders(employee_id, limit) do
+    query =
+      from o in Order,
+        join: e in assoc(o, :employees),
+        where: e.id == ^employee_id,
+        limit: ^limit,
+        order_by: [desc: o.inserted_at],
+        preload: [employees: e]
+
+    Repo.all(query)
   end
 
   def get_unfulfilled_orders(store_id) do
@@ -103,18 +122,203 @@ defmodule Jaang.Admin.Order.Orders do
     |> Enum.group_by(fn invoice -> invoice.status end)
   end
 
-  def update_order_status_and_notify(order_id, status) do
+  @doc """
+  Get packed order count for employee
+  """
+  def count_packed_order_for_employee(employee_id) do
+    employee = EmployeeAccountManager.get_employee(employee_id)
+
+    orders =
+      Enum.reduce(employee.orders, [], fn order, acc ->
+        if(order.status == :packed) do
+          [order | acc]
+        else
+          acc
+        end
+      end)
+
+    Enum.count(orders)
+  end
+
+  @doc """
+  Update order with photo urls
+  Convert list of string photo_urls to
+  photo_urls = [%{photo_url: ""}]
+  """
+  def update_order_with_receipt_photos(order_id, photo_urls) do
+    converted_photo_urls =
+      Enum.map(photo_urls, fn photo_url ->
+        %{photo_url: photo_url}
+      end)
+
+    attrs = %{receipt_photos: converted_photo_urls}
+
+    get_order(order_id)
+    |> Carts.update_cart(attrs)
+  end
+
+  @doc """
+  Assigns employees to order with order status.
+  Update invoice's status too.
+  It will be used when a shopper starts shopping(:shopping) and
+  when a shopper start to deliver the order(:on_the_way)
+  """
+  def assign_employee_to_order(order_id, employee_id, status, store_id) do
+    employee = EmployeeAccountManager.get_employee(employee_id)
+    order = get_order(order_id)
+    # get order from invoice to update order's status
+    IO.puts("Printing store id: #{store_id}")
+
+    {:ok, updated_order} =
+      Order.assign_employee_changeset(order, employee, status) |> Repo.update()
+
+    Carts.broadcast_to_employee({:ok, updated_order}, "order_updated")
+  end
+
+  @doc """
+  Finalize order.
+  copy final line_items from employee_task to same order
+  1. update order
+  2. update order(sales_tax, item_adjustment(0), total, total_items, number_of_bags)
+  3. Invoice's status updated when all orders(from different store) are packed.  then
+     updated invoice's status to packed.  If every orders not ready, keep it :shopping status
+  """
+  def finalize_order(order_id, employee_task_id, number_of_bags) do
+    order = get_order(order_id)
+    employee_task = EmployeeTasks.get_employee_task_by_id(employee_task_id)
+
+    # Copy employee_task.line_items to order.line_items
+
+    # Convert line_items to map
+    line_item_maps =
+      Enum.map(employee_task.line_items, fn line_item ->
+        if(line_item.has_replacement) do
+          Map.update!(line_item, :replacement_item, fn value ->
+            Map.from_struct(value)
+          end)
+          |> Map.from_struct()
+        else
+          Map.from_struct(line_item)
+        end
+      end)
+
+    # Copy(updated) line items
+    {:ok, updated_order} =
+      OrderManager.update_cart(order, %{line_items: line_item_maps, status: :packed})
+
+    sales_tax = Calculate.calculate_sales_tax_for_store(updated_order, :ready)
+    total = Calculate.calculate_total(updated_order, :ready)
+    # set to 0
+    item_adjustment = Money.new(0)
+    # Count only ready items(not sold out items)
+    total_items = Calculate.count_total_item(updated_order, :ready)
+
+    new_grand_total =
+      Calculate.calculate_final_total(
+        updated_order.delivery_tip,
+        total,
+        updated_order.delivery_fee,
+        sales_tax,
+        item_adjustment
+      )
+
+    # TODO: Check if updated grand_total is greater than captured amount.
+    # Compoare grand totals
+    # 0 => same
+    # 1 => old grand total is greater, go on capture and update order
+    # -1 => new grand total is greater, can't capture new grand total, use old value
+    compare_result = Money.compare(updated_order.grand_total, new_grand_total)
+
+    attrs =
+      if(compare_result < 0) do
+        %{
+          total_items: total_items,
+          status: :packed,
+          number_of_bags: number_of_bags,
+          item_adjustment: item_adjustment
+        }
+      else
+        %{
+          sales_tax: sales_tax,
+          item_adjustment: item_adjustment,
+          total: total,
+          grand_total: new_grand_total,
+          total_items: total_items,
+          status: :packed,
+          number_of_bags: number_of_bags
+        }
+      end
+
+    # get invoice to capture payment and update invoice
+    invoice = Invoices.get_invoice(updated_order.invoice_id)
+
+    # then use capted amount
+    with {:ok, order} <- Carts.update_cart(updated_order, attrs),
+         {:ok, _} <-
+           StripeManager.capture_payment_intent(invoice.pm_intent_id, order.grand_total.amount) do
+      Carts.broadcast_to_employee({:ok, order}, "order_updated")
+
+      # get invoice to capture payment and update invoice
+      updated_invoice = Invoices.get_invoice(order.invoice_id)
+      # Calculate all order's total
+      grand_total_price = Calculate.calculate_grand_final_for_invoice(updated_invoice)
+      invoice_total_items = Calculate.count_all_total_items(updated_invoice)
+
+      # update invoice also
+      invoice_status = Invoices.build_invoice_status(order.invoice_id)
+
+      invoice_attrs = %{
+        grand_total_price: grand_total_price,
+        status: invoice_status,
+        total_items: invoice_total_items
+      }
+
+      Invoices.update_invoice_and_notify(order.invoice_id, invoice_attrs)
+      {:ok, order}
+    else
+      {:error, _error} ->
+        {:error, "Can't finalize order"}
+    end
+  end
+
+  def check_all_orders_status(invoice) do
+    if(Enum.count(invoice.orders) <= 1) do
+      [status] = Enum.map(invoice.orders, & &1.status)
+      status
+    else
+      statuses =
+        Enum.reduce(invoice.orders, [], fn order, acc ->
+          [order.status | acc]
+        end)
+        |> Enum.uniq()
+
+      if(Enum.any?(statuses, &(&1 == :refunded || &1 == :submitted || &1 == :shopping))) do
+        # this invoice is not ready just return current invoice's status
+        invoice.status
+      else
+        :packed
+      end
+    end
+  end
+
+  @doc """
+  Update order and notify to admin and employee app
+  and send notification to client
+  attrs = %{}
+  """
+  def update_order_and_notify(order_id, attrs, status) do
     order = get_order(order_id)
 
     order
-    |> update_and_broadcast_order(status)
+    |> update_and_broadcast_order(attrs)
     |> send_notification(status)
   end
 
-  defp update_and_broadcast_order(order, status) do
+  defp update_and_broadcast_order(order, attrs) do
     order
-    |> Carts.update_cart(%{status: status})
-    |> Carts.broadcast(:order_updated)
+    |> Carts.update_cart(attrs)
+    |> Carts.broadcast("order_updated")
+    |> Carts.broadcast_to_employee("order_updated")
   end
 
   defp send_notification({:ok, order}, status) do

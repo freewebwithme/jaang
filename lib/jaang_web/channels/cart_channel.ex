@@ -1,6 +1,7 @@
 defmodule JaangWeb.CartChannel do
   use Phoenix.Channel
   alias Jaang.{AccountManager, OrderManager, InvoiceManager}
+  alias Jaang.Checkout.{Calculate, Carts}
   alias Jaang.Invoice.Invoices
   alias Jaang.Notification.OneSignal
 
@@ -229,9 +230,13 @@ defmodule JaangWeb.CartChannel do
           )
 
           # Broadcast for new invoice
-          Invoices.broadcast({:ok, invoice}, :new_order)
-
-          Invoices.broadcast_to_employee(invoice, "new_order")
+          Invoices.broadcast({:ok, invoice}, :new_invoice)
+          # Broadcast for new order
+          Enum.map(invoice.orders, fn order ->
+            {:ok, order}
+            |> Carts.broadcast(:new_order)
+            |> Carts.broadcast_to_employee("new_order")
+          end)
 
           # Send invoice id to the flutter to join invoice channel in flutter(Not joining invoice channel currently)
           {:reply,
@@ -275,8 +280,8 @@ defmodule JaangWeb.CartChannel do
         Map.put(cart, :line_items, line_items)
       end)
 
-    total_items = OrderManager.count_total_item(sorted_carts)
-    total_price = OrderManager.calculate_total_price(sorted_carts)
+    total_items = Calculate.count_total_item_all_carts(sorted_carts)
+    total_price = Calculate.calculate_total_price(sorted_carts)
     {sorted_carts, total_items, Money.to_string(total_price)}
   end
 end

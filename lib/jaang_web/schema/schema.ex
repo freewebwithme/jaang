@@ -15,7 +15,7 @@ defmodule JaangWeb.Schema do
 
   # Employee
   import_types(JaangWeb.Schema.Employee.EmployeeAccountTypes)
-  import_types(JaangWeb.Schema.Employee.EmployeeInvoiceTypes)
+  import_types(JaangWeb.Schema.Employee.EmployeeOrderTypes)
 
   query do
     import_fields(:store_queries)
@@ -23,7 +23,7 @@ defmodule JaangWeb.Schema do
     import_fields(:cart_queries)
 
     # Employee
-    import_fields(:employee_invoice_queries)
+    import_fields(:employee_order_queries)
   end
 
   mutation do
