@@ -456,13 +456,14 @@ defmodule JaangWeb.StoreChannel do
     {numb_bags, ""} = Integer.parse(numb_bags)
     employee_task = EmployeeTasks.get_employee_task_by_id(employee_task_id)
 
-    with {:ok, _order} <- Orders.finalize_order(order_id, employee_task_id, numb_bags),
+    with {:ok, order} <- Orders.finalize_order(order_id, employee_task_id, numb_bags),
          {:ok, _employee_task} <-
            EmployeeTasks.update_employee_task(employee_task, %{
              task_status: :done,
              end_datetime: Timex.now(),
              duration: Timex.diff(Timex.now(), employee_task.start_datetime, :minutes)
-           }) do
+           }),
+         {:ok, _invoice} <- Invoices.finalize_invoice(order) do
       IO.puts("Finalized order successful")
       # Get packed invoice for employee
       packed_orders = Orders.count_packed_order_for_employee(employee_id)

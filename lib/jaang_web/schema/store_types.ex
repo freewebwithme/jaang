@@ -35,6 +35,16 @@ defmodule JaangWeb.Schema.StoreTypes do
 
       resolve(&StoreResolver.change_store/3)
     end
+
+    @desc "Check address is available for store, Calculate store distance"
+    field :check_address, :store_distance do
+      arg(:token, non_null(:string))
+      arg(:address_id, non_null(:string))
+      arg(:store_id, non_null(:integer))
+      middleware(Middleware.Authenticate)
+
+      resolve(&StoreResolver.check_address/3)
+    end
   end
 
   object :distance do

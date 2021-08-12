@@ -15,6 +15,8 @@ defmodule JaangWeb.Endpoint do
     longpoll: false
 
   socket "/employee", JaangWeb.EmployeeSocket,
+    # TODO: Do I have to add this?
+    # websocket: [timeout: 45_000]
     websocket: true,
     longpoll: false
 

@@ -40,7 +40,8 @@ defmodule Jaang.Checkout.Order do
              :phone_number,
              :delivery_method,
              :receipt_photos,
-             :grand_total
+             :grand_total,
+             :finalized
            ]}
 
   defprotocol MoneyProtocol do
@@ -84,6 +85,9 @@ defmodule Jaang.Checkout.Order do
     field :zipcode, :string
     field :city, :string
     field :state, :string
+
+    # if worker finalize order, then true
+    field :finalized, :boolean
 
     field :phone_number, :string
 
@@ -131,7 +135,8 @@ defmodule Jaang.Checkout.Order do
       :state,
       :phone_number,
       :delivery_method,
-      :grand_total
+      :grand_total,
+      :finalized
     ])
     |> cast_embed(:receipt_photos, required: false, with: &ReceiptPhoto.changeset/2)
     |> cast_embed(:line_items, required: true, with: &LineItem.changeset/2)

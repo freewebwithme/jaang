@@ -3,6 +3,8 @@ defmodule Jaang.Admin.Invoice.Invoices do
   import Ecto.Query
   alias Jaang.Invoice.Invoices
   alias Jaang.InvoiceManager
+  alias Jaang.Checkout.Calculate
+  alias Jaang.StripeManager
 
   # 1 Get all invoices whose status is submitted, packed, on_the_way, delivered
   # set up per page option
@@ -150,6 +152,52 @@ defmodule Jaang.Admin.Invoice.Invoices do
           {:halt, acc}
         end
       end)
+    end
+  end
+
+  @doc """
+  Get invoice and finalize invoice
+  1. Recalculate grand total price and total items and invoice status
+  2. If all order in invoice has `finalized == true` then capture the payment
+  """
+  def finalize_invoice(order) do
+    invoice = get_invoice(order.invoice_id)
+    # Calculate all order's total
+    grand_total_price = Calculate.calculate_grand_final_for_invoice(invoice)
+    invoice_total_items = Calculate.count_all_total_items(invoice)
+
+    # update invoice also
+    invoice_status = build_invoice_status(order.invoice_id)
+
+    invoice_attrs = %{
+      grand_total_price: grand_total_price,
+      status: invoice_status,
+      total_items: invoice_total_items
+    }
+
+    {:ok, invoice} = update_invoice_and_notify(order.invoice_id, invoice_attrs)
+
+    # Get all finalized status of order
+    all_finalized? =
+      Enum.map(invoice.orders, fn order ->
+        order.finalized
+      end)
+      |> Enum.all?()
+
+    if(all_finalized?) do
+      # all order is finalized go ahead capture the payment
+      case StripeManager.capture_payment_intent(
+             invoice.pm_intent_id,
+             invoice.grand_total_price.amount
+           ) do
+        {:ok, _} ->
+          {:ok, invoice}
+
+        {:error, error} ->
+          {:error, error}
+      end
+    else
+      {:ok, invoice}
     end
   end
 end

@@ -1,6 +1,7 @@
 defmodule JaangWeb.Resolvers.StoreResolver do
   alias Jaang.StoreManager
   alias Jaang.AccountManager
+  alias Jaang.Distance
 
   # Store
   def get_stores(_, _, _) do
@@ -26,5 +27,11 @@ defmodule JaangWeb.Resolvers.StoreResolver do
 
   def get_delivery_datetime(_, _, _) do
     {:ok, StoreManager.get_available_delivery_datetime()}
+  end
+
+  def check_address(_, %{token: token, address_id: address_id, store_id: store_id}, _) do
+    user = AccountManager.get_user_by_session_token(token)
+    store_distance = Distance.check_and_update_store_distance(user, store_id, address_id)
+    {:ok, store_distance}
   end
 end

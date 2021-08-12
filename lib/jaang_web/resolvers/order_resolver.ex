@@ -1,9 +1,13 @@
 defmodule JaangWeb.Resolvers.OrderResolver do
-  alias Jaang.{AccountManager, InvoiceManager}
+  alias Jaang.{AccountManager, InvoiceManager, OrderManager}
 
   def fetch_invoices(_, %{token: user_token, limit: limit, offset: offset}, _) do
     user = AccountManager.get_user_by_session_token(user_token)
     invoices = InvoiceManager.get_invoices(user.id, limit, offset)
     {:ok, invoices}
+  end
+
+  def fetch_orders(_, %{invoice_id: invoice_id}, _) do
+    {:ok, OrderManager.get_orders(invoice_id)}
   end
 end

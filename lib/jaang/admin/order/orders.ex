@@ -235,7 +235,8 @@ defmodule Jaang.Admin.Order.Orders do
           total_items: total_items,
           status: :packed,
           number_of_bags: number_of_bags,
-          item_adjustment: item_adjustment
+          item_adjustment: item_adjustment,
+          finalized: true
         }
       else
         %{
@@ -245,39 +246,17 @@ defmodule Jaang.Admin.Order.Orders do
           grand_total: new_grand_total,
           total_items: total_items,
           status: :packed,
-          number_of_bags: number_of_bags
+          number_of_bags: number_of_bags,
+          finalized: true
         }
       end
 
-    # get invoice to capture payment and update invoice
-    invoice = Invoices.get_invoice(updated_order.invoice_id)
-
     # then use capted amount
-    with {:ok, order} <- Carts.update_cart(updated_order, attrs),
-         {:ok, _} <-
-           StripeManager.capture_payment_intent(invoice.pm_intent_id, order.grand_total.amount) do
-      Carts.broadcast_to_employee({:ok, order}, "order_updated")
-
-      # get invoice to capture payment and update invoice
-      updated_invoice = Invoices.get_invoice(order.invoice_id)
-      # Calculate all order's total
-      grand_total_price = Calculate.calculate_grand_final_for_invoice(updated_invoice)
-      invoice_total_items = Calculate.count_all_total_items(updated_invoice)
-
-      # update invoice also
-      invoice_status = Invoices.build_invoice_status(order.invoice_id)
-
-      invoice_attrs = %{
-        grand_total_price: grand_total_price,
-        status: invoice_status,
-        total_items: invoice_total_items
-      }
-
-      Invoices.update_invoice_and_notify(order.invoice_id, invoice_attrs)
+    with {:ok, order} <- Carts.update_cart(updated_order, attrs) do
       {:ok, order}
     else
-      {:error, _error} ->
-        {:error, "Can't finalize order"}
+      {:error, error} ->
+        {:error, error}
     end
   end
 

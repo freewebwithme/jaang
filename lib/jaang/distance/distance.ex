@@ -161,4 +161,21 @@ defmodule Jaang.Distance do
       end
     end
   end
+
+  def check_and_update_store_distance(user, store_id, address_id) do
+    # Get user's address
+    address = ProfileManager.get_address(address_id)
+
+    # check if current address has store's store distance
+    has_store_distance? = Enum.any?(address.distance.store_distances, &(&1.store_id == store_id))
+
+    if(has_store_distance?) do
+      [store_distance] = Enum.filter(address.distance.store_distances, &(&1.store_id == store_id))
+      store_distance
+    else
+      {:ok, distance} = create_distance(user.id, address)
+      [store_distance] = Enum.filter(distance.store_distances, &(&1.store_id == store_id))
+      store_distance
+    end
+  end
 end

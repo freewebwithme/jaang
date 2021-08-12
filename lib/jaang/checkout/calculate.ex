@@ -25,7 +25,11 @@ defmodule Jaang.Checkout.Calculate do
       Enum.filter(order.line_items, &(&1.category_name != "Produce"))
       |> Enum.filter(&(&1.status == status))
       |> Enum.reduce(Money.new(0), fn line_item, acc ->
-        Money.add(line_item.total, acc)
+        if(line_item.replaced) do
+          Money.add(line_item.replacement_item.total, acc)
+        else
+          Money.add(line_item.total, acc)
+        end
       end)
 
     Money.multiply(total_price_excluding_produce_product, @tax_rate)
@@ -38,8 +42,88 @@ defmodule Jaang.Checkout.Calculate do
     Money.multiply(Money.new(@delivery_fee), store_count)
   end
 
-  def calculate_item_adjustments(total_amount) do
-    Money.multiply(total_amount, @item_adjustment)
+  # def calculate_item_adjustments(total_amount) do
+  #   Money.multiply(total_amount, @item_adjustment)
+  # end
+
+  def calculate_item_adjustment(cart) do
+    # get a max expected value of total order price
+    # get weight based product
+    weight_based_line_items = Enum.filter(cart.line_items, &(&1.weight_based == true))
+    # Calculate weight_based line items' item adjust ment
+    IO.puts("Weight based items length")
+    IO.inspect(Enum.count(weight_based_line_items))
+
+    weight_based_item_adjustment =
+      Enum.reduce(weight_based_line_items, Money.new(0), fn line_item, acc ->
+        if(line_item.has_replacement) do
+          # has replacement item, need to check which original price is
+          # greater.
+          compare_result =
+            Money.compare(line_item.original_price, line_item.replacement_item.original_price)
+
+          if(compare_result < 0) do
+            # replacement item's price is greater, use it
+            weight_limit = line_item.quantity + 0.2
+
+            max_line_item_total =
+              Money.multiply(line_item.replacement_item.original_price, weight_limit)
+
+            item_adjustment =
+              Money.subtract(max_line_item_total, line_item.replacement_item.total)
+
+            Money.add(item_adjustment, acc)
+          else
+            weight_limit = line_item.quantity + 0.2
+
+            max_line_item_total = Money.multiply(line_item.original_price, weight_limit)
+
+            item_adjustment = Money.subtract(max_line_item_total, line_item.total)
+            Money.add(item_adjustment, acc)
+          end
+        else
+          weight_limit = line_item.quantity + 0.2
+
+          max_line_item_total = Money.multiply(line_item.original_price, weight_limit)
+
+          item_adjustment = Money.subtract(max_line_item_total, line_item.total)
+          Money.add(item_adjustment, acc)
+        end
+      end)
+
+    # Not weight-based items
+    not_weight_based_line_items = Enum.filter(cart.line_items, &(&1.weight_based == false))
+
+    IO.puts("Not Weight based items length")
+    IO.inspect(Enum.count(not_weight_based_line_items))
+
+    not_weight_based_item_adjustment =
+      Enum.reduce(not_weight_based_line_items, Money.new(0), fn line_item, acc ->
+        if(line_item.has_replacement) do
+          compare_result =
+            Money.compare(line_item.original_price, line_item.replacement_item.original_price)
+
+          if(compare_result < 0) do
+            # replacement item's price is greater, use it
+
+            item_adjustment =
+              Money.subtract(line_item.replacement_item.original_price, line_item.original_price)
+
+            Money.multiply(item_adjustment, line_item.quantity)
+            |> Money.add(acc)
+          else
+            Money.add(Money.new(0), acc)
+          end
+        else
+          Money.add(Money.new(0), acc)
+        end
+      end)
+
+    IO.puts("printing not-weight based adjustment")
+    IO.inspect(not_weight_based_item_adjustment)
+    IO.puts("printing weight based adjustment")
+    IO.inspect(weight_based_item_adjustment)
+    Money.add(weight_based_item_adjustment, not_weight_based_item_adjustment)
   end
 
   @doc """
@@ -69,7 +153,11 @@ defmodule Jaang.Checkout.Calculate do
   def calculate_total(order, status) do
     Enum.filter(order.line_items, &(&1.status == status))
     |> Enum.reduce(Money.new(0), fn line_item, acc ->
-      Money.add(acc, line_item.total)
+      if(line_item.replaced) do
+        Money.add(acc, line_item.replacement_item.total)
+      else
+        Money.add(acc, line_item.total)
+      end
     end)
   end
 

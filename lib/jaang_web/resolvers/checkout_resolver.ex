@@ -24,7 +24,7 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
     case order.user_id == user.id do
       true ->
         tax = Calculate.calculate_sales_tax_for_store(order, :not_ready)
-        item_adjustment = Calculate.calculate_item_adjustments(order.total)
+        item_adjustment = Calculate.calculate_item_adjustment(order)
         delivery_fee = Calculate.get_delivery_fee()
 
         grand_total =
@@ -45,20 +45,6 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
           grand_total: grand_total
         })
 
-        # ! and update Invoice also?
-
-        ## Get an invoice schema
-        # invoice = InvoiceManager.get_invoice_in_cart(user.id)
-        ## Update an invoice schema
-        # InvoiceManager.update_invoice(invoice, %{
-        #  delivery_fee: delivery_fee,
-        #  driver_tip: tip,
-        #  sales_tax: tax,
-        #  subtotal: sub_totals_amount,
-        #  total: final_total_amount,
-        #  item_adjustment: item_adjustments,
-        #  delivery_time: delivery_time
-        # })
         carts = OrderManager.get_all_carts(user.id)
         grand_final_total = Calculate.calculate_grand_total_price(carts)
 

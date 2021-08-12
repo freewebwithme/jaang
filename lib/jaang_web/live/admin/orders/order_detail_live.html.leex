@@ -50,7 +50,7 @@
           <p class="flex-1 text-right font-bold"><%= @order.item_adjustment%></p>
         </div>
         <div class="flex content-evenly">
-          <p class="flex-1">Total:</p>
+          <p class="flex-1">Grand Total:</p>
           <p class="flex-1 text-right font-bold"><%= @order.grand_total %></p>
         </div>
 
@@ -82,10 +82,6 @@
         <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
         <p class="font-bold text-gray-800 text-sm">Shopper</p>
         <p class="text-gray-800 text-sm mt-1">Angela Kim</p>
-
-        <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
-        <p class="font-bold text-gray-800 text-sm">Driver</p>
-        <p class="text-gray-800 text-sm mt-1">Joshep Lee</p>
       </div>
     </div>
 
@@ -163,7 +159,13 @@
                     Product name
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Quantity
+                    Category 
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Quantity or Weight
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Price
@@ -175,30 +177,160 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <%= for item <- @order.line_items do %>
-                  <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10">
-                          <img class="h-10 w-10 rounded-none" src="<%= item.image_url %>">
-                        </div>
-                        <div class="ml-4">
-                          <div class="text-sm font-medium text-gray-900">
-                            <%= item.product_name %>
+                  <%= if item.replaced do %>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-none" src="<%= item.image_url %>">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-400">
+                              <%= item.product_name %>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= item.quantity %></div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= Helpers.display_money(item.price) %></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="text-sm font-medium text-gray-400">
+                              <%= item.category_name %>
+                            </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <%= if item.weight_based do %>
+                          <div class="text-sm text-gray-400"><%= item.weight %> <%= item.unit_name %></div>
+                        <% else %>
+                          <div class="text-sm text-gray-400"><%= item.quantity %></div>
+                        <% end %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                          <%= if item.replaced do %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-500">
+                            Replaced
+                          </span>
+                          <% else %>
 
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= Helpers.display_money(item.total) %></div>
-                    </td>
-                  </tr>
+                            <%= if item.status == :sold_out do %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            <%= Helpers.capitalize_text(item.status) %>
+                          </span>
+
+                            <% else %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            <%= Helpers.capitalize_text(item.status) %>
+                          </span>
+
+                            <% end %>
+                          <% end %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-400"><%= Helpers.display_money(item.price) %></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-400"><%= Helpers.display_money(item.total) %></div>
+                      </td>
+                    </tr>
+
+                    <!-- Display replaced item -->
+                    <tr>
+                      <td class="px-10 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-none" src="<%= item.replacement_item.image_url %>">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-yellow-600">
+                              <%= item.replacement_item.product_name %> (Replaced item)
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="flex items-center">
+                              <div class="text-sm font-medium text-yellow-600">
+                                <%= item.category_name %>
+                              </div>
+                          </div>
+                        </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <%= if item.replacement_item.weight_based do %>
+                          <div class="text-sm text-yellow-600"><%= item.replacement_item.weight %> <%= item.replacement_item.unit_name %></div>
+                        <% else %>
+                          <div class="text-sm text-yellow-600"><%= item.replacement_item.quantity %></div>
+                        <% end %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          <%= Helpers.capitalize_text(item.replacement_item.status) %>
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-yellow-600"><%= Helpers.display_money(item.replacement_item.price) %></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-yellow-600"><%= Helpers.display_money(item.replacement_item.total) %></div>
+                      </td>
+                    </tr>
+
+                  <% else %>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-none" src="<%= item.image_url %>">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              <%= item.product_name %>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="text-sm font-medium text-gray-900">
+                              <%= item.category_name %>
+                            </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <%= if item.weight_based do %>
+                          <div class="text-sm text-gray-900"><%= item.weight %> <%= item.unit_name %></div>
+                        <% else %>
+                          <div class="text-sm text-gray-900"><%= item.quantity %></div>
+                        <% end %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                          <%= if item.replaced do %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-500">
+                            Replaced
+                          </span>
+                          <% else %>
+
+                            <%= if item.status == :sold_out do %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            <%= Helpers.capitalize_text(item.status) %>
+                          </span>
+
+                            <% else %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            <%= Helpers.capitalize_text(item.status) %>
+                          </span>
+
+                            <% end %>
+                          <% end %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900"><%= Helpers.display_money(item.price) %></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900"><%= Helpers.display_money(item.total) %></div>
+                      </td>
+                    </tr>
+
+                  <% end %>
                 <% end %>
               </tbody>
             </table>
