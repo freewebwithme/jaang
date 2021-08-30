@@ -29,7 +29,7 @@ defmodule Jaang.Checkout.LineItem do
     field :barcode, :string
 
     field :status, Ecto.Enum,
-      values: [:ready, :not_ready, :sold_out],
+      values: [:ready, :not_ready, :sold_out, :refunded],
       default: :not_ready
 
     field :refund_reason, :string
@@ -115,6 +115,41 @@ defmodule Jaang.Checkout.LineItem do
     |> set_total()
   end
 
+  def changeset_for_refund(%LineItem{} = line_item, attrs) do
+    line_item
+    |> cast(attrs, [
+      :product_id,
+      :store_id,
+      :product_name,
+      :image_url,
+      :unit_name,
+      :on_sale,
+      :original_price,
+      :original_total,
+      :discount_percentage,
+      :quantity,
+      :final_quantity,
+      :weight,
+      :category_name,
+      :sub_category_name,
+      :price,
+      :total,
+      :inserted_at,
+      :updated_at,
+      :barcode,
+      :status,
+      :market_price,
+      :weight_based,
+      :replacement_id,
+      :has_replacement,
+      :note,
+      :refund_reason,
+      :replaced
+    ])
+    |> cast_embed(:replacement_item, required: false, with: &__MODULE__.changeset/2)
+    |> set_total()
+  end
+
   def set_product_details(changeset) do
     case get_change(changeset, :product_id) do
       nil ->
@@ -159,19 +194,6 @@ defmodule Jaang.Checkout.LineItem do
         |> put_change(:weight_based, product.weight_based)
     end
   end
-
-  # def set_total(changeset) do
-  #  quantity = get_field(changeset, :quantity)
-  #  price = get_field(changeset, :price)
-  #  total = Money.multiply(price, quantity)
-
-  #  original_price = get_field(changeset, :original_price)
-  #  original_total = Money.multiply(original_price, quantity)
-
-  #  changeset
-  #  |> put_change(:total, total)
-  #  |> put_change(:original_total, original_total)
-  # end
 
   def set_total(changeset) do
     case get_change(changeset, :weight) do

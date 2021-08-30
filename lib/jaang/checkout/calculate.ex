@@ -2,7 +2,6 @@ defmodule Jaang.Checkout.Calculate do
   alias Jaang.Invoice
   @tax_rate 0.095
   @delivery_fee 499
-  @item_adjustment 0.15
   @service_fee 0.08
 
   @doc """
@@ -41,10 +40,6 @@ defmodule Jaang.Checkout.Calculate do
     store_count = Enum.count(carts)
     Money.multiply(Money.new(@delivery_fee), store_count)
   end
-
-  # def calculate_item_adjustments(total_amount) do
-  #   Money.multiply(total_amount, @item_adjustment)
-  # end
 
   def calculate_item_adjustment(cart) do
     # get a max expected value of total order price
@@ -119,10 +114,10 @@ defmodule Jaang.Checkout.Calculate do
         end
       end)
 
-    IO.puts("printing not-weight based adjustment")
-    IO.inspect(not_weight_based_item_adjustment)
-    IO.puts("printing weight based adjustment")
-    IO.inspect(weight_based_item_adjustment)
+    # IO.puts("printing not-weight based adjustment")
+    # IO.inspect(not_weight_based_item_adjustment)
+    # IO.puts("printing weight based adjustment")
+    # IO.inspect(weight_based_item_adjustment)
     Money.add(weight_based_item_adjustment, not_weight_based_item_adjustment)
   end
 

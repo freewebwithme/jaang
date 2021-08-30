@@ -1,7 +1,8 @@
 defmodule JaangWeb.Admin.Customers.CustomerDetailLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Customer.Customers
-  alias JaangWeb.Admin.Components.{AddressComponent, InvoiceTableComponent}
+  alias JaangWeb.Admin.Components.{AddressComponent}
+  alias JaangWeb.Admin.Components.FunctionComponents.InvoiceTableComponent
   alias Jaang.Admin.Invoice.Invoices
   alias Jaang.StoreManager
 

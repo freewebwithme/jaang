@@ -25,6 +25,14 @@ defmodule JaangWeb.Admin.Helpers do
     "No name"
   end
 
+  def display_money(money) when is_nil(money) do
+    "Not yet calculated"
+  end
+
+  def display_money(money) when is_binary(money) do
+    money
+  end
+
   def display_money(%Money{} = money) do
     Money.to_string(money)
   end

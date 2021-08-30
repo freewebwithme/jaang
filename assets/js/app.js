@@ -3,8 +3,9 @@
 // its own CSS file.
 import "../css/app.scss";
 import "alpinejs";
+import "phoenix_html";
 import { Socket } from "phoenix";
-import LiveSocket from "phoenix_live_view";
+import { LiveSocket } from "phoenix_live_view";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
@@ -67,4 +68,3 @@ window.liveSocket = liveSocket;
 //
 //     import {Socket} from "phoenix"
 //
-import "phoenix_html";

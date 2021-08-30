@@ -1,7 +1,7 @@
 defmodule Jaang.Utility do
   alias Jaang.{Repo, Store, Category}
   alias Jaang.Category.SubCategory
-  alias Jaang.Product.{Products, MarketPrice}
+  alias Jaang.Product.{Products}
 
   @doc """
   convert and format datetime
@@ -18,6 +18,27 @@ defmodule Jaang.Utility do
   """
   def convert_string_key_to_atom_key(attrs) do
     for {key, value} <- attrs, into: %{}, do: {String.to_atom(key), value}
+  end
+
+  @doc """
+  [
+    {
+      "keyId" => "34"
+    }
+  ]
+  to
+  [
+    {
+      key_id: 34
+    }
+  ]
+  """
+  def convert_map_to_atom_key_map(maps) do
+    Enum.map(maps, fn map ->
+      Map.new(map, fn {k, v} ->
+        {Macro.underscore(k) |> String.to_atom(), v}
+      end)
+    end)
   end
 
   @doc """

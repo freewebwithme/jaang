@@ -1,8 +1,9 @@
 defmodule JaangWeb.Admin.Orders.OrdersLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Order.Orders
-  alias JaangWeb.Admin.Components.OrderTableComponent
+  alias JaangWeb.Admin.Components.FunctionComponents.OrderTableComponent
   alias JaangWeb.Admin.Orders.OrderSearchResultLive
+  alias JaangWeb.Admin.Helpers
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: Jaang.Checkout.Carts.subscribe()

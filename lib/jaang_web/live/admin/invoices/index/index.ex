@@ -1,7 +1,7 @@
 defmodule JaangWeb.Admin.Invoices.InvoiceLive.Index do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Invoice.Invoices
-  alias JaangWeb.Admin.Components.InvoiceTableComponent
+  alias JaangWeb.Admin.Components.FunctionComponents.InvoiceTableComponent
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: Jaang.Invoice.Invoices.subscribe()
@@ -48,6 +48,40 @@ defmodule JaangWeb.Admin.Invoices.InvoiceLive.Index do
         filter_by_list: filter_by_list,
         search_by_list: search_by_list,
         search_by: search_by_default
+      )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("search", %{"search-by" => search_by, "search-field" => search_term}, socket) do
+    socket =
+      push_redirect(
+        socket,
+        to:
+          Routes.live_path(
+            socket,
+            JaangWeb.Admin.Invoices.InvoiceLive.Search,
+            search_by: search_by,
+            search_term: search_term
+          )
+      )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("select-per-page", %{"per-page" => per_page}, socket) do
+    per_page = String.to_integer(per_page)
+    IO.puts("Calling handle_event: select-per-page")
+    has_next_page = Helpers.has_next_page?(Enum.count(socket.assigns.invoices), per_page)
+
+    socket =
+      push_patch(socket,
+        to:
+          Routes.live_path(socket, __MODULE__,
+            page: socket.assigns.options.page,
+            per_page: per_page,
+            has_next_page: has_next_page
+          )
       )
 
     {:noreply, socket}

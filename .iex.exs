@@ -99,3 +99,7 @@ alias Jaang.Admin.Account.EmployeeAuthMobile
 alias Jaang.Admin.EmployeeAccountManager
 alias Jaang.Admin.EmployeeTask
 alias Jaang.Admin.EmployeeTask.EmployeeTasks
+
+alias Jaang.Admin.CustomerService.RefundRequest
+alias Jaang.Admin.CustomerServices
+alias Jaang.Admin.Order.LineItems

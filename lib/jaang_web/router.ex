@@ -41,6 +41,7 @@ defmodule JaangWeb.Router do
 
     live "/invoices", Invoices.InvoiceLive.Index
     live "/invoices/show/:id", Invoices.InvoiceLive.Show
+    live "/invoices/search", Invoices.InvoiceLive.Search
 
     live "/partners", Partners.PartnersOverviewLive
     live "/partners/:store_id", Partners.PartnerLive
@@ -70,7 +71,8 @@ defmodule JaangWeb.Router do
 
     live "/customer-services", CustomerServices.CustomerServicesOverviewLive
     live "/customer-services/messages", CustomerServices.CustomerServiceMessagesLive
-    live "/customer-services/refund-request", CustomerServices.CustomerServiceRefundRequestsLive
+    live "/customer-services/refund-request", CustomerServices.RefundLive.Index
+    live "/customer-services/refund-request/:id", CustomerServices.RefundLive.Show
   end
 
   scope "/", JaangWeb do

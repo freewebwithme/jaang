@@ -106,6 +106,33 @@ defmodule JaangWeb.Schema.CartTypes do
       # middleware(Middleware.Authenticate)
       resolve(&CheckoutResolver.calculate_total_for_store/3)
     end
+
+    @desc "Refund request"
+    field :request_refund, :order do
+      arg(:token, non_null(:string))
+      arg(:order_id, non_null(:integer))
+      arg(:refund_items, list_of(:refund_item))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&OrderResolver.request_refund/3)
+    end
+  end
+
+  @desc "Refund items input object"
+  input_object :refund_item do
+    field :line_item_id, :string
+    field :quantity, :integer
+    field :refund_reason, :string
+  end
+
+  object :refund_request do
+    field :status, :string
+    field :subtotal, :string
+    field :sales_tax, :string
+    field :total_refund, :string
+    field :user_id, :id
+    field :order_id, :id
+    field :refund_items, list_of(:line_item)
   end
 
   object :delivery_datetime do
@@ -213,6 +240,7 @@ defmodule JaangWeb.Schema.CartTypes do
     field :delivery_method, :string
 
     field :receipt_photos, list_of(:receipt_photo)
+    field :refund_request, :refund_request, resolve: dataloader(Carts)
   end
 
   object :receipt_photo do

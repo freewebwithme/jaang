@@ -13,7 +13,7 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
   end
 
   def render(assigns) do
-    ~L"""
+    ~H"""
     <div class="container mx-auto">
       <div class="flex items-center justify-between">
         <h2 class="py-2 px-10 text-xl text-gray-900">
@@ -22,8 +22,7 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
       </div>
 
       <div class="max-w-2xl">
-        <%= f = form_for @changeset, "#", [phx_submit: :save, phx_change: :validate, phx_target: @myself,
-                class: "space-y-6 sm:space-y-5"] %>
+        <.form let={f} for={@changeset} url="#" phx-submit="save" phx-change="validate" phx-target={@myself} class="space-y-6 sm:space-y-5">
           <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <%= label f, :name, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
@@ -47,7 +46,7 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
               <% end %>
             </div>
           </div>
-        </form>
+        </.form>
       </div>
     </div>
     """

@@ -70,10 +70,22 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
       {:search_by, %{search_by: search_by, search_term: term}}, query ->
         search_pattern = "%#{term}%"
+        IO.puts("Print invoice search by")
+        IO.inspect(search_by)
 
         case search_by do
           "Invoice number" ->
             from q in query, where: ilike(q.invoice_number, ^search_pattern)
+
+          "Invoice id" ->
+            result = Integer.parse(term)
+
+            if result == :error do
+              query
+            else
+              {id, _} = result
+              from q in query, where: q.id == ^id
+            end
 
           _ ->
             query

@@ -1,0 +1,114 @@
+<main class="max-w-7xl overflow-y-auto focus:outline-none" tabindex="0">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <h2 class="py-3 text-3xl text-gray-900">Invoice Detail</h2>
+  </div>
+  <div class="mt-3 py-5 px-10 bg-white shadow-md flex content-evenly gap-4">
+    <div class="flex-1">
+      <h2 class="text-gray-800 text-2xl ">Invoice placed at:
+         <span class="text-indigo-600"><%= @invoice_placed_at %></span>
+      </h2>
+    </div>
+    <div class="flex-1 items-center ">
+      <h2 class="text-gray-800 text-2xl">Current status:
+        <span class="text-indigo-600"><%= Helpers.capitalize_text(@invoice.status) %></span>
+      </h2>
+    </div>
+
+  </div>
+    <div class="flex gap-4 mt-5">
+      <div class="flex-1 bg-white shadow-md">
+
+        <div class="py-7 px-10">
+          <h2 class="text-xl text-gray-900 mb-5">Invoice information</h2>
+          <p class="text-gray-500 text-sm">Invoice Id: <span><%= @invoice.id %></span></p>
+          <p class="text-gray-500 text-sm mb-5">Invoice Number: <span><%= @invoice.invoice_number %></span></p>
+
+          <div class="flex content-evenly">
+            <p class="flex-1">Status:</p>
+            <p class="flex-1 text-right font-bold"><%= @invoice.status %></p>
+          </div>
+          <div class="flex content-evenly">
+            <p class="flex-1">Number of orders:</p>
+            <p class="flex-1 text-right font-bold"><%= Enum.count( @invoice.orders) %></p>
+          </div>
+          <div class="flex content-evenly">
+            <p class="flex-1">Number of items:</p>
+            <p class="flex-1 text-right font-bold"><%= @invoice.total_items %></p>
+          </div>
+          <div class="flex content-evenly">
+            <p class="flex-1">Grand Total:</p>
+            <p class="flex-1 text-right font-bold"><%= @invoice.grand_total_price %></p>
+          </div>
+
+          <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
+          <p class="font-bold text-gray-800 text-sm">Payment method</p>
+          <p class="text-gray-800 text-sm mt-1"><%= @invoice.payment_method %></p>
+
+        </div>
+      </div>
+
+      <div class="flex-1 bg-white shadow-md">
+        <div class="py-7 px-10">
+          <h2 class="text-xl text-gray-900 mb-5 font-bold">Customer information</h2>
+
+          <div class="flex content-evenly">
+            <p class="flex-1">Email:</p>
+            <p class="flex-1 text-right font-bold"><%= @invoice.user.email %></p>
+          </div>
+          <div class="flex content-evenly">
+            <p class="flex-1">Name:</p>
+            <p class="flex-1 text-right font-bold"><%= @invoice.user.profile.first_name %></p>
+          </div>
+          <div class="flex content-evenly">
+            <p class="flex-1">Phone:</p>
+            <p class="flex-1 text-right font-bold"><%= @invoice.user.profile.phone %></p>
+          </div>
+          <div class="content-end">
+            <%= live_redirect "View detail",
+                to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @invoice.user.id),
+                class: "text-indigo-600 hover:text-indigo-900"
+            %>
+          </div>
+        </div>
+        <div class="py-7 px-10">
+          <h2 class="text-xl text-gray-900 mb-5 font-bold">Order information</h2>
+
+          <%= for order <- @invoice.orders do %>
+
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-14 w-14 ">              
+                <img class="h-14 w-14 rounded-full" src={"#{order.store_logo}"} alt="store logo">
+              </div>
+              <div class="ml-4">
+                <div class="text-lg font-medium text-gray-900">
+                  <%= order.store_name %>
+                </div>
+              </div>
+
+            </div>
+            <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
+            <div class="flex content-evenly">
+              <p class="flex-1">Recipient:</p>
+              <p class="flex-1 text-right font-bold"><%= order.recipient %></p>
+            </div>
+            <div class="flex content-evenly">
+              <p class="flex-1">Total items:</p>
+              <p class="flex-1 text-right font-bold"><%= order.total_items %></p>
+            </div>
+            <div class="flex content-evenly">
+              <p class="flex-1">Total:</p>
+              <p class="flex-1 text-right font-bold"><%= order.grand_total %></p>
+            </div>
+            <div class="content-end">
+              <%= live_redirect "View detail",
+                  to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, order.id),
+                  class: "text-indigo-600 hover:text-indigo-900"
+              %>
+            </div>
+
+            <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+</main>

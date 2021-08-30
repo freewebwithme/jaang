@@ -24,9 +24,6 @@ defmodule Jaang.Admin.Order.Orders do
   ]
   """
   def get_orders(store_id \\ nil, criteria) when is_list(criteria) do
-    IO.puts("Criteria")
-    IO.inspect(criteria)
-
     query =
       if is_nil(store_id) do
         from o in Order, order_by: [desc: o.inserted_at]

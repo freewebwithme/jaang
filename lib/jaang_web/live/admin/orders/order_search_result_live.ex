@@ -1,6 +1,6 @@
 defmodule JaangWeb.Admin.Orders.OrderSearchResultLive do
   use JaangWeb, :dashboard_live_view
-  alias JaangWeb.Admin.Components.OrderTableComponent
+  alias JaangWeb.Admin.Components.FunctionComponents.OrderTableComponent
   alias Jaang.Admin.Order.Orders
 
   def mount(_params, _session, socket) do
@@ -115,8 +115,6 @@ defmodule JaangWeb.Admin.Orders.OrderSearchResultLive do
 
   defp search_orders(socket, search_by, search_term) do
     orders = Orders.get_orders(search_by: %{search_by: search_by, search_term: search_term})
-    IO.puts("Printing orders result")
-    IO.inspect(Enum.count(orders))
     has_next_page = Helpers.has_next_page?(Enum.count(orders), socket.assigns.options.per_page)
 
     socket =

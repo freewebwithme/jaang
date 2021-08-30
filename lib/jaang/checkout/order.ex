@@ -94,6 +94,8 @@ defmodule Jaang.Checkout.Order do
     # ex) hand over to customer, leave at the front door
     field :delivery_method, :string
 
+    has_one :refund_request, Jaang.Admin.CustomerService.RefundRequest
+
     embeds_many :receipt_photos, Jaang.Invoice.ReceiptPhoto, on_replace: :delete
 
     many_to_many :employees, Jaang.Admin.Account.Employee.Employee,

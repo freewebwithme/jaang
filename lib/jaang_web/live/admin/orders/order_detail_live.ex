@@ -50,7 +50,7 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
     {:noreply, socket}
   end
 
-  def handle_info({:order_updated, order}, socket) do
+  def handle_info({"order_updated", order}, socket) do
     IO.puts("Order is updated from OrderDetailLive: #{order.id}")
 
     socket =

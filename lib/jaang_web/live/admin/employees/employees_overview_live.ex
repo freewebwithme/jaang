@@ -1,15 +1,13 @@
 defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.EmployeeAccountManager
-  alias JaangWeb.Admin.Components.EmployeeComponent
+  alias JaangWeb.Admin.Components.FunctionComponents.EmployeeComponent
 
   def mount(_params, _session, socket) do
     {:ok, socket}
   end
 
   def handle_params(params, _url, socket) do
-    IO.puts("Calling handle_params from Employee overview")
-    IO.inspect(params)
     page = String.to_integer(params["page"] || "1")
     per_page = String.to_integer(params["per_page"] || "10")
     role = params["filter_by"] || "All"
