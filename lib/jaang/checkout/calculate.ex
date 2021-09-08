@@ -173,6 +173,20 @@ defmodule Jaang.Checkout.Calculate do
   end
 
   @doc """
+  This function will call in Accept refund request
+  to recalculate invoice grand total price
+  """
+  def calculate_grand_final_after_refund_for_invoice(invoice) do
+    Enum.reduce(invoice.orders, Money.new(0), fn order, acc ->
+      if(order.status in [:refunded, :partially_refunded]) do
+        Money.add(order.grand_total_after_refund, acc)
+      else
+        Money.add(order.grand_total, acc)
+      end
+    end)
+  end
+
+  @doc """
   Count total items in the all carts
   """
   def count_all_total_items(invoice = %Invoice{}) do

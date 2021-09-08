@@ -5,6 +5,16 @@ defmodule Jaang.Admin.CustomerServices do
 
   @topic inspect(__MODULE__)
 
+  def change_refund_request(%RefundRequest{} = refund_request, attrs) do
+    refund_request
+    |> RefundRequest.changeset(attrs)
+  end
+
+  def add_error_to_customer_services(changeset, key, message) do
+    changeset
+    |> Ecto.Changeset.add_error(key, message)
+  end
+
   def create_refund_request(attrs) do
     %RefundRequest{}
     |> RefundRequest.changeset(attrs)
@@ -52,6 +62,12 @@ defmodule Jaang.Admin.CustomerServices do
 
   def get_refund_request(id) do
     Repo.get_by(RefundRequest, id: id) |> Repo.preload([:order, [user: :profile]])
+  end
+
+  def update_refund_request(refund_request, attrs) do
+    refund_request
+    |> RefundRequest.changeset(attrs)
+    |> Repo.update()
   end
 
   def subscribe() do

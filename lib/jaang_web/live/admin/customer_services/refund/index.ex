@@ -51,4 +51,15 @@ defmodule JaangWeb.Admin.CustomerServices.RefundLive.Index do
 
     {:noreply, socket}
   end
+
+  def handle_info({:new_refund_request, refund_request}, socket) do
+    IO.puts("New refund requested came in")
+
+    socket =
+      update(socket, :refund_requests, fn refund_requests ->
+        [refund_request | refund_requests]
+      end)
+
+    {:noreply, socket}
+  end
 end

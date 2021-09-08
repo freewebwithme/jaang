@@ -48,18 +48,34 @@ defmodule Jaang.Admin.Order.LineItems do
           [new_value_map] =
             Enum.filter(new_value_maps, &(&1.line_item_id == line_item_map.replacement_item.id))
 
-          # update line_item_map using new value
-          Map.update!(line_item_map.replacement_item, :quantity, fn _old ->
-            new_value_map.quantity
-          end)
-          |> Map.update!(:refund_reason, fn _old -> new_value_map.refund_reason end)
+          # Check if line_item is weight based
+          if(line_item_map.replacement_item.weight_based) do
+            # update line_item_map using new value
+            Map.update!(line_item_map.replacement_item, :weight, fn _old ->
+              new_value_map.weight
+            end)
+            |> Map.update!(:refund_reason, fn _old -> new_value_map.refund_reason end)
+          else
+            # update line_item_map using new value
+            Map.update!(line_item_map.replacement_item, :quantity, fn _old ->
+              new_value_map.quantity
+            end)
+            |> Map.update!(:refund_reason, fn _old -> new_value_map.refund_reason end)
+          end
 
         _ ->
           # get new_value using line_item.id
           [new_value_map] = Enum.filter(new_value_maps, &(&1.line_item_id == line_item_map.id))
-          # update line_item_map using new value
-          Map.update!(line_item_map, :quantity, fn _old -> new_value_map.quantity end)
-          |> Map.update!(:refund_reason, fn _old -> new_value_map.refund_reason end)
+
+          if(line_item_map.weight_based) do
+            # update line_item_map using new value
+            Map.update!(line_item_map, :weight, fn _old -> new_value_map.weight end)
+            |> Map.update!(:refund_reason, fn _old -> new_value_map.refund_reason end)
+          else
+            # update line_item_map using new value
+            Map.update!(line_item_map, :quantity, fn _old -> new_value_map.quantity end)
+            |> Map.update!(:refund_reason, fn _old -> new_value_map.refund_reason end)
+          end
       end
     end)
   end

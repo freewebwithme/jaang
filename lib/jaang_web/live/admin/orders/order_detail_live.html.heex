@@ -202,7 +202,7 @@
                         <%= if item.weight_based do %>
                           <div class="text-sm text-gray-400"><%= item.weight %> <%= item.unit_name %></div>
                         <% else %>
-                          <div class="text-sm text-gray-400"><%= item.quantity %></div>
+                          <div class="text-sm text-gray-400"><%= item.final_quantity %> <%= item.unit_name %></div>
                         <% end %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
@@ -258,7 +258,7 @@
                         <%= if item.replacement_item.weight_based do %>
                           <div class="text-sm text-yellow-600"><%= item.replacement_item.weight %> <%= item.replacement_item.unit_name %></div>
                         <% else %>
-                          <div class="text-sm text-yellow-600"><%= item.replacement_item.quantity %></div>
+                          <div class="text-sm text-yellow-600"><%= item.replacement_item.final_quantity %> <%= item.replacement_item.unit_name %></div>
                         <% end %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
@@ -299,7 +299,7 @@
                         <%= if item.weight_based do %>
                           <div class="text-sm text-gray-900"><%= item.weight %> <%= item.unit_name %></div>
                         <% else %>
-                          <div class="text-sm text-gray-900"><%= item.quantity %></div>
+                          <div class="text-sm text-gray-900"><%= item.final_quantity %> <%= item.unit_name %></div>
                         <% end %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">

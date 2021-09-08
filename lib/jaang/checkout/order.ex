@@ -41,6 +41,7 @@ defmodule Jaang.Checkout.Order do
              :delivery_method,
              :receipt_photos,
              :grand_total,
+             :grand_total_after_refund,
              :finalized
            ]}
 
@@ -50,7 +51,16 @@ defmodule Jaang.Checkout.Order do
 
   schema "orders" do
     field :status, Ecto.Enum,
-      values: [:cart, :refunded, :submitted, :shopping, :packed, :on_the_way, :delivered]
+      values: [
+        :cart,
+        :refunded,
+        :partially_refunded,
+        :submitted,
+        :shopping,
+        :packed,
+        :on_the_way,
+        :delivered
+      ]
 
     field :total, Money.Ecto.Amount.Type
     embeds_many :line_items, LineItem, on_replace: :delete
@@ -75,6 +85,9 @@ defmodule Jaang.Checkout.Order do
     field :item_adjustment, Money.Ecto.Amount.Type
     field :total_items, :integer
     field :grand_total, Money.Ecto.Amount.Type
+
+    # if orders' status in [:refunded, :partially_refunded]
+    field :grand_total_after_refund, Money.Ecto.Amount.Type
     field :number_of_bags, :integer, default: 0
     field :instruction, :string
 
@@ -138,6 +151,7 @@ defmodule Jaang.Checkout.Order do
       :phone_number,
       :delivery_method,
       :grand_total,
+      :grand_total_after_refund,
       :finalized
     ])
     |> cast_embed(:receipt_photos, required: false, with: &ReceiptPhoto.changeset/2)

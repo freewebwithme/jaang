@@ -42,6 +42,10 @@ let liveSocket = new LiveSocket("/live", Socket, {
       if (from.__x) {
         window.Alpine.clone(from.__x, to);
       }
+      // in alpinejs V3
+      // if (from._x_dataStack) {
+      //   window.Alpine.clone(from, to);
+      // }
     },
   },
   params: { _csrf_token: csrfToken },

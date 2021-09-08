@@ -3,8 +3,6 @@ defmodule Jaang.Admin.Order.Orders do
   alias Jaang.Repo
 
   alias Jaang.Admin.EmployeeTask.EmployeeTasks
-  alias Jaang.Admin.Invoice.Invoices
-  alias Jaang.StripeManager
   alias Jaang.Checkout.Order
   alias Jaang.Checkout.Carts
   alias Jaang.OrderManager
@@ -315,6 +313,20 @@ defmodule Jaang.Admin.Order.Orders do
 
       :delivered ->
         OneSignal.create_notification("JaangCart", "Your order is delivered!", order.user_id)
+
+      :refunded ->
+        OneSignal.create_notification(
+          "JaangCart",
+          "Your refund is processing and it will take few business day.",
+          order.user_id
+        )
+
+      :partially_refunded ->
+        OneSignal.create_notification(
+          "JaangCart",
+          "Your refund is processing and it will take few business day.",
+          order.user_id
+        )
     end
 
     {:ok, order}

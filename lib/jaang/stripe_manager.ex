@@ -1,5 +1,5 @@
 defmodule Jaang.StripeManager do
-  alias Jaang.Payment.Stripe.{Customer, SetupIntent, PaymentMethod, PaymentIntent}
+  alias Jaang.Payment.Stripe.{Customer, SetupIntent, PaymentMethod, PaymentIntent, Refund}
 
   defdelegate create_customer(email), to: Customer
   defdelegate update_customer(stripe_id, attrs), to: Customer
@@ -29,4 +29,6 @@ defmodule Jaang.StripeManager do
   params: payment_intent_id, amount to capture
   """
   defdelegate capture_payment_intent(payment_intent_id, amount_to_capture), to: PaymentIntent
+
+  defdelegate create_refund(payment_intent_id, amount), to: Refund
 end

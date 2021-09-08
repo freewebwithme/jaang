@@ -122,6 +122,7 @@ defmodule JaangWeb.Schema.CartTypes do
   input_object :refund_item do
     field :line_item_id, :string
     field :quantity, :integer
+    field :weight, :integer
     field :refund_reason, :string
   end
 
@@ -129,7 +130,9 @@ defmodule JaangWeb.Schema.CartTypes do
     field :status, :string
     field :subtotal, :string
     field :sales_tax, :string
-    field :total_refund, :string
+    field :total_requested_refund, :string
+    field :total_accepted_refund, :string
+    field :deny_reason, :string
     field :user_id, :id
     field :order_id, :id
     field :refund_items, list_of(:line_item)
@@ -219,6 +222,7 @@ defmodule JaangWeb.Schema.CartTypes do
     field :state, :string
 
     field :grand_total, :string
+    field :grand_total_after_refund, :string
 
     field :phone_number, :string
 
@@ -266,6 +270,7 @@ defmodule JaangWeb.Schema.CartTypes do
     field :replaced, :boolean
     field :replacement_item, :line_item
     field :status, :string
+    field :refund_reason, :string
 
     field :price, :string do
       resolve(fn parent, _, _ ->

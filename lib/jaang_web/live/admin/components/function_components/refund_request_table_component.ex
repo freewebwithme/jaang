@@ -96,9 +96,21 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.RefundRequestTableCompone
                         <div class="text-sm text-gray-900"><%= request.order.id %></div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          <%= Helpers.capitalize_text(request.status) %>
-                        </span>
+                        <%= if request.status == :not_completed do %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            <%= Helpers.capitalize_text(request.status) %>
+                          </span>
+                        <% end %>
+                        <%= if request.status == :refunded do %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            <%= Helpers.capitalize_text(request.status) %>
+                          </span>
+                        <% end %>
+                        <%= if request.status == :denied do %>
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-pink-100 text-pink-800">
+                            <%= Helpers.capitalize_text(request.status) %>
+                          </span>
+                        <% end %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-900"><%= Helpers.display_datetime(request.inserted_at) %></div>

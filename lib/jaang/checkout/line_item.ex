@@ -147,7 +147,7 @@ defmodule Jaang.Checkout.LineItem do
       :replaced
     ])
     |> cast_embed(:replacement_item, required: false, with: &__MODULE__.changeset/2)
-    |> set_total()
+    |> set_total_for_refund_request()
   end
 
   def set_product_details(changeset) do
@@ -214,6 +214,34 @@ defmodule Jaang.Checkout.LineItem do
               final_quantity
           end
 
+        price = get_field(changeset, :price)
+        total = Money.multiply(price, quantity)
+
+        original_price = get_field(changeset, :original_price)
+        original_total = Money.multiply(original_price, quantity)
+
+        changeset
+        |> put_change(:total, total)
+        |> put_change(:original_total, original_total)
+
+      weight ->
+        price = get_field(changeset, :price)
+        total = Money.multiply(price, weight)
+
+        original_price = get_field(changeset, :original_price)
+        original_total = Money.multiply(original_price, weight)
+
+        changeset
+        |> put_change(:total, total)
+        |> put_change(:original_total, original_total)
+    end
+  end
+
+  def set_total_for_refund_request(changeset) do
+    case get_change(changeset, :weight) do
+      nil ->
+        # Get quantity for refund
+        quantity = get_field(changeset, :quantity)
         price = get_field(changeset, :price)
         total = Money.multiply(price, quantity)
 

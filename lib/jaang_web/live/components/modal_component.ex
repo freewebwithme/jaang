@@ -3,13 +3,14 @@ defmodule JaangWeb.ModalComponent do
 
   @impl true
   def render(assigns) do
-    ~L"""
-    <div id="<%= @id %>"
+    ~H"""
+    <div
+      id={"#{@id}"}
       class="fixed z-10 inset-0 overflow-y-auto"
       phx-window-keydown="close"
       phx-capture-click="close"
       phx-key="escape"
-      phx-target="#<%= @id %>"
+      phx-target={"##{@id}"}
       phx-page-loading>
 
       <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -26,6 +27,7 @@ defmodule JaangWeb.ModalComponent do
           <%= live_component @socket, @component, @opts %>
         </div>
       </div>
+    </div>
     """
   end
 
