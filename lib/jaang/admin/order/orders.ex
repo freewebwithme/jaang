@@ -85,7 +85,7 @@ defmodule Jaang.Admin.Order.Orders do
         where: o.id == ^order_id
 
     Repo.one(query)
-    |> Repo.preload([:employees, [user: :profile]])
+    |> Repo.preload([:employees, :refund_request, [user: :profile]])
   end
 
   def get_assigned_orders(employee_id, limit) do

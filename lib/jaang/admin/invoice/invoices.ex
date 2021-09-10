@@ -105,7 +105,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
   def get_invoice(invoice_id) do
     query = from i in Invoice, where: i.id == ^invoice_id
-    Repo.one(query) |> Repo.preload([[orders: :employees], [user: :profile]])
+    Repo.one(query) |> Repo.preload([[orders: [:employees, :refund_request]], [user: :profile]])
   end
 
   @doc """

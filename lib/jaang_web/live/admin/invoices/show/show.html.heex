@@ -1,6 +1,6 @@
 <main class="max-w-7xl overflow-y-auto focus:outline-none" tabindex="0">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-    <h2 class="py-3 text-3xl text-gray-900">Invoice Detail</h2>
+    <h2 class="py-3 text-3xl text-gray-900"></h2>
   </div>
   <div class="mt-3 py-5 px-10 bg-white shadow-md flex content-evenly gap-4">
     <div class="flex-1">
@@ -99,6 +99,20 @@
               <p class="flex-1">Total:</p>
               <p class="flex-1 text-right font-bold"><%= order.grand_total %></p>
             </div>
+
+            <%= if order.refund_request.status in [:refunded, :partially_refunded] do %>
+
+            <div class="flex content-evenly text-red-700">
+              <p class="flex-1">Accepted Total Refund</p>
+              <p class="flex-1 text-right font-bold"><%= order.refund_request.total_accepted_refund %></p>
+            </div>
+            <div class="flex content-evenly">
+              <p class="flex-1">Adjusted Total after Refund</p>
+              <p class="flex-1 text-right font-bold"><%= order.grand_total_after_refund %></p>
+            </div>
+            <% end %>
+
+
             <div class="content-end">
               <%= live_redirect "View detail",
                   to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, order.id),

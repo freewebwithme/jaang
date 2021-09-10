@@ -62,13 +62,22 @@
 
           <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
 
-          <div class="flex content-evenly">
-            <p class="flex-1">Total accepted refund</p>
-            <p class="flex-1 text-right font-bold"><%= @refund_request.total_accepted_refund %></p>
-          </div>
-          <%= if @refund_request.status in [:denied, :refunded] do %>
-              <p class="py-3 font-bold text-green-700">Refund request has completed</p>
-          <% else %>
+
+          <%= if @refund_request.status == :denied do %>
+
+              <p class="py-3 font-bold text-red-700">Refund request has denied</p>
+              <p><%= @refund_request.deny_reason %></p>
+          <% end %>
+          
+          <%= if @refund_request.status == :refunded do %>
+            <div class="flex content-evenly">
+              <p class="flex-1">Total accepted refund</p>
+              <p class="flex-1 text-right font-bold"><%= @refund_request.total_accepted_refund %></p>
+            </div>
+            <p class="py-3 font-bold text-green-700">Refund request has completed</p>
+          <% end %>
+
+          <%= if @refund_request.status == :not_completed do %>
             <div class="text-right py-10">
               <%= live_redirect "Deny",
                   to: Routes.refund_show_path(@socket, :deny, @refund_request.id),
@@ -134,6 +143,17 @@
               <p class="flex-1">Total:</p>
               <p class="flex-1 text-right font-bold"><%= @refund_request.order.grand_total %></p>
             </div>
+            <%= if @refund_request.order.status in [:refunded, :partially_refunded] do %>
+
+            <div class="flex content-evenly text-red-700">
+              <p class="flex-1">Accepted Total Refund</p>
+              <p class="flex-1 text-right font-bold"><%= @refund_request.total_accepted_refund %></p>
+            </div>
+            <div class="flex content-evenly">
+              <p class="flex-1">Adjusted Total after Refund</p>
+              <p class="flex-1 text-right font-bold"><%= @refund_request.order.grand_total_after_refund %></p>
+            </div>
+            <% end %>
             <div class="content-end">
               <%= live_redirect "View detail",
                   to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, @refund_request.order.id),

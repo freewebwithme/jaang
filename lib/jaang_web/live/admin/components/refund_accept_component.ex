@@ -146,14 +146,23 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
         status
       )
 
+      updated_invoice = Invoices.get_invoice(invoice_id)
       # Update invoice
-      grand_total_price = Calculate.calculate_grand_final_after_refund_for_invoice(invoice)
-      invoice_status = Invoices.build_invoice_status(invoice_id)
+      grand_total_price =
+        Calculate.calculate_grand_final_after_refund_for_invoice(updated_invoice)
 
-      Invoices.update_invoice_and_notify(invoice_id, %{
-        grand_total_price: grand_total_price,
-        status: invoice_status
-      })
+      invoice_status = Invoices.build_invoice_status(invoice_id)
+      IO.puts("Inspecting grand_total_price")
+      IO.inspect(grand_total_price)
+
+      {:ok, invoice} =
+        Invoices.update_invoice_and_notify(invoice_id, %{
+          grand_total_price: grand_total_price,
+          status: invoice_status
+        })
+
+      IO.puts("Inspecting updated invoice")
+      IO.inspect(invoice)
 
       send(self(), {:updated, updated_refund_request})
 

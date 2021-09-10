@@ -132,6 +132,63 @@
 
   </div>
 
+  <div class="flex gap-4 mt-5">
+    <div class="flex-1 bg-white shadow-md">
+      <div class="py-7 px-10">
+        <h2 class="text-xl text-gray-900 mb-5">Refund request information</h2>
+        <p class="text-gray-500 text-sm">Refund request id: <span><%= @order.refund_request.id %></span></p>
+
+        <div class="pt-5"></div>
+        <div class="flex content-evenly">
+          <p class="flex-1">Status</p>
+          <p class="flex-1 text-right font-bold"><%= @order.refund_request.status %></p>
+        </div>
+        <div class="flex content-evenly">
+          <p class="flex-1">Number of items</p>
+          <p class="flex-1 text-right font-bold"><%= Enum.count(@order.refund_request.refund_items) %></p>
+        </div>
+        <div class="flex content-evenly">
+          <p class="flex-1">Subtotal</p>
+          <p class="flex-1 text-right font-bold"><%= @order.refund_request.subtotal %></p>
+        </div>
+        <div class="flex content-evenly">
+          <p class="flex-1">Sales tax to refund</p>
+          <p class="flex-1 text-right font-bold"><%= @order.refund_request.sales_tax %></p>
+        </div>
+        <div class="flex content-evenly">
+          <p class="flex-1">Total requested refund</p>
+          <p class="flex-1 text-right font-bold"><%= @order.refund_request.total_requested_refund %></p>
+        </div>
+
+          <%= if @order.refund_request.status == :denied do %>
+
+              <p class="py-3 font-bold text-red-700">Refund request has denied</p>
+              <p><%= @order.refund_request.deny_reason %></p>
+          <% end %>
+          
+          <%= if @order.refund_request.status == :refunded do %>
+            <div class="flex content-evenly">
+              <p class="flex-1">Total accepted refund</p>
+              <p class="flex-1 text-right font-bold"><%= @order.refund_request.total_accepted_refund %></p>
+            </div>
+            <p class="py-3 font-bold text-green-700">Refund request has completed</p>
+          <% end %>
+
+          <%= if @order.refund_request.status == :not_completed do %>
+
+            <p class="py-3 font-bold text-green-700">Refund request has not completed</p>
+          <% end %>
+            <div class="text-right py-10">
+              <%= live_redirect "Detail", to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Show, @order.refund_request.id),
+              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
+              %>
+            </div>
+      </div>
+    </div>
+
+
+  </div>
+
   <!-- Display items in order -->
   <div class="max-w-prose mx-auto">
     <h1>
