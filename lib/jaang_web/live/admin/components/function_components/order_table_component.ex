@@ -6,7 +6,7 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.OrderTableComponent do
 
   def order_table(assigns) do
     ~H"""
-    <div class="flex flex-col mt-10">
+    <div class="flex flex-col">
       <div class="flex justify-between items-center py-7 ">
         <!-- Search form -->
         <form class="flex md:ml-0" phx-submit="search">
@@ -68,7 +68,7 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.OrderTableComponent do
                     Total
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Driver
+                    Employee
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -104,19 +104,29 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.OrderTableComponent do
                         <div class="text-sm text-gray-900"><%= Helpers.display_money(order.grand_total) %></div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                          <div class="flex-shrink-0 h-10 w-10">
-                            <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=60" alt="">
-                          </div>
-                          <div class="ml-4">
-                            <div class="text-sm text-gray-900">
-                              Karen
+                        <%= if Enum.count(order.employees) == 0 do %>
+                          <p class="text-sm text-red-600"> Not assigned yet </p>
+                        <% else %>
+                         <%= for employee <- order.employees do %>
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-10 w-10">
+                                <%= if employee.employee_profile.photo_url == nil do %>
+                                  <img class="h-10 w-10 rounded-full" src="https://jaang-la.s3.us-west-1.amazonaws.com/default-avatar.jpg" alt="employee picture" >
+                                <% else %>
+                                  <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=60" alt="employee picture">
+                                <% end %>
+                              </div>
+                              <div class="ml-4">
+                                <div class="text-sm text-gray-900">
+                                  <%= employee.employee_profile.first_name %>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                 <%= Helpers.display_phone_number(employee.employee_profile.phone) %>
+                                </div>
+                              </div>
                             </div>
-                            <div class="text-sm text-gray-500">
-                              (213)234-5334
-                            </div>
-                          </div>
-                        </div>
+                         <% end %>
+                        <% end %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">

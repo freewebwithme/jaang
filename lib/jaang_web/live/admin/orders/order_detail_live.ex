@@ -11,6 +11,7 @@ defmodule JaangWeb.Admin.Orders.OrderDetailLive do
 
     statuses = [
       %{status: "Refunded", desc: "Invoice is refunded to customer"},
+      %{status: "Partially_refunded", desc: "Invoice is partially refunded to customer"},
       %{status: "Submitted", desc: "Order just submitted"},
       %{status: "Shopping", desc: "Shopper is shopping your order"},
       %{status: "Packed", desc: "Order is ready to pick up by Driver"},

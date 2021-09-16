@@ -78,10 +78,20 @@
         <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
         <p class="font-bold text-gray-800 text-sm">Delivery instructions</p>
         <p class="text-gray-800 text-sm mt-1"><%= @order.instruction %></p>
-        <!-- Display shopper and driver --> 
+
+        <!-- Display shopper --> 
         <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
-        <p class="font-bold text-gray-800 text-sm">Shopper</p>
-        <p class="text-gray-800 text-sm mt-1">Angela Kim</p>
+        <%= if Enum.count(@order.employees) == 0 do %>
+          <p class="text-red-600 font-bold text-lg">Employee not assigned yet</p>
+        <% else %>
+          <%= for employee <- @order.employees do %>
+            <div>
+              <p class="font-bold text-gray-800 text-sm">Shopper & Driver</p>
+              <p class="text-gray-800 text-sm mt-2"><%= employee.employee_profile.first_name %></p>
+              <p class="text-gray-800 text-sm mt-2"><%= Helpers.display_phone_number(employee.employee_profile.phone) %></p>
+            </div>
+          <% end %>
+        <% end %>
       </div>
     </div>
 

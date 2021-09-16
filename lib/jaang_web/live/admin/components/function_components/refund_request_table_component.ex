@@ -81,9 +81,7 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.RefundRequestTableCompone
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
 
-                <div id="orders" phx-update="prepend">
-
-
+                <div id="refund-requests" phx-update="prepend">
                   <%= for request <- @refund_requests do %>
                     <tr id={"#{request.id}"}>
                       <td class="px-6 py-4 whitespace-nowrap">

@@ -83,7 +83,13 @@ defmodule Jaang.Admin.CustomerServices do
     %CustomerMessage{}
     |> CustomerMessage.changeset(attrs)
     |> Repo.insert()
-    |> broadcast(:new_customer_message)
+    |> case do
+      {:ok, customer_message} ->
+        {:ok, Repo.preload(customer_message, [:user, :order])} |> broadcast(:new_customer_message)
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   def list_customer_message(criteria) when is_list(criteria) do
@@ -145,9 +151,10 @@ defmodule Jaang.Admin.CustomerServices do
 
   def subscribe(_), do: :error
 
-  def broadcast({:ok, refund_request}, event) do
-    Phoenix.PubSub.broadcast(Jaang.PubSub, @topic, {event, refund_request})
-    {:ok, refund_request}
+  def broadcast({:ok, updated_schema}, event) do
+    # updated_schema could be refund_request or customer_message
+    Phoenix.PubSub.broadcast(Jaang.PubSub, @topic, {event, updated_schema})
+    {:ok, updated_schema}
   end
 
   def broadcast({:error, _reason} = error, _event), do: error

@@ -30,6 +30,7 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
       "All",
       "Cart",
       "Refunded",
+      "Partially_refunded",
       "Submitted",
       "Shopping",
       "Packed",

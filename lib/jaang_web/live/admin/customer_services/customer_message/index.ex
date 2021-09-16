@@ -99,12 +99,15 @@ defmodule JaangWeb.Admin.CustomerServices.CustomerMessageLive.Index do
 
   def handle_info({:new_customer_message, customer_message}, socket) do
     IO.puts("New customer message came in")
+    IO.inspect(socket.assigns)
 
     socket =
-      update(socket, :customer_message, fn customer_messages ->
+      update(socket, :customer_messages, fn customer_messages ->
+        IO.inspect(Enum.count(customer_messages))
         [customer_message | customer_messages]
       end)
 
+    IO.inspect(Enum.count(socket.assigns.customer_messages))
     {:noreply, socket}
   end
 end

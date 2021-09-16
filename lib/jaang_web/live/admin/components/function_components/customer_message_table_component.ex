@@ -78,7 +78,7 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.CustomerMessageTableCompo
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
 
-                <div id="orders" phx-update="prepend">
+                <div id="customer-messages" phx-update="prepend">
 
 
                   <%= for message <- @customer_messages do %>
