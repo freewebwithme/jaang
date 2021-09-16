@@ -1,0 +1,152 @@
+<main class="max-w-7xl overflow-y-auto focus:outline-none" tabindex="0">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <h2 class="py-3 text-3xl text-gray-900">Customer Message Detail</h2>
+  </div>
+  <div class="mt-3 py-5 px-10 bg-white shadow-md flex content-evenly gap-4">
+    <div class="flex-1">
+      <h2 class="text-gray-800 text-2xl ">Message received at:
+         <span class="text-indigo-600"><%= Helpers.display_datetime(@customer_message.inserted_at) %></span>
+      </h2>
+    </div>
+    <div class="flex-1 items-center ">
+      <h2 class="text-gray-800 text-2xl">Current status:
+        <span class="text-indigo-600"><%= Helpers.capitalize_text(@customer_message.status) %></span>
+      </h2>
+    </div>
+  </div>
+
+  <div class="flex gap-4 mt-5">
+
+    <!-- Customer message info -->
+    <div class="flex-1 bg-white shadow-md">
+      <div class="py-7 px-10">
+        <h2 class="text-xl text-gray-900 mb-5">Customer message information</h2>
+        <p class="text-gray-500 text-sm">Customer message id: <span><%= @customer_message.id %></span></p>
+
+        <div class="pt-5"></div>
+        <div class="flex content-evenly">
+          <p class="flex-1">Status</p>
+          <p class="flex-1 text-right font-bold"><%= @customer_message.status %></p>
+        </div>
+        <div class="pt-5"></div>
+        <p class="font-bold">
+          <%= @customer_message.message %>
+        </p>
+      </div>
+    </div>
+    <!-- Status change card -->
+    <div class="flex-1 bg-white shadow-md">
+      <div class="py-7 px-10">
+        <h2 class="text-xl text-gray-900 mb-5">Change status</h2>
+
+        <form phx-submit="change-state">
+
+          <input type="hidden" name="customer-message-id" value={"#{@customer_message.id}"}>
+          <fieldset>
+           <div class="bg-white rounded-md -space-y-px">
+             <!-- On: "bg-indigo-50 border-indigo-200 z-10", Off: "border-gray-200" -->
+             <%= for status <- @statuses do %>
+             <div class="relative border rounded-tl-md rounded-tr-md p-4 flex">
+               <div class="flex items-center h-5">
+                 <input id={"#{status.status}"} name="customer-message-status" type="radio"
+                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 cursor-pointer border-gray-300" 
+                        value={"#{status.status}"}
+                        checked={@current_status == status.status}>
+               </div>
+               <label for={"#{status.status}"} class="ml-3 flex flex-col cursor-pointer">
+                 <!-- On: "text-indigo-900", Off: "text-gray-900" -->
+                 <span class="block text-sm font-medium">
+                   <%= status.status %>
+                 </span>
+                 <!-- On: "text-indigo-700", Off: "text-gray-500" -->
+                 <span class="block text-sm">
+                   <%= status.desc %>
+                 </span>
+               </label>
+             </div>          
+             <% end %>
+           </div>
+          </fieldset>
+          <div class="flex mt-3">
+            <div class="mx-auto">
+              <%= submit "Update",
+                class: "w-20 items-center px-3.5 py-2.5 border border-transparent text-sm font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="flex-1 bg-white shadow-md">
+     <div class="py-7 px-10">
+       <h2 class="text-xl text-gray-900 mb-5 font-bold">Customer information</h2>
+
+       <div class="flex content-evenly">
+         <p class="flex-1">Email:</p>
+         <p class="flex-1 text-right font-bold"><%= @customer_message.user.email %></p>
+       </div>
+       <div class="flex content-evenly">
+         <p class="flex-1">Name:</p>
+         <p class="flex-1 text-right font-bold"><%= @customer_message.user.profile.first_name %></p>
+       </div>
+       <div class="flex content-evenly">
+         <p class="flex-1">Phone:</p>
+         <p class="flex-1 text-right font-bold"><%= @customer_message.user.profile.phone %></p>
+       </div>
+       <div class="content-end">
+         <%= live_redirect "View detail",
+             to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @customer_message.user.id),
+             class: "text-indigo-600 hover:text-indigo-900"
+         %>
+       </div>
+      </div>
+    </div>
+
+    <div class="flex-1 bg-white shadow-md">
+      <div class="py-7 px-10">
+       <h2 class="text-xl text-gray-900 mb-5 font-bold">Order information</h2>
+         <div class="flex items-center">
+           <div class="flex-shrink-0 h-14 w-14 ">              
+             <img class="h-14 w-14 rounded-full" src={"#{@customer_message.order.store_logo}"} alt="store logo">
+           </div>
+           <div class="ml-4">
+             <div class="text-lg font-medium text-gray-900">
+               <%= @customer_message.order.store_name %>
+             </div>
+           </div>
+
+         </div>
+         <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
+         <div class="flex content-evenly">
+           <p class="flex-1">Recipient:</p>
+           <p class="flex-1 text-right font-bold"><%= @customer_message.order.recipient %></p>
+         </div>
+         <div class="flex content-evenly">
+           <p class="flex-1">Total items:</p>
+           <p class="flex-1 text-right font-bold"><%= @customer_message.order.total_items %></p>
+         </div>
+         <div class="flex content-evenly">
+           <p class="flex-1">Total:</p>
+           <p class="flex-1 text-right font-bold"><%= @customer_message.order.grand_total %></p>
+         </div>
+         <%= if @customer_message.order.status in [:refunded, :partially_refunded] do %>
+
+         <div class="flex content-evenly text-red-700">
+           <p class="flex-1">Accepted Total Refund</p>
+           <p class="flex-1 text-right font-bold"><%= @customer_message.order.refund_request.total_accepted_refund %></p>
+         </div>
+         <div class="flex content-evenly">
+           <p class="flex-1">Adjusted Total after Refund</p>
+           <p class="flex-1 text-right font-bold"><%= @customer_message.order.refund_request.order.grand_total_after_refund %></p>
+         </div>
+         <% end %>
+         <div class="content-end">
+           <%= live_redirect "View detail",
+               to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, @customer_message.order.id),
+               class: "text-indigo-600 hover:text-indigo-900"
+           %>
+         </div>
+     </div>
+    </div>
+  </div>
+</main>

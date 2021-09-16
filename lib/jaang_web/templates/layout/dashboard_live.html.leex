@@ -500,7 +500,7 @@
                     Overview
                   <% end %>
                   
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServiceMessagesLive),
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerMessageLive.Index),
                       class: if @current_page == "Customer Service Messages", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>

@@ -132,6 +132,7 @@
 
   </div>
 
+  <%= if @order.refund_request != nil do %>
   <div class="flex gap-4 mt-5">
     <div class="flex-1 bg-white shadow-md">
       <div class="py-7 px-10">
@@ -185,9 +186,8 @@
             </div>
       </div>
     </div>
-
-
   </div>
+  <% end %>
 
   <!-- Display items in order -->
   <div class="max-w-prose mx-auto">

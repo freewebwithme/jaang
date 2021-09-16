@@ -70,8 +70,12 @@ defmodule JaangWeb.Router do
     live "/employees/roles/edit/:id", Employees.Roles.EmployeeRoleIndexLive, :edit
 
     live "/customer-services", CustomerServices.CustomerServicesOverviewLive
-    live "/customer-services/messages", CustomerServices.CustomerServiceMessagesLive
+    live "/customer-services/messages", CustomerServices.CustomerMessageLive.Index
+    live "/customer-services/messages/:id", CustomerServices.CustomerMessageLive.Show
+    live "/customer-services/messages/search", CustomerServices.CustomerMessageLive.Search
+    live "/customer-services/messages/:id", CustomerServices.CustomerMessageLive.Show
     live "/customer-services/refund-request", CustomerServices.RefundLive.Index
+    live "/customer-services/refund-request/search", CustomerServices.RefundLive.Search
     live "/customer-services/refund-request/:id", CustomerServices.RefundLive.Show
     live "/customer-services/refund-request/:id/accept", CustomerServices.RefundLive.Show, :accept
     live "/customer-services/refund-request/:id/deny", CustomerServices.RefundLive.Show, :deny

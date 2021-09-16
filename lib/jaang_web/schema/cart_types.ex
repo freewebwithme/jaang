@@ -72,28 +72,28 @@ defmodule JaangWeb.Schema.CartTypes do
     end
 
     ### * Cart
-    @desc "Add item to cart"
-    field :add_to_cart, :carts do
-      arg(:user_id, non_null(:string))
-      arg(:product_id, non_null(:string))
-      arg(:quantity, non_null(:integer))
-      arg(:store_id, non_null(:integer))
+    # @desc "Add item to cart"
+    # field :add_to_cart, :carts do
+    #   arg(:user_id, non_null(:string))
+    #   arg(:product_id, non_null(:string))
+    #   arg(:quantity, non_null(:integer))
+    #   arg(:store_id, non_null(:integer))
 
-      # middleware(Middleware.Authenticate)
+    #   # middleware(Middleware.Authenticate)
 
-      resolve(&CartResolver.add_to_cart/3)
-    end
+    #   resolve(&CartResolver.add_to_cart/3)
+    # end
 
-    @desc "Update a cart, change a quantity of item or delete a item from cart"
-    field :update_cart, :carts do
-      arg(:user_id, non_null(:string))
-      arg(:product_id, non_null(:string))
-      arg(:quantity, non_null(:integer))
-      arg(:store_id, non_null(:integer))
+    # @desc "Update a cart, change a quantity of item or delete a item from cart"
+    # field :update_cart, :carts do
+    #  arg(:user_id, non_null(:string))
+    #  arg(:product_id, non_null(:string))
+    #  arg(:quantity, non_null(:integer))
+    #  arg(:store_id, non_null(:integer))
 
-      # middleware(Middleware.Authenticate)
-      resolve(&CartResolver.update_cart/3)
-    end
+    #  # middleware(Middleware.Authenticate)
+    #  resolve(&CartResolver.update_cart/3)
+    # end
 
     ### * Calculate total amount
 
@@ -116,6 +116,16 @@ defmodule JaangWeb.Schema.CartTypes do
       # middleware(Middleware.Authenticate)
       resolve(&OrderResolver.request_refund/3)
     end
+
+    @desc "Customer service message"
+    field :contact_customer_service, :contact_customer_service_result do
+      arg(:token, non_null(:string))
+      arg(:order_id, non_null(:integer))
+      arg(:message, non_null(:string))
+
+      # middleware(Middleware.Authenticate)
+      resolve(&OrderResolver.contact_customer_service/3)
+    end
   end
 
   @desc "Refund items input object"
@@ -124,6 +134,11 @@ defmodule JaangWeb.Schema.CartTypes do
     field :quantity, :integer
     field :weight, :integer
     field :refund_reason, :string
+  end
+
+  @desc "Customer serivce result"
+  object :contact_customer_service_result do
+    field :received, :boolean
   end
 
   object :refund_request do

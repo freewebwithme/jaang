@@ -11,51 +11,51 @@ defmodule JaangWeb.Resolvers.CartResolver do
     {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
   end
 
-  def add_to_cart(
-        _,
-        %{user_id: user_id, product_id: product_id, store_id: store_id, quantity: quantity},
-        _
-      ) do
-    user_id = String.to_integer(user_id)
-    # get a cart for store
-    case OrderManager.get_cart(user_id, store_id) do
-      nil ->
-        # There is no cart for store.  Create initial carts
-        {:ok, cart} = OrderManager.create_cart(user_id, store_id)
-        # Add item to cart
-        OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity})
+  # def add_to_cart(
+  #      _,
+  #      %{user_id: user_id, product_id: product_id, store_id: store_id, quantity: quantity},
+  #      _
+  #    ) do
+  #  user_id = String.to_integer(user_id)
+  #  # get a cart for store
+  #  case OrderManager.get_cart(user_id, store_id) do
+  #    nil ->
+  #      # There is no cart for store.  Create initial carts
+  #      {:ok, cart} = OrderManager.create_cart(user_id, store_id)
+  #      # Add item to cart
+  #      OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity})
 
-        # Get updated carts
-        {carts, total_items, total_price} = get_updated_carts(user_id)
+  #      # Get updated carts
+  #      {carts, total_items, total_price} = get_updated_carts(user_id)
 
-        {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
+  #      {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
 
-      cart ->
-        # Add item to cart
-        OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity})
+  #    cart ->
+  #      # Add item to cart
+  #      OrderManager.add_to_cart(cart, %{product_id: product_id, quantity: quantity})
 
-        # Get updated carts
-        {carts, total_items, total_price} = get_updated_carts(user_id)
+  #      # Get updated carts
+  #      {carts, total_items, total_price} = get_updated_carts(user_id)
 
-        {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
-    end
-  end
+  #      {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
+  #  end
+  # end
 
-  def update_cart(
-        _,
-        %{user_id: user_id, product_id: _product_id, store_id: store_id, quantity: _quantity} =
-          attrs,
-        _
-      ) do
-    user_id = String.to_integer(user_id)
-    cart = OrderManager.get_cart(user_id, store_id)
-    OrderManager.change_quantity_from_cart(cart, attrs)
+  # def update_cart(
+  #      _,
+  #      %{user_id: user_id, product_id: _product_id, store_id: store_id, quantity: _quantity} =
+  #        attrs,
+  #      _
+  #    ) do
+  #  user_id = String.to_integer(user_id)
+  #  cart = OrderManager.get_cart(user_id, store_id)
+  #  OrderManager.change_quantity_from_cart(cart, attrs)
 
-    # Get updated carts
-    {carts, total_items, total_price} = get_updated_carts(user_id)
+  #  # Get updated carts
+  #  {carts, total_items, total_price} = get_updated_carts(user_id)
 
-    {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
-  end
+  #  {:ok, %{orders: carts, total_items: total_items, total_price: total_price}}
+  # end
 
   def get_updated_carts(user_id) do
     carts = OrderManager.get_all_carts(user_id)

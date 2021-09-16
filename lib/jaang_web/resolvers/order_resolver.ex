@@ -47,4 +47,23 @@ defmodule JaangWeb.Resolvers.OrderResolver do
         {:error, "User doesn't match"}
     end
   end
+
+  def contact_customer_service(_, %{token: token, order_id: order_id, message: message} = args, _) do
+    IO.inspect(args)
+    user = AccountManager.get_user_by_session_token(token)
+
+    # create customer message
+    case CustomerServices.create_customer_message(%{
+           status: :new_request,
+           message: message,
+           user_id: user.id,
+           order_id: order_id
+         }) do
+      {:ok, _customer_message} ->
+        {:ok, %{received: true}}
+
+      {:error, _changeset} ->
+        {:ok, %{received: false}}
+    end
+  end
 end

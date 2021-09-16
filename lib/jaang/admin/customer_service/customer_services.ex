@@ -1,6 +1,6 @@
 defmodule Jaang.Admin.CustomerServices do
   import Ecto.Query
-  alias Jaang.Admin.CustomerService.RefundRequest
+  alias Jaang.Admin.CustomerService.{RefundRequest, CustomerMessage}
   alias Jaang.Repo
 
   @topic inspect(__MODULE__)
@@ -32,6 +32,8 @@ defmodule Jaang.Admin.CustomerServices do
           limit: ^per_page
 
       {:filter_by, %{by_state: state}}, query ->
+        state = state |> String.downcase() |> String.replace(" ", "_") |> String.to_atom()
+
         case state == :all do
           true ->
             from(q in query)
@@ -42,6 +44,7 @@ defmodule Jaang.Admin.CustomerServices do
 
       {:search_by, %{search_by: search_by, search_term: term}}, query ->
         search_by_atom = String.to_atom(search_by)
+        search_pattern = "%#{term}%"
 
         case search_by_atom do
           :Email ->
@@ -49,7 +52,7 @@ defmodule Jaang.Admin.CustomerServices do
 
             from q in query,
               join: u in assoc(q, :user),
-              where: u.email == ^term,
+              where: ilike(u.email, ^search_pattern),
               preload: [user: u]
 
           _ ->
@@ -67,6 +70,71 @@ defmodule Jaang.Admin.CustomerServices do
   def update_refund_request(refund_request, attrs) do
     refund_request
     |> RefundRequest.changeset(attrs)
+    |> Repo.update()
+  end
+
+  # Customer message
+  def change_customer_message(%CustomerMessage{} = customer_message, attrs) do
+    customer_message
+    |> CustomerMessage.changeset(attrs)
+  end
+
+  def create_customer_message(attrs) do
+    %CustomerMessage{}
+    |> CustomerMessage.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:new_customer_message)
+  end
+
+  def list_customer_message(criteria) when is_list(criteria) do
+    query = from cm in CustomerMessage, order_by: [desc: cm.inserted_at]
+
+    Enum.reduce(criteria, query, fn
+      {:paginate, %{page: page, per_page: per_page}}, query ->
+        from q in query,
+          offset: ^((page - 1) * per_page),
+          limit: ^per_page
+
+      {:filter_by, %{by_state: state}}, query ->
+        state = state |> String.downcase() |> String.replace(" ", "_") |> String.to_atom()
+
+        case state == :all do
+          true ->
+            from(q in query)
+
+          _ ->
+            from q in query, where: q.status == ^state
+        end
+
+      {:search_by, %{search_by: search_by, search_term: term}}, query ->
+        search_by_atom = String.to_atom(search_by)
+        search_pattern = "%#{term}%"
+
+        case search_by_atom do
+          :Email ->
+            IO.puts("Search by user email")
+
+            from q in query,
+              join: u in assoc(q, :user),
+              where: ilike(u.email, ^search_pattern),
+              preload: [user: u]
+
+          _ ->
+            query
+        end
+    end)
+    |> Repo.all()
+    |> Repo.preload([:user, :order])
+  end
+
+  def get_customer_message(id) do
+    Repo.get_by(CustomerMessage, id: id)
+    |> Repo.preload([[order: :refund_request], [user: :profile]])
+  end
+
+  def update_customer_message(customer_message, attrs) do
+    customer_message
+    |> CustomerMessage.changeset(attrs)
     |> Repo.update()
   end
 
