@@ -101,7 +101,7 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.CustomerMessageTableCompo
                           </span>
                         <% end %>
                         <%= if message.status == :in_progress do %>
-                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-pink-100 text-pink-800">
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                             <%= Helpers.capitalize_text(message.status) %>
                           </span>
                         <% end %>
