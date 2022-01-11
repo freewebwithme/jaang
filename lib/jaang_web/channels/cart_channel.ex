@@ -267,7 +267,10 @@ defmodule JaangWeb.CartChannel do
   def get_updated_carts(user_id) do
     # Refresh product price in carts
     OrderManager.get_all_carts(user_id) |> OrderManager.refresh_product_price()
+
+    # Get updated cart again
     carts = OrderManager.get_all_carts(user_id)
+
     # Extract line items and sort by inserted at
     sorted_carts =
       Enum.map(carts, fn %{

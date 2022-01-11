@@ -45,9 +45,9 @@ defmodule Jaang.Checkout.Order do
              :finalized
            ]}
 
-  defprotocol MoneyProtocol do
-    Protocol.derive(Jason.Encoder, Money)
-  end
+  # defprotocol MoneyProtocol do
+  #  Protocol.derive(Jason.Encoder, Money)
+  # end
 
   schema "orders" do
     field :status, Ecto.Enum,

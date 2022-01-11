@@ -10,11 +10,12 @@
       <h2 class="py-5 px-10 text-3xl text-gray-900">Add employee</h2>
     <% end %>
     <div>
-      <%= live_component @socket, 
-            JaangWeb.Admin.Components.ActiveToggleComponent,
-            changeset: @changeset, 
-            employee: @employee, 
-            id: :employee_modal %>
+      <.live_component
+        module={JaangWeb.Admin.Components.ActiveToggleComponent}
+        changeset={@changeset}
+        employee={@employee}
+        id="employee_modal"
+      />
     </div>
     <%= if @live_action == :edit do %>
       <div>

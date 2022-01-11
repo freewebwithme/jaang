@@ -33,15 +33,15 @@ defmodule Jaang.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6.0-rc.0", override: true},
-      {:phoenix_live_view, "~> 0.16.0"},
+      {:phoenix, "~> 1.6"},
+      {:phoenix_live_view, "~> 0.17"},
       {:floki, ">= 0.0.0", only: :test},
       {:phoenix_ecto, "~> 4.4.0"},
       {:ecto_sql, "~> 3.7.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.0", override: true},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.5"},
+      {:phoenix_live_dashboard, "~> 0.6"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 0.5"},
       {:gettext, "~> 0.11"},

@@ -39,7 +39,7 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
     end
 
     @desc "Send confirmation email from Flutter"
-    field :resend_confirmation_email, :simple_response do
+    field :resend_confirmation_email_for_employee, :simple_response do
       arg(:employee_token, non_null(:string))
 
       resolve(&EmployeeAccountResolver.resend_confirmation_email/3)

@@ -354,21 +354,21 @@ defmodule Jaang.Checkout.Carts do
       end)
       |> Enum.flat_map(fn x -> x end)
 
-    # Get all products in carts
+    # Get all products that published == true in carts
     query =
       from p in Product,
         where: p.id in ^product_ids and p.published == true,
         join: pp in assoc(p, :product_prices),
-        # on: pp.product_id == p.id,
         where: fragment("now() between ? and ?", pp.start_date, pp.end_date),
-        # join: pi in assoc(p, :product_images),
-        # on: pi.product_id == p.id,
         preload: [product_prices: pp]
 
     grouped_products = Repo.all(query) |> Enum.group_by(& &1.id)
 
     Enum.map(carts, fn %{line_items: line_items} = order ->
-      new_line_items = Enum.map(line_items, fn line_item -> Map.from_struct(line_item) end)
+      new_line_items =
+        Enum.map(line_items, fn line_item -> Map.from_struct(line_item) end)
+        # filter out published == false item from line_items
+        |> Enum.filter(&product_still_available?(grouped_products, &1.product_id))
 
       updated_line_items =
         Enum.map(new_line_items, fn line_item ->
@@ -408,9 +408,17 @@ defmodule Jaang.Checkout.Carts do
           end
         end)
 
+      IO.inspect(updated_line_items)
       attrs = %{line_items: updated_line_items}
       update_cart(order, attrs)
     end)
+  end
+
+  def product_still_available?(grouped_products, product_id) do
+    case Map.get(grouped_products, product_id) do
+      nil -> false
+      _ -> true
+    end
   end
 
   def data() do

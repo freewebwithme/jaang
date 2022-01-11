@@ -1,7 +1,7 @@
-defmodule JaangWeb.Admin.Components.AddressComponent do
+defmodule JaangWeb.Admin.Components.FunctionComponents.AddressComponent do
   use JaangWeb, :live_component
 
-  def render(assigns) do
+  def address(assigns) do
     ~H"""
     <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-4">
       <h2 id="timeline-title" class="text-lg font-medium text-gray-900 mb-4"><%= @title %></h2>

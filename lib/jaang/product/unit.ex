@@ -5,7 +5,7 @@ defmodule Jaang.Product.Unit do
   schema "units" do
     # lb, each, pack, bundle
     field :name, :string
-    has_many :products, Jaang.Product
+    # has_many :products, Jaang.Product
 
     timestamps(type: :utc_datetime)
   end

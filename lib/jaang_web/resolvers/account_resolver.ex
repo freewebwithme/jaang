@@ -1,6 +1,7 @@
 defmodule JaangWeb.Resolvers.AccountResolver do
   alias Jaang.Account.UserAuthMobile
   alias Jaang.{AccountManager}
+  require Logger
 
   def log_in(_, %{email: email, password: password}, _) do
     case UserAuthMobile.log_in_mobile_user(email, password) do
@@ -31,8 +32,6 @@ defmodule JaangWeb.Resolvers.AccountResolver do
       profile: %{first_name: first_name, last_name: last_name}
     }
 
-    IO.inspect(args)
-
     case AccountManager.create_user_with_profile(attrs) do
       {:ok, user} ->
         Jaang.EmailManager.send_welcome_email(user)
@@ -43,8 +42,9 @@ defmodule JaangWeb.Resolvers.AccountResolver do
 
         {:ok, %{user: user, token: token, expired: false}}
 
-      {:error, error} ->
-        {:error, error}
+      {:error, changeset} ->
+        Logger.error("Customer sign up failed #{inspect(changeset)}")
+        {:error, message: "Error occured from server"}
     end
   end
 
