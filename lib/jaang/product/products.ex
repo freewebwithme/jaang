@@ -14,12 +14,16 @@ defmodule Jaang.Product.Products do
 
   import Ecto.Query
 
+  @type t :: %Product{}
+  @type changeset :: %Ecto.Changeset{}
+
   def create_product_for_seeds(attrs) do
     %Product{}
     |> Product.changeset(attrs)
     |> Repo.insert()
   end
 
+  @spec create_product(map) :: t
   def create_product(attrs) do
     {:ok, product} =
       %Product{}
@@ -31,12 +35,14 @@ defmodule Jaang.Product.Products do
     product
   end
 
+  @spec create_unit(map) :: {:ok, %Unit{}} | {:error, changeset}
   def create_unit(attrs) do
     %Unit{}
     |> Unit.changeset(attrs)
     |> Repo.insert()
   end
 
+  @spec create_product_image(t, map) :: {:ok, %ProductImage{}} | {:error, changeset}
   def create_product_image(product, attrs) do
     attrs = Map.put(attrs, :product_id, product.id)
 
@@ -45,6 +51,7 @@ defmodule Jaang.Product.Products do
     |> Repo.insert()
   end
 
+  @spec update_product(t, map()) :: {:ok, t} | {:error, changeset}
   def update_product(product, attrs) do
     IO.puts("Inspecting product changeset")
     changeset = Product.changeset(product, attrs)
@@ -58,6 +65,7 @@ defmodule Jaang.Product.Products do
   @doc """
   Get product along with product price manually loading
   """
+  @spec get_product(integer()) :: t | nil
   def get_product(id) do
     #  query =
     #    from p in Product, where: p.id == ^id and p.published == true, preload: :product_images
@@ -67,7 +75,7 @@ defmodule Jaang.Product.Products do
 
     #  cond do
     #    is_nil(product_price) ->
-    #      Map.put(product, :product_prices, [])
+    #      Map.put(product, :produ ct_prices, [])
 
     #    true ->
     #      Map.put(product, :product_prices, [product_price])
@@ -88,6 +96,7 @@ defmodule Jaang.Product.Products do
     Repo.one(query)
   end
 
+  @spec get_sales_products(integer(), integer(), integer()) :: list(t)
   def get_sales_products(store_id, limit, offset) do
     query = from p in Product, where: p.store_id == ^store_id, limit: ^limit, offset: ^offset
 
@@ -104,6 +113,7 @@ defmodule Jaang.Product.Products do
     Repo.all(join_query)
   end
 
+  @spec get_all_products(integer()) :: list(t)
   def get_all_products(category_id) do
     query = from p in Product, where: p.category_id == ^category_id and p.published == true
     Repo.all(query)
@@ -112,6 +122,7 @@ defmodule Jaang.Product.Products do
   @doc """
   Get related products
   """
+  @spec get_related_products(integer(), integer()) :: list(t)
   def get_related_products(product_id, limit) do
     product = Repo.get_by(Product, id: product_id) |> Repo.preload(:tags)
     tag_ids = Enum.map(product.tags, & &1.id)
@@ -141,6 +152,7 @@ defmodule Jaang.Product.Products do
   If products share same recipe tags,
   I guess it is often bought with products
   """
+  @spec get_often_bought_with_products(integer(), integer()) :: list(t)
   def get_often_bought_with_products(product_id, limit) do
     product = Repo.get_by(Product, id: product_id) |> Repo.preload(:recipe_tags)
     tag_ids = Enum.map(product.recipe_tags, & &1.id)
@@ -170,6 +182,7 @@ defmodule Jaang.Product.Products do
   Product images are loaded with Dataloader in Schema.ex but
   preload ProductPrice manually because I need to filter it
   """
+  @spec get_products_by_ids(list(integer()), integer()) :: list(t)
   def get_products_by_ids(ids, store_id) do
     query =
       from p in Product,
@@ -182,6 +195,7 @@ defmodule Jaang.Product.Products do
     Repo.all(query)
   end
 
+  @spec get_replacement_products(integer(), integer()) :: list(t)
   def get_replacement_products(product_id, limit) do
     product = Repo.get_by(Product, id: product_id) |> Repo.preload(:tags)
     tag_ids = Enum.map(product.tags, & &1.id)
@@ -211,6 +225,7 @@ defmodule Jaang.Product.Products do
   returns [3, 4, 5, 6, 10, 30]
   This function is used for replacement products
   """
+  @spec get_product_ids_using_tag_ids(:product_tag, integer(), list(integer())) :: list(integer())
   def get_product_ids_using_tag_ids(:product_tag, product_id, tag_ids) do
     query =
       from pt in ProductTags,
@@ -220,6 +235,7 @@ defmodule Jaang.Product.Products do
     Repo.all(query)
   end
 
+  @spec get_product_ids_using_tag_ids(:recipe_tag, integer(), list(integer())) :: list(integer())
   def get_product_ids_using_tag_ids(:recipe_tag, product_id, tag_ids) do
     query =
       from prt in ProductRecipeTags,
