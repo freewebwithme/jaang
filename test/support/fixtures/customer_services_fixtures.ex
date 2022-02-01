@@ -14,7 +14,7 @@ defmodule Jaang.CustomerServicesFixtures do
         message: "some message",
         status: "some status"
       })
-      |> Jaang.CustomerServices.create_customer_message()
+      |> Jaang.Admin.CustomerServices.create_customer_message()
 
     customer_message
   end

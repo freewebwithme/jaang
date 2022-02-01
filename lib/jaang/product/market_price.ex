@@ -214,7 +214,6 @@ defmodule Jaang.Product.MarketPrice do
     # get product price to obtain regular price and update end_date to sale's start date
     # For Market Price
     old_mp = get_market_price(product_id)
-    IO.inspect(old_mp)
     original_price = old_mp.original_price
 
     # Update old product price's end_date

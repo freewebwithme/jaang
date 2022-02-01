@@ -85,6 +85,7 @@ defmodule JaangWeb.Admin.Products.ProductAddLive do
       |> Map.put("sub_category_id", sub_category.id)
       |> Map.put("sub_category_name", sub_category.name)
       |> Map.put("store_name", socket.assigns.store_name)
+      # with this original price, We calculate customer price
       |> Map.put("original_price", market_price)
       |> Utility.convert_string_key_to_atom_key()
 
