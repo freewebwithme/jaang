@@ -39,6 +39,7 @@ defmodule Jaang.AccountsTest do
     user = context[:user]
 
     attrs = %{
+      recipient: "John",
       address_line_one: "777 Good st",
       address_line_two: "APT 320",
       business_name: "Good",
@@ -50,6 +51,7 @@ defmodule Jaang.AccountsTest do
 
     {:ok, address1} = AccountManager.create_address(user, attrs)
 
+    assert address1.recipient == "John"
     assert address1.address_line_one == "777 Good st"
     assert address1.address_line_two == "APT 320"
     assert address1.business_name == "Good"
@@ -64,6 +66,7 @@ defmodule Jaang.AccountsTest do
     user = context[:user]
 
     attrs1 = %{
+      recipient: "John",
       address_line_one: "777 Good st",
       address_line_two: "APT 320",
       business_name: "Good",
@@ -74,6 +77,7 @@ defmodule Jaang.AccountsTest do
     }
 
     attrs2 = %{
+      recipient: "John",
       address_line_one: "777 Good st",
       address_line_two: "APT 320",
       business_name: "Good",
@@ -91,5 +95,47 @@ defmodule Jaang.AccountsTest do
     saved_user = Repo.one(query) |> Repo.preload(:addresses)
 
     assert is_list(saved_user.addresses)
+    assert Enum.count(saved_user.addresses) == 2
+  end
+
+  test "google_signin_from_mobile/3 create new user if none exist?", context do
+    {:ok, user} =
+      AccountManager.google_signin_from_mobile(
+        "new_user@example.com",
+        "John Doe",
+        "https://photourl.com"
+      )
+
+    assert user.email == "new_user@example.com"
+    assert user.profile.first_name == "John"
+    assert user.profile.last_name == "Doe"
+    assert user.profile.photo_url == "https://photourl.com"
+  end
+
+  test "google_signin_from_mobile/3 return existing user?", context do
+    user = context[:user]
+    # Trying to sign in with existing user
+    {:ok, user} =
+      AccountManager.google_signin_from_mobile(
+        "test@example.com",
+        "John Doe",
+        "https://photourl.com"
+      )
+
+    assert user == user
+  end
+
+  test "google_signin_from_mobile/3 without display_name" do
+    {:ok, user} =
+      AccountManager.google_signin_from_mobile(
+        "no_name@example.com",
+        nil,
+        "https://photourl.com"
+      )
+
+    assert user.email == "no_name@example.com"
+    assert user.profile.first_name == nil
+    assert user.profile.last_name == nil
+    assert user.profile.photo_url == "https://photourl.com"
   end
 end

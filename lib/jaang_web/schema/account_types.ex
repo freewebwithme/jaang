@@ -49,6 +49,13 @@ defmodule JaangWeb.Schema.AccountTypes do
       resolve(&AccountResolver.google_signIn/3)
     end
 
+    @desc "Google Sign in using idToken"
+    field :google_signin_with_id_token, :session do
+      arg(:id_token, non_null(:string))
+
+      resolve(&AccountResolver.google_signIn_with_id_token/3)
+    end
+
     @desc "Log out"
     field :log_out, :session do
       arg(:token, :string)

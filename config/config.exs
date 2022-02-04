@@ -28,6 +28,9 @@ config :jaang, Jaang.Mailer,
     recv_timeout: :timer.minutes(1)
   ]
 
+config :jaang,
+  google_client_id: System.get_env("GOOGLE_CLIENT_ID")
+
 config :money,
   default_currency: :USD
 

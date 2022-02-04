@@ -78,35 +78,22 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   end
 
   @doc """
-  Authenticate google user with idToken
-  TODO: Currently not using this function
-  """
-  def googleSignIn_with_id_token(_, %{idToken: idToken}, _) do
-    case AccountManager.authenticate_google_idToken(idToken) do
-      {:ok, user} ->
-        # User signs in with google and authenticated
-        # and generate session token
-        token = AccountManager.generate_user_session_token(user)
-
-        # get cart or create new
-        # carts = OrderManager.get_all_carts_or_create_new(user)
-
-        {:ok, %{user: user, token: token, expired: false}}
-
-      _ ->
-        {:error, "Something wrong, please try again"}
-    end
-  end
-
-  @doc """
   Autheticate google user using email
   """
   def google_signIn(_, %{email: email, display_name: display_name, photo_url: photo_url}, _) do
     {:ok, user} = AccountManager.google_signin_from_mobile(email, display_name, photo_url)
     token = UserAuthMobile.generate_user_session_token(user)
 
-    # get cart or create new
-    # carts = OrderManager.get_all_carts_or_create_new(user)
+    {:ok, %{user: user, token: token, expired: false}}
+  end
+
+  @doc """
+  Authenticate user using Google idToken
+  """
+  def google_signIn_with_id_token(_, %{id_token: id_token}, _) do
+    {:ok, user} = AccountManager.authenticate_google_idToken(id_token)
+    token = UserAuthMobile.generate_user_session_token(user)
+
     IO.inspect(user)
     {:ok, %{user: user, token: token, expired: false}}
   end

@@ -5,12 +5,14 @@ defmodule Jaang.Account.Accounts do
   alias Ecto.Changeset
   import Ecto.Query
 
+  @type changeset :: %Ecto.Changeset{}
+  @type user :: %Jaang.Account.User{}
+
   @doc """
-  attrs = %{email: "user@example.com", profile: %{ first_name: "John",
-              last_name: "Doe"
-              }
-            }
+  attrs = %{email: "user@example.com", profile: %{ first_name: "John", last_name: "Doe"}}
   """
+  @spec create_user_with_profile(map) ::
+          {:ok, %User{} | {:error, changeset()}}
   def create_user_with_profile(attrs) do
     with {:ok, user} <- create_user(attrs) do
       # Send confirmation email
@@ -25,6 +27,11 @@ defmodule Jaang.Account.Accounts do
     end
   end
 
+  @doc """
+  Create user with information in attrs and send comfirmatin email
+  attrs = %{email: "user@example.com", profile: %{ first_name: "John", last_name: "Doe"}}
+  """
+  @spec create_user_with_profile_using_google(map) :: {:ok, %User{} | {:error, changeset}}
   def create_user_with_profile_using_google(attrs) do
     case create_user_using_google(attrs) do
       {:ok, user} ->
@@ -38,21 +45,27 @@ defmodule Jaang.Account.Accounts do
 
         {:ok, user}
 
-      {:error, error} ->
-        {:error, error}
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
+  @doc """
+  Create user using google information
+  """
+  @spec create_user_using_google(map) :: {:ok, %User{} | {:error, changeset}}
   def create_user_using_google(attrs) do
     %User{} |> User.google_changeset(attrs) |> Repo.insert()
   end
 
+  @spec create_user(map) :: {:ok, %User{} | {:error, changeset}}
   def create_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
 
+  @spec create_address(%User{}, map) :: {:ok, %Address{} | {:error, changeset}}
   def create_address(%User{} = user, attrs) do
     attrs = Map.put(attrs, :user_id, user.id)
 
@@ -61,10 +74,17 @@ defmodule Jaang.Account.Accounts do
     |> Repo.insert()
   end
 
+  @doc """
+  Get a user with user id and preloaded profile, addresses with distance schema
+  """
+  @spec get_user(integer()) :: %User{} | nil
   def get_user(id) do
     Repo.get_by(User, id: id) |> Repo.preload([:profile, addresses: [:distance]])
   end
 
+  @doc """
+  Return changeset from registration_changeset
+  """
   def change_user(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs)
   end
@@ -80,9 +100,11 @@ defmodule Jaang.Account.Accounts do
   end
 
   @doc """
+  Basically updating profile information and also
   if user is changing default store,
   update distance schema also
   """
+  @spec update_profile(user, map) :: %Jaang.Account.Profile{}
   def update_profile(user, attrs) do
     profile = user.profile
     changeset = change_profile(profile, attrs)
@@ -329,6 +351,8 @@ defmodule Jaang.Account.Accounts do
   def authenticate_google_idToken(idToken) do
     with {:ok, result} <- Jaang.Account.GoogleToken.verify_and_validate(idToken) do
       email = result["email"]
+      IO.puts("Printing google token verify result")
+      IO.inspect(result)
 
       if user = get_user_by_email(email) do
         {:ok, user}
@@ -347,6 +371,10 @@ defmodule Jaang.Account.Accounts do
     end
   end
 
+  @doc """
+  Mobile client sign in using Google Sign in 
+  """
+  @spec google_signin_from_mobile(String.t(), String.t(), String.t()) :: {:ok, %User{}}
   def google_signin_from_mobile(email, display_name, photo_url) when is_nil(display_name) do
     if user = get_user_by_email(email) do
       {:ok, user}

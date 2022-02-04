@@ -63,7 +63,7 @@ defmodule Jaang.MixProject do
       {:bamboo, "~> 1.7"},
       {:recaptcha, "~> 3.0"},
       {:joken, "~> 2.2"},
-      {:joken_jwks, "~> 1.3"},
+      {:joken_jwks, "~> 1.4"},
       {:stripity_stripe, "~> 2.0"},
       {:google_maps, "~> 0.11.0"},
       {:uuid, "~> 1.1"},

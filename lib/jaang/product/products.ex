@@ -195,6 +195,9 @@ defmodule Jaang.Product.Products do
     Repo.all(query)
   end
 
+  @doc """
+  Get replacement products by its tag
+  """
   @spec get_replacement_products(integer(), integer()) :: list(t)
   def get_replacement_products(product_id, limit) do
     product = Repo.get_by(Product, id: product_id) |> Repo.preload(:tags)

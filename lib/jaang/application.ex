@@ -7,6 +7,8 @@ defmodule Jaang.Application do
 
   def start(_type, _args) do
     children = [
+      # Need this for Google sign in that validate and verify id_token
+      Jaang.Account.GoogleStrategy,
       # Start the Ecto repository
       Jaang.Repo,
       # Start the Telemetry supervisor

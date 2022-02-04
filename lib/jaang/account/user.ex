@@ -3,6 +3,8 @@ defmodule Jaang.Account.User do
   import Ecto.Changeset
   alias Jaang.Account.Validator
 
+  @type t :: module
+
   @derive {Jason.Encoder, except: [:__meta__, :password, :hashed_password, :addresses, :invoices]}
   schema "users" do
     field :email, :string
