@@ -15,7 +15,7 @@ defmodule Jaang.AccountManager do
   defdelegate change_user_password(user), to: Accounts
 
   defdelegate authenticate_google_idToken(idToken), to: Accounts
-  defdelegate google_signin_from_mobile(email, display_name, photo_url), to: Accounts
+
   # Session
   defdelegate delete_session_token(token), to: Accounts
   defdelegate generate_user_session_token(user), to: Accounts

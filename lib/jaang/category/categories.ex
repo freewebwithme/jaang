@@ -35,7 +35,7 @@ defmodule Jaang.Category.Categories do
     Repo.all(Category)
   end
 
-  def list_sub_category(category_id) do
+  def list_sub_categories(category_id) do
     query =
       from sc in SubCategory,
         where: sc.category_id == ^category_id

@@ -98,44 +98,44 @@ defmodule Jaang.AccountsTest do
     assert Enum.count(saved_user.addresses) == 2
   end
 
-  test "google_signin_from_mobile/3 create new user if none exist?", context do
-    {:ok, user} =
-      AccountManager.google_signin_from_mobile(
-        "new_user@example.com",
-        "John Doe",
-        "https://photourl.com"
-      )
+  # test "google_signin_from_mobile/3 create new user if none exist?", context do
+  #  {:ok, user} =
+  #    AccountManager.google_signin_from_mobile(
+  #      "new_user@example.com",
+  #      "John Doe",
+  #      "https://photourl.com"
+  #    )
 
-    assert user.email == "new_user@example.com"
-    assert user.profile.first_name == "John"
-    assert user.profile.last_name == "Doe"
-    assert user.profile.photo_url == "https://photourl.com"
-  end
+  #  assert user.email == "new_user@example.com"
+  #  assert user.profile.first_name == "John"
+  #  assert user.profile.last_name == "Doe"
+  #  assert user.profile.photo_url == "https://photourl.com"
+  # end
 
-  test "google_signin_from_mobile/3 return existing user?", context do
-    user = context[:user]
-    # Trying to sign in with existing user
-    {:ok, user} =
-      AccountManager.google_signin_from_mobile(
-        "test@example.com",
-        "John Doe",
-        "https://photourl.com"
-      )
+  # test "google_signin_from_mobile/3 return existing user?", context do
+  #  user = context[:user]
+  #  # Trying to sign in with existing user
+  #  {:ok, user} =
+  #    AccountManager.google_signin_from_mobile(
+  #      "test@example.com",
+  #      "John Doe",
+  #      "https://photourl.com"
+  #    )
 
-    assert user == user
-  end
+  #  assert user == user
+  # end
 
-  test "google_signin_from_mobile/3 without display_name" do
-    {:ok, user} =
-      AccountManager.google_signin_from_mobile(
-        "no_name@example.com",
-        nil,
-        "https://photourl.com"
-      )
+  # test "google_signin_from_mobile/3 without display_name" do
+  #  {:ok, user} =
+  #    AccountManager.google_signin_from_mobile(
+  #      "no_name@example.com",
+  #      nil,
+  #      "https://photourl.com"
+  #    )
 
-    assert user.email == "no_name@example.com"
-    assert user.profile.first_name == nil
-    assert user.profile.last_name == nil
-    assert user.profile.photo_url == "https://photourl.com"
-  end
+  #  assert user.email == "no_name@example.com"
+  #  assert user.profile.first_name == nil
+  #  assert user.profile.last_name == nil
+  #  assert user.profile.photo_url == "https://photourl.com"
+  # end
 end

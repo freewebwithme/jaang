@@ -14,7 +14,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
     product = Products.get_product(store_id, product_id)
     changeset = Product.changeset(product, %{})
     categories = Categories.get_all_categories()
-    sub_categories = Categories.list_sub_category(product.category_id)
+    sub_categories = Categories.list_sub_categories(product.category_id)
     # get tags and recipe tags and convert to string format
     tags = Product.build_recipe_tag_name_to_string(product.tags)
     recipe_tags = Product.build_recipe_tag_name_to_string(product.recipe_tags)
@@ -143,7 +143,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
     ProductManager.update_product(product, product_attrs)
     # Get updated product
     new_product = Products.get_product(store_id, product_id)
-    sub_categories = Categories.list_sub_category(new_product.category_id)
+    sub_categories = Categories.list_sub_categories(new_product.category_id)
     # get tags and recipe tags and convert to string format
     tags = Product.build_recipe_tag_name_to_string(new_product.tags)
     recipe_tags = Product.build_recipe_tag_name_to_string(new_product.recipe_tags)
@@ -200,7 +200,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
     socket =
       cond do
         Enum.member?(targets, "category_id") ->
-          sub_categories = Categories.list_sub_category(new_category_id)
+          sub_categories = Categories.list_sub_categories(new_category_id)
 
           assign(socket,
             sub_categories: sub_categories,

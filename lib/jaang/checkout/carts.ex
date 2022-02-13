@@ -1,9 +1,12 @@
 defmodule Jaang.Checkout.Carts do
   alias Jaang.{StoreManager, InvoiceManager}
-  alias Jaang.Checkout.Order
+  alias Jaang.Checkout.{Order, LineItem}
   alias Jaang.Product
   alias Jaang.Repo
   import Ecto.Query
+
+  @type changeset :: %Ecto.Changeset{}
+  @type order :: %Order{}
 
   @doc """
   Create an empty cart with status :cart
@@ -180,6 +183,8 @@ defmodule Jaang.Checkout.Carts do
     end
   end
 
+  @spec change_quantity_from_cart(order, map) ::
+          {:ok, order | {:error, changeset}}
   def change_quantity_from_cart(%Order{line_items: existing_line_items} = cart, cart_attrs) do
     %{product_id: product_id, quantity: quantity} = cart_attrs
     product_id = String.to_integer(product_id)

@@ -124,7 +124,7 @@ defmodule JaangWeb.Admin.Products.ProductAddLive do
     socket =
       cond do
         Enum.member?(targets, "category_id") ->
-          sub_categories = Categories.list_sub_category(new_category_id)
+          sub_categories = Categories.list_sub_categories(new_category_id)
 
           assign(socket,
             sub_categories: sub_categories,

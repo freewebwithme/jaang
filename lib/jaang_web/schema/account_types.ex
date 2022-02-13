@@ -40,14 +40,14 @@ defmodule JaangWeb.Schema.AccountTypes do
       resolve(&AccountResolver.resend_confirmation_email/3)
     end
 
-    @desc "Google Sign in"
-    field :google_signin, :session do
-      arg(:email, non_null(:string))
-      arg(:display_name, :string)
-      arg(:photo_url, :string)
+    # @desc "Google Sign in"
+    # field :google_signin, :session do
+    #  arg(:email, non_null(:string))
+    #  arg(:display_name, :string)
+    #  arg(:photo_url, :string)
 
-      resolve(&AccountResolver.google_signIn/3)
-    end
+    #  resolve(&AccountResolver.google_signIn/3)
+    # end
 
     @desc "Google Sign in using idToken"
     field :google_signin_with_id_token, :session do

@@ -346,8 +346,6 @@ defmodule Jaang.Account.Accounts do
 
   This function will be use for mobile google sign in
   """
-  ### TODO: Can't figure out why can't get idToken from flutter
-  ### not using it until find a solution.
   def authenticate_google_idToken(idToken) do
     with {:ok, result} <- Jaang.Account.GoogleToken.verify_and_validate(idToken) do
       email = result["email"]
@@ -371,51 +369,51 @@ defmodule Jaang.Account.Accounts do
     end
   end
 
-  @doc """
-  Mobile client sign in using Google Sign in 
-  """
-  @spec google_signin_from_mobile(String.t(), String.t(), String.t()) :: {:ok, %User{}}
-  def google_signin_from_mobile(email, display_name, photo_url) when is_nil(display_name) do
-    if user = get_user_by_email(email) do
-      {:ok, user}
-    else
-      attrs = %{
-        email: email,
-        profile: %{
-          first_name: nil,
-          last_name: nil,
-          photo_url: photo_url
-        }
-      }
+  # @doc """
+  # Mobile client sign in using Google Sign in 
+  # """
+  # @spec google_signin_from_mobile(String.t(), String.t(), String.t()) :: {:ok, %User{}}
+  # def google_signin_from_mobile(email, display_name, photo_url) when is_nil(display_name) do
+  #  if user = get_user_by_email(email) do
+  #    {:ok, user}
+  #  else
+  #    attrs = %{
+  #      email: email,
+  #      profile: %{
+  #        first_name: nil,
+  #        last_name: nil,
+  #        photo_url: photo_url
+  #      }
+  #    }
 
-      {:ok, user} = create_user_with_profile_using_google(attrs)
-      {:ok, user}
-    end
-  end
+  #    {:ok, user} = create_user_with_profile_using_google(attrs)
+  #    {:ok, user}
+  #  end
+  # end
 
-  def google_signin_from_mobile(email, display_name, photo_url) do
-    if user = get_user_by_email(email) do
-      {:ok, user}
-    else
-      names = String.split(display_name, " ")
-      # Get first name
-      [first_name] = Enum.take(names, 1)
-      # Get last name
-      [last_name] = Enum.take(names, -1)
+  # def google_signin_from_mobile(email, display_name, photo_url) do
+  #  if user = get_user_by_email(email) do
+  #    {:ok, user}
+  #  else
+  #    names = String.split(display_name, " ")
+  #    # Get first name
+  #    [first_name] = Enum.take(names, 1)
+  #    # Get last name
+  #    [last_name] = Enum.take(names, -1)
 
-      attrs = %{
-        email: email,
-        profile: %{
-          first_name: first_name,
-          last_name: last_name,
-          photo_url: photo_url
-        }
-      }
+  #    attrs = %{
+  #      email: email,
+  #      profile: %{
+  #        first_name: first_name,
+  #        last_name: last_name,
+  #        photo_url: photo_url
+  #      }
+  #    }
 
-      {:ok, user} = create_user_with_profile_using_google(attrs)
-      {:ok, user}
-    end
-  end
+  #    {:ok, user} = create_user_with_profile_using_google(attrs)
+  #    {:ok, user}
+  #  end
+  # end
 
   ## Absinthe
 
