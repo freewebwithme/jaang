@@ -70,7 +70,8 @@ defmodule Jaang.MixProject do
       {:timex, "~> 3.6"},
       {:ex_signal, "~> 0.3.0"},
       {:date_time_parser, "~> 1.1.1"},
-      {:xlsxir, "~> 1.6.4"}
+      {:xlsxir, "~> 1.6.4"},
+      {:esbuild, "~> 0.4.0"}
     ]
   end
 
@@ -82,10 +83,12 @@ defmodule Jaang.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      #setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "assets.deploy": ["cmd --cd assets npm run deploy", "esbuild default --minify", "phx.digest"]
     ]
   end
 end

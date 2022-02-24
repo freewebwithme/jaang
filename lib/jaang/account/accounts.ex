@@ -357,12 +357,13 @@ defmodule Jaang.Account.Accounts do
       else
         attrs = %{
           email: email,
-          first_name: result["given_name"],
-          last_name: result["family_name"]
+          profile: %{
+            first_name: result["given_name"],
+            last_name: result["family_name"]
+          }
         }
 
-        user = create_user_with_profile_using_google(attrs)
-        {:ok, user}
+        create_user_with_profile_using_google(attrs)
       end
     else
       _ -> :error

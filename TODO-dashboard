@@ -174,3 +174,6 @@
     - Partners
       - List product by category
       - Edit product information including price.
+
+
+[ migrate lees to heex for templates file]

@@ -91,10 +91,10 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   Authenticate user using Google idToken
   """
   def google_signIn_with_id_token(_, %{id_token: id_token}, _) do
+
     {:ok, user} = AccountManager.authenticate_google_idToken(id_token)
     token = UserAuthMobile.generate_user_session_token(user)
 
-    IO.inspect(user)
     {:ok, %{user: user, token: token, expired: false}}
   end
 

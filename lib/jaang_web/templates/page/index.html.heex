@@ -169,7 +169,7 @@
           <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
             <div class="rounded-md shadow">
               <a
-                href="<%= Routes.auth_path(@conn, :request, :identity) %>"
+                href="{Routes.auth_path(@conn, :request, :identity)}"
                 class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
               >
                 Log in
@@ -182,7 +182,7 @@
   </div>
   <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
     <img class="h-60 w-full object-cover object-center sm:h-72 md:h-96 lg:w-full
-    lg:h-full" src="<%= Routes.static_path(@conn, "/images/hero-image.jpg") %>"
+    lg:h-full" src={Routes.static_path(@conn, "/images/hero-image.jpg")}
     alt="" />
   </div>
 </div>
@@ -572,8 +572,8 @@
     >
       Want product news and updates?
       <br class="hidden sm:inline" />
-      <span class="text-indigo-600" id="newsletter-headline"
-        >Sign up for our newsletter.</span
+      <span class="text-indigo-600" id="newsletter-headline">
+        Sign up for our newsletter.</span>
       >
     </h2>
     <form class="mt-8 sm:flex" aria-labelledby="newsletter-headline">

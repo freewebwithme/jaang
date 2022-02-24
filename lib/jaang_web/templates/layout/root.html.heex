@@ -5,8 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jaang · Get your groceries at your door step!</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css")
-    %>"/>
+
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+
+    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <%= csrf_meta_tag() %>
 
@@ -14,11 +16,7 @@
     <script>window.userId = "<%= assigns[:user_id] %>";</script>
     <script>window.adminUserToken = "<%= assigns[:admin_user_token] %>"</script>
     <script>window.adminUserId = "<% assigns[:admin_id] %>"</script>
-    <script
-      defer
-      type="text/javascript"
-      src="<%= Routes.static_path(@conn, "/js/app.js") %>"
-    ></script>
+
   </head>
 
   <body>
