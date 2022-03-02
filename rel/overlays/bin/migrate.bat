@@ -1,0 +1,1 @@
+call "%~dp0\jaang" eval Jaang.Release.migrate
