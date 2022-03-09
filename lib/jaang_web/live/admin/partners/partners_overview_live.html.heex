@@ -1,12 +1,22 @@
 <div class="container mx-auto">
+  <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+    <div class="flex-1 min-w-0">
+      <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Partner List for JaangCart</h1>
+    </div>
+    <div class="mt-4 flex sm:mt-0 sm:ml-4">
+      <button type="button" class="order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:order-1 sm:ml-3">Add partner</button>
+    </div>
+  </div>
+
   <div class="grid gap-4 grid-cols-2 mt-2">
     <%= for store <- @store_infos do %>
+    <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.PartnerLive, store.store_id) do %>
      <div class="bg-white shadow-md ">
         <div class="py-7 px-10">
           <div class="flex items-center mb-5">
             <div class="flex-shrink-0 h-12 w-12">
               <img class="h-12 w-12 rounded-full"
-                   src="<%= store.store_logo %>" />
+                   src={"#{store.store_logo}"} />
             </div>
             <div class="ml-4">
               <div class="text-xl text-gray-900">
@@ -18,7 +28,6 @@
           <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
 
           <p class="text-gray-500 text-sm">Number of Orders: <span> <%= store.num_orders %></span></p>
-          <p class="text-gray-500 text-sm mb-5">Number of refund request: <span><%= store.num_refund_request %></span></p>
 
           <div class="flex content-evenly">
             <p class="flex-1">Published Products:</p>
@@ -28,24 +37,9 @@
             <p class="flex-1">Unpublished Products:</p>
             <p class="flex-1 text-right font-bold"><%= store.unpublished_products %></p>
           </div>
-          <div class="flex content-evenly">
-            <p class="flex-1">Shoppers:</p>
-            <p class="flex-1 text-right font-bold"><%= store.shoppers %></p>
-          </div>
-          <div class="flex content-evenly">
-            <p class="flex-1">Drivers:</p>
-            <p class="flex-1 text-right font-bold"><%= store.drivers %></p>
-          </div>
-          <div class="flex content-evenly">
-            <p class="flex-1">Gross Sales:</p>
-            <p class="flex-1 text-right font-bold"><%= store.gross_sales %></p>
-          </div>
-          <div class="flex content-evenly">
-            <p class="flex-1">Net income:</p>
-            <p class="flex-1 text-right font-bold"><%= store.net_income %></p>
-          </div>
         </div>
       </div>
+     <% end %>
       <% end %>
   </div>
 </div>

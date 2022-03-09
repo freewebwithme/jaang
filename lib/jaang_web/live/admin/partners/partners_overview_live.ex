@@ -10,18 +10,15 @@ defmodule JaangWeb.Admin.Partners.PartnersOverviewLive do
       Enum.reduce(stores, [], fn store, acc ->
         published_products = Enum.filter(store.products, &(&1.published == true))
         unpublished_products = Enum.filter(store.products, &(&1.published == false))
+        num_orders = Enum.count(Stores.get_all_orders_for_store(store.id))
 
         store_info = %{
+          store_id: store.id,
           store_name: store.name,
           store_logo: store.store_logo,
-          num_orders: 99,
-          num_refund_request: 13,
+          num_orders: num_orders,
           published_products: Enum.count(published_products),
           unpublished_products: Enum.count(unpublished_products),
-          shoppers: 3,
-          drivers: 10,
-          gross_sales: "$89347.94",
-          net_income: "$25460.88"
         }
 
         [store_info | acc]

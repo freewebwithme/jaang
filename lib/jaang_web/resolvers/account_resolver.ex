@@ -92,10 +92,17 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   """
   def google_signIn_with_id_token(_, %{id_token: id_token}, _) do
 
-    {:ok, user} = AccountManager.authenticate_google_idToken(id_token)
-    token = UserAuthMobile.generate_user_session_token(user)
+    case AccountManager.authenticate_google_idToken(id_token) do
+	    {:ok, user} ->
+        token = UserAuthMobile.generate_user_session_token(user)
 
-    {:ok, %{user: user, token: token, expired: false}}
+        {:ok, %{user: user, token: token, expired: false}}
+
+      {:error, message} ->
+        IO.puts("idToken error")
+        IO.inspect(message)
+        {:error, message}
+    end
   end
 
   @doc """

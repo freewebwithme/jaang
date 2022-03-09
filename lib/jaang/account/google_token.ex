@@ -6,6 +6,8 @@ defmodule Jaang.Account.GoogleToken do
   def token_config() do
     google_client_id = Application.get_env(:jaang, :google_client_id)
 
+    IO.puts "Inspecting google client id"
+    IO.inspect(google_client_id)
     # Validate from token
     default_claims()
     |> add_claim("iss", nil, &(&1 == "https://accounts.google.com"))

@@ -32,4 +32,8 @@ npm-debug.log
 /assets/node_modules/
 
 TODO
-.env
+.env_dev
+.env_prod
+
+TODO-dashboard
+TODO-api

@@ -24,9 +24,9 @@ defmodule Jaang.Admin.Order.Orders do
   def get_orders(store_id \\ nil, criteria) when is_list(criteria) do
     query =
       if is_nil(store_id) do
-        from o in Order, order_by: [desc: o.inserted_at]
+        from o in Order, order_by: [desc: o.inserted_at], preload: [user: :profile]
       else
-        from(o in Order, where: o.store_id == ^store_id, order_by: [desc: o.inserted_at])
+        from o in Order, where: o.store_id == ^store_id, order_by: [desc: o.inserted_at], preload: [user: :profile]
       end
 
     Enum.reduce(criteria, query, fn

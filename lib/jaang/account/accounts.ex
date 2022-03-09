@@ -89,6 +89,15 @@ defmodule Jaang.Account.Accounts do
     User.registration_changeset(user, attrs)
   end
 
+  @doc"""
+
+  Delete a user
+  """
+  def delete_user(user) do
+	  user
+    |> Repo.delete!()
+  end
+
   def change_profile(%Profile{} = profile, attrs \\ %{}) do
     Profile.changeset(profile, attrs)
   end
@@ -366,6 +375,7 @@ defmodule Jaang.Account.Accounts do
         create_user_with_profile_using_google(attrs)
       end
     else
+     {:error, message} -> {:error, message}
       _ -> :error
     end
   end
