@@ -84,8 +84,7 @@ defmodule JaangWeb.Router do
   scope "/", JaangWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/newsletter", NewsletterController, :index
+    live "/", PageLive
     delete "/log_out", AuthController, :delete
     # account confirmation
     get "/account/confirm", AccountConfirmationController, :new
