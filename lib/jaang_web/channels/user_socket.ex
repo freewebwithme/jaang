@@ -76,5 +76,5 @@ defmodule JaangWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(socket), do: "user_socket:#{socket.assigns.current_user.id}"
+  def id(_socket), do: nil
 end

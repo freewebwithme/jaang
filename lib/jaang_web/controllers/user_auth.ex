@@ -99,8 +99,6 @@ defmodule JaangWeb.UserAuth do
   """
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
-    IO.puts("Inspecting user_token")
-    IO.inspect(user_token)
 
     if(user_token == nil) do
       conn
