@@ -126,8 +126,12 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   Delete session token from database and return empty session
   """
   def log_out(_, %{token: token}, _) do
+    {:ok, user} = UserAuthMobile.get_user_by_session_token(token)
+
     case UserAuthMobile.delete_session_token(token) do
       {:ok, _struct} ->
+        # Disconnect user's socket and channel
+        JaangWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
         {:ok, %{user: nil, token: nil, expired: true}}
 
       {:error, _changeset} ->

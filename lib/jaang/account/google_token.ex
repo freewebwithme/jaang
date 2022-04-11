@@ -4,7 +4,8 @@ defmodule Jaang.Account.GoogleToken do
   add_hook(JokenJwks, strategy: Jaang.Account.GoogleStrategy)
 
   def token_config() do
-    google_client_id = Application.get_env(:jaang, :google_client_id)
+    #google_client_id = Application.get_env(:jaang, :google_client_id)
+    google_client_id = System.get_env("GOOGLE_CLIENT_ID")
 
     IO.puts "Inspecting google client id"
     IO.inspect(google_client_id)

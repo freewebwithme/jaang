@@ -12,11 +12,14 @@ defmodule JaangWeb.Plugs.SetCurrentUser do
   end
 
   defp build_context(conn) do
+    ["Bearer " <> token] = get_req_header(conn, "authorization")
+
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
          {:ok, user} <- UserAuthMobile.get_user_by_session_token(token) do
       %{current_user: user}
     else
       _ ->
+        IO.puts "SetCurrentUser Plug authorization is empty or token is invalid"
         %{}
     end
   end
