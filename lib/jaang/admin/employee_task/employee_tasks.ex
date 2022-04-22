@@ -17,7 +17,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     # if there is a replacement item, convert it to map
     line_items_maps =
       Enum.map(order.line_items, fn line_item ->
-        if(line_item.has_replacement) do
+        if line_item.has_replacement do
           updated_line_item =
             Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
 
@@ -124,7 +124,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
     {rest_line_items, line_item} =
       convert_line_items_to_map_and_return(employee_task.line_items, line_item_id)
 
-    if(line_item.replacement_item.id == replacement_item_id) do
+    if line_item.replacement_item.id == replacement_item_id do
       updated_line_item =
         cond do
           status == "ready" ->
@@ -169,7 +169,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
 
     case Integer.parse(quantity) do
       {quantity_int, _rest} ->
-        if(quantity_int > 0 && quantity_int <= line_item.quantity) do
+        if quantity_int > 0 && quantity_int <= line_item.quantity do
           # update line_item along with employee task
           # Convert to map and update value
           updated_line_item =
@@ -199,7 +199,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
       {weight_float, _rest} ->
         weight_limit = line_item.quantity + 0.2
 
-        if(weight_float > 0 && weight_float <= weight_limit) do
+        if weight_float > 0 && weight_float <= weight_limit do
           # update line_item along with employee task
           # Convert to map and update value
           updated_line_item =
@@ -304,7 +304,7 @@ defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
       line_items
       |> Enum.map(fn line_item ->
         # check if line_item has replacement item
-        if(line_item.has_replacement) do
+        if line_item.has_replacement do
           Map.update!(line_item, :replacement_item, fn value ->
             Map.from_struct(value)
           end)

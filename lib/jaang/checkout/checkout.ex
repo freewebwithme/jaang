@@ -89,8 +89,7 @@ defmodule Jaang.Checkout.Checkout do
         })
 
       {:error, error} ->
-        IO.inspect(error)
-        {:error, "Can't process a payment. Please try again later."}
+        {:error, "Can't process a payment. Please try again later.#{error}"}
     end
   end
 end

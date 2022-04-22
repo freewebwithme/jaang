@@ -43,8 +43,6 @@ defmodule Jaang.Admin.Order.Orders do
           order_by: [{^sort_order, ^sort_by}]
 
       {:search_by, %{search_by: search_by, search_term: term}}, query ->
-        IO.puts("Inspecting search term")
-        IO.inspect(search_by)
         search_pattern = "%#{term}"
         search_by = String.to_atom(search_by)
 
@@ -125,7 +123,7 @@ defmodule Jaang.Admin.Order.Orders do
 
     orders =
       Enum.reduce(employee.orders, [], fn order, acc ->
-        if(order.status == :packed) do
+        if order.status == :packed do
           [order | acc]
         else
           acc
@@ -187,7 +185,7 @@ defmodule Jaang.Admin.Order.Orders do
     # Convert line_items to map
     line_item_maps =
       Enum.map(employee_task.line_items, fn line_item ->
-        if(line_item.has_replacement) do
+        if line_item.has_replacement do
           Map.update!(line_item, :replacement_item, fn value ->
             Map.from_struct(value)
           end)
@@ -225,7 +223,7 @@ defmodule Jaang.Admin.Order.Orders do
     compare_result = Money.compare(updated_order.grand_total, new_grand_total)
 
     attrs =
-      if(compare_result < 0) do
+      if compare_result < 0 do
         %{
           total_items: total_items,
           status: :packed,
@@ -256,7 +254,7 @@ defmodule Jaang.Admin.Order.Orders do
   end
 
   def check_all_orders_status(invoice) do
-    if(Enum.count(invoice.orders) <= 1) do
+    if Enum.count(invoice.orders) <= 1 do
       [status] = Enum.map(invoice.orders, & &1.status)
       status
     else
@@ -266,7 +264,7 @@ defmodule Jaang.Admin.Order.Orders do
         end)
         |> Enum.uniq()
 
-      if(Enum.any?(statuses, &(&1 == :refunded || &1 == :submitted || &1 == :shopping))) do
+      if Enum.any?(statuses, &(&1 == :refunded || &1 == :submitted || &1 == :shopping)) do
         # this invoice is not ready just return current invoice's status
         invoice.status
       else

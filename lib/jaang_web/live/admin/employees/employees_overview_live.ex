@@ -92,8 +92,6 @@ defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
     #        search_term: search_term
     #      )
     #  )
-    IO.inspect(search_term)
-    IO.inspect(search_by)
     {:noreply, socket}
   end
 
@@ -101,7 +99,7 @@ defmodule JaangWeb.Admin.Employees.EmployeesOverviewLive do
   Get a list of roles and display names
   """
   def display_roles(roles) when is_list(roles) do
-    if(Enum.count(roles) == 0) do
+    if Enum.count(roles) == 0 do
       "Not assigned"
     else
       role_names = ""

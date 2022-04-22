@@ -1,6 +1,6 @@
 defmodule Jaang.Checkout.Carts do
   alias Jaang.{StoreManager, InvoiceManager}
-  alias Jaang.Checkout.{Order, LineItem}
+  alias Jaang.Checkout.Order
   alias Jaang.Product
   alias Jaang.Repo
   import Ecto.Query
@@ -139,7 +139,7 @@ defmodule Jaang.Checkout.Carts do
           existing_line_items
           |> Enum.map(fn line_item ->
             # Check if there is a replacement item in existing line_items
-            if(line_item.has_replacement) do
+            if line_item.has_replacement do
               updated_line_item =
                 Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
 
@@ -162,7 +162,7 @@ defmodule Jaang.Checkout.Carts do
           |> Enum.filter(fn line_item -> line_item.product_id != product_id end)
           |> Enum.map(fn line_item ->
             # Check if there is a replacement item in existing line_items
-            if(line_item.has_replacement) do
+            if line_item.has_replacement do
               # if there is replacement item update replacement item's quantity also
 
               updated_line_item =
@@ -205,7 +205,7 @@ defmodule Jaang.Checkout.Carts do
           existing_line_items
           |> Enum.filter(fn line_item -> line_item.product_id != product_id end)
           |> Enum.map(fn line_item ->
-            if(line_item.has_replacement) do
+            if line_item.has_replacement do
               updated_line_item =
                 Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
 
@@ -220,7 +220,6 @@ defmodule Jaang.Checkout.Carts do
             # User deleted a product from a cart
             # So just return excluded line_items.
             IO.puts("request quantity == 0, so delete a product from cart")
-            IO.inspect(excluding_line_items)
 
             if Enum.count(excluding_line_items) == 0 do
               # There is no item in the cart, delete a cart
@@ -238,7 +237,7 @@ defmodule Jaang.Checkout.Carts do
               end)
               # |> Enum.map(&Map.from_struct/1)
               |> Enum.map(fn line_item ->
-                if(line_item.has_replacement) do
+                if line_item.has_replacement do
                   updated_line_item =
                     Map.update!(line_item, :replacement_item, fn value ->
                       # if there is replacement item update replacement item's quantity also
@@ -280,7 +279,7 @@ defmodule Jaang.Checkout.Carts do
       existing_line_items
       |> Enum.filter(&(&1.id != line_item_id))
       |> Enum.map(fn line_item ->
-        if(line_item.has_replacement) do
+        if line_item.has_replacement do
           updated_line_item =
             Map.update!(line_item, :replacement_item, fn value -> Map.from_struct(value) end)
 
@@ -291,8 +290,6 @@ defmodule Jaang.Checkout.Carts do
       end)
 
     IO.puts("Inspecting excluding_line_items")
-    IO.inspect(excluding_line_items)
-    IO.puts("Printing line_item_id: #{line_item_id}")
 
     [line_item] =
       Enum.filter(existing_line_items, &(&1.id == line_item_id))
@@ -300,13 +297,13 @@ defmodule Jaang.Checkout.Carts do
       |> Enum.map(fn line_item ->
         IO.puts("Enumerating existing line items")
 
-        if(replacement_item_id == "") do
+        if replacement_item_id == "" do
           # replacemnet_item_id is empty, just update note.
           line_item = line_item |> Map.update!(:note, fn _value -> note end)
           IO.puts("Adding a note")
 
           updated_line_item =
-            if(line_item.has_replacement) do
+            if line_item.has_replacement do
               # Or if line_item has already replacement_item, then remove it
               IO.puts("Removing replacement item")
 
@@ -319,7 +316,6 @@ defmodule Jaang.Checkout.Carts do
             end
 
           IO.puts("Inspecting line_item in empty replacement id")
-          IO.inspect(updated_line_item)
         else
           # Create replacement line_item inside existing line_item
           {product_id, ""} = Integer.parse(replacement_item_id)
@@ -333,9 +329,6 @@ defmodule Jaang.Checkout.Carts do
           |> Map.update!(:note, fn _value -> note end)
         end
       end)
-
-    IO.puts("Inspecting line_item")
-    IO.inspect(line_item)
 
     updated_line_items = [line_item | excluding_line_items]
     update_cart(cart, %{line_items: updated_line_items})
@@ -381,9 +374,9 @@ defmodule Jaang.Checkout.Carts do
           [product] = Map.get(grouped_products, line_item.product_id)
           [product_price] = product.product_prices
           # Just check if product is still on sale or not.
-          if(product_price.on_sale == line_item.on_sale) do
+          if product_price.on_sale == line_item.on_sale do
             # I don't need a change
-            if(line_item.has_replacement) do
+            if line_item.has_replacement do
               line_item
               |> Map.update!(:replacement_item, fn value ->
                 Map.from_struct(value)
@@ -392,7 +385,7 @@ defmodule Jaang.Checkout.Carts do
               line_item
             end
           else
-            if(line_item.has_replacement) do
+            if line_item.has_replacement do
               line_item
               |> Map.update!(:replacement_item, fn value -> Map.from_struct(value) end)
               |> Map.update!(:on_sale, fn _value -> product_price.on_sale end)
@@ -413,7 +406,6 @@ defmodule Jaang.Checkout.Carts do
           end
         end)
 
-      IO.inspect(updated_line_items)
       attrs = %{line_items: updated_line_items}
       update_cart(order, attrs)
     end)

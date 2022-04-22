@@ -32,7 +32,6 @@ defmodule JaangWeb.Admin.CustomerServices.CustomerMessageLive.Show do
       ) do
     # Change string to atom
     new_state = Helpers.convert_atom_and_string(state)
-    IO.inspect(new_state)
 
     {:ok, customer_message} =
       CustomerServices.update_customer_message(socket.assigns.customer_message, %{

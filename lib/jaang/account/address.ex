@@ -2,6 +2,8 @@ defmodule Jaang.Account.Address do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @type t :: module
+
   schema "addresses" do
     field :recipient, :string
     field :address_line_one, :string

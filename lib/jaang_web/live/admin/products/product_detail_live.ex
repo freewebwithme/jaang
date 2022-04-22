@@ -2,6 +2,8 @@ defmodule JaangWeb.Admin.Products.ProductDetailLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Product.Products
   alias JaangWeb.Admin.Products.ProductEditDetailLive
+  @moduledoc false
+
 
   def mount(%{"store_id" => store_id, "product_id" => product_id}, _session, socket) do
     # get product

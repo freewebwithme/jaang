@@ -35,7 +35,6 @@ defmodule JaangWeb.AuthController do
     else
       case AccountManager.create_user_with_profile_using_google(attrs) do
         {:ok, user} ->
-          IO.inspect(user)
           UserAuth.log_in_user(conn, user, %{})
 
         {:error, changeset} ->

@@ -65,8 +65,6 @@ defmodule JaangWeb.Admin.Products.ProductAddLive do
         %{"product" => prod_attrs} = params,
         socket
       ) do
-    IO.puts("Add product submitted")
-    IO.inspect(params)
 
     %{
       "category" => %{"category_id" => cat_id},
@@ -89,7 +87,6 @@ defmodule JaangWeb.Admin.Products.ProductAddLive do
       |> Map.put("original_price", market_price)
       |> Utility.convert_string_key_to_atom_key()
 
-    IO.inspect(updated_prod_attrs)
     new_product = ProductManager.create_product(updated_prod_attrs)
 
     # Create product images
@@ -108,8 +105,6 @@ defmodule JaangWeb.Admin.Products.ProductAddLive do
   end
 
   def handle_event("form_changed", params, socket) do
-    IO.puts("form changed")
-    IO.inspect(params)
 
     # _target diplays changed field name
     %{

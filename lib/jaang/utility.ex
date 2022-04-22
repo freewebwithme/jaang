@@ -89,7 +89,6 @@ defmodule Jaang.Utility do
     sub_categories = Repo.all(SubCategory)
 
     Enum.map(product_infos, fn info ->
-      IO.inspect(info)
 
       [
         product_name,
@@ -156,17 +155,17 @@ defmodule Jaang.Utility do
 
       product = Products.create_product(product_attrs)
       # Build product images
-      if(product_image_1 != nil) do
+      if product_image_1 != nil do
         image_url_1 = build_s3_url(product_image_1)
         Products.create_product_image(product, %{image_url: image_url_1, order: 1})
       end
 
-      if(product_image_2 != nil) do
+      if product_image_2 != nil do
         image_url_2 = build_s3_url(product_image_2)
         Products.create_product_image(product, %{image_url: image_url_2, order: 2})
       end
 
-      if(product_image_3 != nil) do
+      if product_image_3 != nil do
         image_url_3 = build_s3_url(product_image_3)
         Products.create_product_image(product, %{image_url: image_url_3, order: 3})
       end

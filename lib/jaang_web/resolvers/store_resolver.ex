@@ -21,7 +21,6 @@ defmodule JaangWeb.Resolvers.StoreResolver do
 
   def get_products_for_homescreen(_, %{limit: limit, store_id: store_id}, _) do
     categories = StoreManager.get_products_for_homescreen(limit, store_id)
-    # IO.inspect(categories)
     {:ok, categories}
   end
 

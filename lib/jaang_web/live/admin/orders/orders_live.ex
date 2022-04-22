@@ -12,8 +12,6 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
   end
 
   def handle_params(params, _url, socket) do
-    IO.puts("Calling handle_params from OrdersLive")
-    IO.inspect(params)
     page = String.to_integer(params["page"] || "1")
     per_page = String.to_integer(params["per_page"] || "10")
     by_state = params["filter_by"] || "All"
@@ -60,7 +58,6 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
 
   def handle_event("select-per-page", %{"per-page" => per_page}, socket) do
     per_page = String.to_integer(per_page)
-    IO.puts("Calling handle_event: select-per-page")
     has_next_page = Helpers.has_next_page?(Enum.count(socket.assigns.orders), per_page)
 
     socket =
@@ -108,7 +105,6 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
   end
 
   def handle_info({:order_updated, order}, socket) do
-    IO.puts(":order updated handle info calling from OrdersLive")
     socket = update(socket, :orders, fn orders -> [order | orders] end)
     {:noreply, socket}
   end

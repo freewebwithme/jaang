@@ -81,7 +81,6 @@ defmodule JaangWeb.Admin.CustomerServices.CustomerMessageLive.Search do
   end
 
   def handle_event("select-by-state", %{"by-state" => by_state}, socket) do
-    IO.inspect(by_state)
 
     socket =
       push_patch(socket,

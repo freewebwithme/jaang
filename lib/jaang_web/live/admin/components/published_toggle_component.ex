@@ -35,8 +35,6 @@ defmodule JaangWeb.Admin.Components.PublishedToggleComponent do
 
   def handle_event("published", %{"published" => published}, socket) do
     # get tags and recipe tags and convert to string format
-    IO.puts("pulished?")
-    IO.inspect(published)
     tags = Product.build_recipe_tag_name_to_string(socket.assigns.product.tags)
     recipe_tags = Product.build_recipe_tag_name_to_string(socket.assigns.product.recipe_tags)
 

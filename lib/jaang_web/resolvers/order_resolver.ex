@@ -19,9 +19,6 @@ defmodule JaangWeb.Resolvers.OrderResolver do
     # get order
     order = OrderManager.get_cart(order_id)
 
-    IO.puts("Inspecting refund items")
-    IO.inspect(refund_items)
-
     refund_items_ids = LineItems.get_ids_from_refund_items_map(refund_items)
 
     case user.id == order.user_id do
@@ -49,7 +46,6 @@ defmodule JaangWeb.Resolvers.OrderResolver do
   end
 
   def contact_customer_service(_, %{token: token, order_id: order_id, message: message} = args, _) do
-    IO.inspect(args)
     user = AccountManager.get_user_by_session_token(token)
 
     # create customer message

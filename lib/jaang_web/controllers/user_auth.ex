@@ -30,9 +30,6 @@ defmodule JaangWeb.UserAuth do
   def log_in_user(conn, user, params \\ %{}) do
     token = AccountManager.generate_user_session_token(user)
 
-    IO.puts("Inspecting user token when log in ")
-    IO.inspect(token)
-
     conn
     |> renew_session()
     |> assign(:user_token, token)
@@ -100,12 +97,12 @@ defmodule JaangWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
 
-    if(user_token == nil) do
+    if user_token == nil do
       conn
     else
       user = AccountManager.get_user_by_session_token(user_token)
 
-      if(user == nil) do
+      if user == nil do
         conn
       else
         assign(conn, :current_user, user)

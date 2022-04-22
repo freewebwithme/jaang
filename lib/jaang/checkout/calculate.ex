@@ -24,7 +24,7 @@ defmodule Jaang.Checkout.Calculate do
       Enum.filter(order.line_items, &(&1.category_name != "Produce"))
       |> Enum.filter(&(&1.status == status))
       |> Enum.reduce(Money.new(0), fn line_item, acc ->
-        if(line_item.replaced) do
+        if line_item.replaced do
           Money.add(line_item.replacement_item.total, acc)
         else
           Money.add(line_item.total, acc)
@@ -46,18 +46,16 @@ defmodule Jaang.Checkout.Calculate do
     # get weight based product
     weight_based_line_items = Enum.filter(cart.line_items, &(&1.weight_based == true))
     # Calculate weight_based line items' item adjust ment
-    IO.puts("Weight based items length")
-    IO.inspect(Enum.count(weight_based_line_items))
 
     weight_based_item_adjustment =
       Enum.reduce(weight_based_line_items, Money.new(0), fn line_item, acc ->
-        if(line_item.has_replacement) do
+        if line_item.has_replacement do
           # has replacement item, need to check which original price is
           # greater.
           compare_result =
             Money.compare(line_item.original_price, line_item.replacement_item.original_price)
 
-          if(compare_result < 0) do
+          if compare_result < 0 do
             # replacement item's price is greater, use it
             weight_limit = line_item.quantity + 0.2
 
@@ -90,15 +88,14 @@ defmodule Jaang.Checkout.Calculate do
     not_weight_based_line_items = Enum.filter(cart.line_items, &(&1.weight_based == false))
 
     IO.puts("Not Weight based items length")
-    IO.inspect(Enum.count(not_weight_based_line_items))
 
     not_weight_based_item_adjustment =
       Enum.reduce(not_weight_based_line_items, Money.new(0), fn line_item, acc ->
-        if(line_item.has_replacement) do
+        if line_item.has_replacement do
           compare_result =
             Money.compare(line_item.original_price, line_item.replacement_item.original_price)
 
-          if(compare_result < 0) do
+          if compare_result < 0 do
             # replacement item's price is greater, use it
 
             item_adjustment =
@@ -114,10 +111,6 @@ defmodule Jaang.Checkout.Calculate do
         end
       end)
 
-    # IO.puts("printing not-weight based adjustment")
-    # IO.inspect(not_weight_based_item_adjustment)
-    # IO.puts("printing weight based adjustment")
-    # IO.inspect(weight_based_item_adjustment)
     Money.add(weight_based_item_adjustment, not_weight_based_item_adjustment)
   end
 
@@ -148,7 +141,7 @@ defmodule Jaang.Checkout.Calculate do
   def calculate_total(order, status) do
     Enum.filter(order.line_items, &(&1.status == status))
     |> Enum.reduce(Money.new(0), fn line_item, acc ->
-      if(line_item.replaced) do
+      if line_item.replaced do
         Money.add(acc, line_item.replacement_item.total)
       else
         Money.add(acc, line_item.total)
@@ -178,7 +171,7 @@ defmodule Jaang.Checkout.Calculate do
   """
   def calculate_grand_final_after_refund_for_invoice(invoice) do
     Enum.reduce(invoice.orders, Money.new(0), fn order, acc ->
-      if(order.status in [:refunded, :partially_refunded]) do
+      if order.status in [:refunded, :partially_refunded] do
         Money.add(order.grand_total_after_refund, acc)
       else
         Money.add(order.grand_total, acc)
@@ -189,7 +182,7 @@ defmodule Jaang.Checkout.Calculate do
   @doc """
   Count total items in the all carts
   """
-  def count_all_total_items(invoice = %Invoice{}) do
+  def count_all_total_items(%Invoice{} = invoice) do
     Enum.reduce(invoice.orders, 0, fn order, acc ->
       order.total_items + acc
     end)
@@ -213,7 +206,7 @@ defmodule Jaang.Checkout.Calculate do
   """
   def calculate_grand_total_price(carts) do
     Enum.reduce(carts, Money.new(0), fn cart, acc ->
-      if(cart.grand_total == nil) do
+      if cart.grand_total == nil do
         Money.add(Money.new(0), acc)
       else
         Money.add(cart.grand_total, acc)

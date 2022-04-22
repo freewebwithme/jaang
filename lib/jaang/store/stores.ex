@@ -11,6 +11,11 @@ defmodule Jaang.Store.Stores do
     |> Repo.insert()
   end
 
+  def change_store(%Store{} = store, attrs) do
+    store
+    |> Store.changeset(attrs)
+  end
+
   def get_store(id) do
     Repo.get(Store, id)
   end

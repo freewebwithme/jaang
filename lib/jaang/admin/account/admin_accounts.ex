@@ -13,7 +13,7 @@ defmodule Jaang.Admin.Account.AdminAccounts do
     Repo.get_by(AdminUser, id: id)
   end
 
-  def delete_admin_user(admin_user = %AdminUser{}) do
+  def delete_admin_user(%AdminUser{} = admin_user) do
     Repo.delete!(admin_user)
   end
 

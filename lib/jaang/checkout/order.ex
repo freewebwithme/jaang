@@ -177,7 +177,7 @@ defmodule Jaang.Checkout.Order do
     # replacement item
     total =
       Enum.reduce(items, Money.new(0), fn item, acc ->
-        if(item.replaced) do
+        if item.replaced do
           Money.add(acc, item.replacement_item.total)
         else
           Money.add(acc, item.total)
@@ -211,7 +211,7 @@ defmodule Jaang.Checkout.Order do
   # and update :avilable_checkout in order
   # param: %Money{0, :USD}
   defp checkout_available?(total) do
-    if(Money.compare(total, Money.new(3500, :USD)) >= 0) do
+    if Money.compare(total, Money.new(3500, :USD)) >= 0 do
       true
     else
       false

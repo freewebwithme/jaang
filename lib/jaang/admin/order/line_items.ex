@@ -14,7 +14,7 @@ defmodule Jaang.Admin.Order.LineItems do
   """
   def filter_line_item_by_ids(order, ids) do
     Enum.filter(order.line_items, fn item ->
-      if(item.replaced) do
+      if item.replaced do
         item.replacement_item.id in ids
       else
         item.id in ids
@@ -28,7 +28,7 @@ defmodule Jaang.Admin.Order.LineItems do
   @spec convert_line_item_to_map(list(LineItem)) :: list(map)
   def convert_line_item_to_map(line_items) do
     Enum.map(line_items, fn line_item ->
-      if(line_item.has_replacement) do
+      if line_item.has_replacement do
         line_item_map = Map.from_struct(line_item)
         # convert replacement_item also
         replacement_item_map = Map.from_struct(line_item.replacement_item)
@@ -49,7 +49,7 @@ defmodule Jaang.Admin.Order.LineItems do
             Enum.filter(new_value_maps, &(&1.line_item_id == line_item_map.replacement_item.id))
 
           # Check if line_item is weight based
-          if(line_item_map.replacement_item.weight_based) do
+          if line_item_map.replacement_item.weight_based do
             # update line_item_map using new value
             Map.update!(line_item_map.replacement_item, :weight, fn _old ->
               new_value_map.weight
@@ -67,7 +67,7 @@ defmodule Jaang.Admin.Order.LineItems do
           # get new_value using line_item.id
           [new_value_map] = Enum.filter(new_value_maps, &(&1.line_item_id == line_item_map.id))
 
-          if(line_item_map.weight_based) do
+          if line_item_map.weight_based do
             # update line_item_map using new value
             Map.update!(line_item_map, :weight, fn _old -> new_value_map.weight end)
             |> Map.update!(:refund_reason, fn _old -> new_value_map.refund_reason end)

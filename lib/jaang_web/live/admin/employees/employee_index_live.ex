@@ -23,19 +23,16 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
 
   @impl true
   def handle_event("validate", %{"employee" => attrs}, socket) do
-    IO.inspect(attrs)
     # Get roles ids
 
     changeset =
-      if(socket.assigns.live_action == :edit) do
+      if socket.assigns.live_action == :edit do
         EmployeeAccountManager.change_employee(socket.assigns.employee, attrs)
         |> Map.put(:action, :insert)
       else
         EmployeeAccountManager.registration_change_employee(attrs)
         |> Map.put(:action, :insert)
       end
-
-    IO.inspect(changeset)
 
     {:noreply,
      socket
@@ -63,12 +60,11 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
         },
         socket
       ) do
-    IO.puts("Changing both employee roles and assigned stores.")
 
     roles = find_selected_roles(socket, employee_attrs)
     stores = find_selected_assigned_stores(socket, employee_attrs)
 
-    if(socket.assigns.live_action == :edit) do
+    if socket.assigns.live_action == :edit do
       EmployeeAccountManager.change_employee(socket.assigns.employee, employee_attrs)
       |> EmployeeAccountManager.put_roles_in_changeset(roles)
       |> EmployeeAccountManager.put_assigned_stores_in_changeset(stores)
@@ -90,11 +86,9 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
   # No selection in assigned stores, so Delete assigned stores from employee
   @impl true
   def handle_event("save", %{"employee" => %{"roles_ids" => _roles_ids} = employee_attrs}, socket) do
-    IO.inspect(employee_attrs)
-    IO.puts("No selection for assigned stores. So Delete assigned stores from employee.")
     roles = find_selected_roles(socket, employee_attrs)
 
-    if(socket.assigns.live_action == :edit) do
+    if socket.assigns.live_action == :edit do
       EmployeeAccountManager.change_employee(socket.assigns.employee, employee_attrs)
       |> EmployeeAccountManager.put_roles_in_changeset(roles)
       |> EmployeeAccountManager.put_assigned_stores_in_changeset([])
@@ -122,7 +116,7 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
     IO.puts("No selection for roles. So Delete current roles from employee")
     stores = find_selected_assigned_stores(socket, employee_attrs)
 
-    if(socket.assigns.live_action == :edit) do
+    if socket.assigns.live_action == :edit do
       EmployeeAccountManager.change_employee(socket.assigns.employee, employee_attrs)
       |> EmployeeAccountManager.put_roles_in_changeset([])
       |> EmployeeAccountManager.put_assigned_stores_in_changeset(stores)
@@ -148,7 +142,7 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
       "No selection for both roles and assigned stores. So Delete both current roles and assigned stores"
     )
 
-    if(socket.assigns.live_action == :edit) do
+    if socket.assigns.live_action == :edit do
       EmployeeAccountManager.change_employee(socket.assigns.employee, employee_attrs)
       |> EmployeeAccountManager.put_roles_in_changeset([])
       |> EmployeeAccountManager.put_assigned_stores_in_changeset([])
@@ -210,13 +204,11 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
 
   def employee_has_role?(employee, role) do
     result = role in employee.roles
-    IO.inspect(result)
     result
   end
 
   def employee_has_assigned_store?(employee, store) do
     result = store in employee.assigned_stores
-    IO.inspect(result)
     result
   end
 

@@ -1,4 +1,4 @@
-defmodule JaangWeb.ModalComponent do
+defmodule JaangWeb.LiveModalComponent do
   use JaangWeb, :live_component
 
   @impl true
@@ -24,11 +24,13 @@ defmodule JaangWeb.ModalComponent do
           <div class="text-right">
             <%= live_patch raw("&times;"), to: @return_to %>
           </div>
-          <%= live_component @component, @opts %>
+
+          <%= render_slot(@inner_block) %>
         </div>
       </div>
     </div>
     """
+
   end
 
   @impl true

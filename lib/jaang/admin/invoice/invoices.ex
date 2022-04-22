@@ -70,8 +70,6 @@ defmodule Jaang.Admin.Invoice.Invoices do
 
       {:search_by, %{search_by: search_by, search_term: term}}, query ->
         search_pattern = "%#{term}%"
-        IO.puts("Print invoice search by")
-        IO.inspect(search_by)
 
         case search_by do
           "Invoice number" ->
@@ -145,17 +143,16 @@ defmodule Jaang.Admin.Invoice.Invoices do
     invoice = get_invoice(invoice_id)
     total_orders = Enum.count(invoice.orders)
 
-    if(total_orders <= 1) do
+    if total_orders <= 1 do
       Enum.reduce(invoice.orders, "", fn order, acc ->
         Atom.to_string(order.status) <> acc
       end)
     else
       Enum.with_index(invoice.orders)
       |> Enum.reduce_while("", fn {order, index}, acc ->
-        IO.inspect(acc)
 
         if index < total_orders do
-          if(index == total_orders - 1) do
+          if index == total_orders - 1 do
             {:cont, acc <> Atom.to_string(order.status)}
           else
             {:cont, Atom.to_string(order.status) <> ", " <> acc}
@@ -196,7 +193,7 @@ defmodule Jaang.Admin.Invoice.Invoices do
       end)
       |> Enum.all?()
 
-    if(all_finalized?) do
+    if all_finalized? do
       # all order is finalized go ahead capture the payment
       case StripeManager.capture_payment_intent(
              invoice.pm_intent_id,

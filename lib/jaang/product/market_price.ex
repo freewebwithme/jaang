@@ -39,7 +39,7 @@ defmodule Jaang.Product.MarketPrice do
   defp calculate_discount_percentage(changeset) do
     on_sale = get_change(changeset, :on_sale)
 
-    if(on_sale) do
+    if on_sale do
       original_price = get_change(changeset, :original_price)
       sale_price = get_change(changeset, :sale_price)
 

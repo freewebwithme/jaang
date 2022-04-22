@@ -210,10 +210,8 @@ defmodule JaangWeb.CartChannel do
     IO.puts("Placing an order in Cart channel")
     fetched_user = AccountManager.get_user_by_session_token(token)
 
-    if(user.id == fetched_user.id) do
+    if user.id == fetched_user.id do
       # user matches, go ahead process an order
-      IO.puts("Inspecting order infos")
-      IO.inspect(order_infos)
 
       # Update order information
 

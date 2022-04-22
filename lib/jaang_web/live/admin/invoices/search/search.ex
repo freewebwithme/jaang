@@ -10,7 +10,6 @@ defmodule JaangWeb.Admin.Invoices.InvoiceLive.Search do
 
   def handle_params(params, _url, socket) do
     IO.puts("Calling Invoice search result handle-params")
-    IO.inspect(params)
     page = String.to_integer(params["page"] || "1")
     per_page = String.to_integer(params["per_page"] || "10")
     search_by_params = params["search_by"]

@@ -64,7 +64,7 @@ defmodule Jaang.Store.DeliveryDateTimes do
         return_available_delivery_datetime(now)
 
       false ->
-        if(Timex.before?(now, start_hour)) do
+        if Timex.before?(now, start_hour) do
           # Delivery available now, filter delivery hours
           IO.puts("Delivery today is not available")
           return_available_delivery_datetime(now)
@@ -82,7 +82,7 @@ defmodule Jaang.Store.DeliveryDateTimes do
 
     # Filter delivery hours for today.
     # Exclude current time + 2 hours
-    if(now.minute > 0) do
+    if now.minute > 0 do
       # Add 3 hours
       available_start_hour = Timex.add(now, Timex.Duration.from_hours(3))
 
@@ -119,21 +119,17 @@ defmodule Jaang.Store.DeliveryDateTimes do
       end
 
     {:ok, available_start_hour} =
-      if(rem(available_start_hour.hour, 2) == 0) do
-        IO.puts("even number")
-        IO.inspect(available_start_hour)
+      if rem(available_start_hour.hour, 2) == 0 do
 
         Timex.add(available_start_hour, Timex.Duration.from_hours(1))
         |> Timex.format("{h12} {am}")
       else
-        IO.puts("odd number")
-        IO.inspect(available_start_hour)
         available_start_hour |> Timex.format("{h12} {am}")
       end
 
     # Get index
     index =
-      if(available_start_hour == "9 pm") do
+      if available_start_hour == "9 pm" do
         Enum.find_index(@available_hours, fn hour ->
           String.ends_with?(hour, available_start_hour)
         end)

@@ -99,7 +99,7 @@ defmodule JaangWeb.Admin.AdminUserAuth do
   def fetch_admin_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
 
-    if(user_token == nil) do
+    if user_token == nil do
       conn
     else
       admin_user = AdminAccounts.get_user_by_session_token(user_token)

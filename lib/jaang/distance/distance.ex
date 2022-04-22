@@ -88,8 +88,6 @@ defmodule Jaang.Distance do
             }
           end)
 
-        IO.puts("Printing store_distances from #{__MODULE__}")
-        IO.inspect(store_distances)
 
         %Distance{}
         |> changeset(%{
@@ -121,7 +119,7 @@ defmodule Jaang.Distance do
     # Get user's default address
     default_address = ProfileManager.get_default_address(user.addresses)
 
-    if(default_address.distance == nil) do
+    if default_address.distance == nil do
       # There is no distance schema. create one
       create_distance(user.id, default_address)
     else
@@ -129,9 +127,8 @@ defmodule Jaang.Distance do
       # has store info
       store_distances = default_address.distance.store_distances
 
-      if(Enum.any?(store_distances, &(&1.store_id == store_id))) do
+      if Enum.any?(store_distances, &(&1.store_id == store_id)) do
         # has current store information do nothing
-        IO.puts("Store distance information found #{__MODULE__}")
         nil
       else
         # No current store information, put a new store information
@@ -169,7 +166,7 @@ defmodule Jaang.Distance do
     # check if current address has store's store distance
     has_store_distance? = Enum.any?(address.distance.store_distances, &(&1.store_id == store_id))
 
-    if(has_store_distance?) do
+    if has_store_distance? do
       [store_distance] = Enum.filter(address.distance.store_distances, &(&1.store_id == store_id))
       store_distance
     else

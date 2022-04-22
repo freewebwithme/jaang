@@ -22,9 +22,7 @@ defmodule JaangWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(%{"token" => token} = params, socket, _connect_info) do
-    IO.puts("Inspecting socket params")
-    IO.inspect(params)
+  def connect(%{"token" => token} = _params, socket, _connect_info) do
 
     with {:ok, user} <- UserAuthMobile.get_user_by_session_token(token) do
       # socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{current_user: user})
@@ -38,20 +36,13 @@ defmodule JaangWeb.UserSocket do
   end
 
   @impl true
-  def connect(%{"web_token" => token} = params, socket, _connect_info) do
-    IO.puts("Inspecting socket params")
-    IO.inspect(params)
+  def connect(%{"web_token" => token} = _params, socket, _connect_info) do
 
-    if(token == nil or token == "") do
-      IO.puts("Token is nil")
+    if token == nil or token == "" do
       {:ok, socket}
     else
-      IO.puts("Token not is nil")
-      IO.inspect(token)
-
       with %User{} = user <- AccountManager.get_user_by_session_token(token) do
         # socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{current_user: user})
-        IO.puts(" Has current user")
         {:ok, assign(socket, :current_user, user)}
       else
         _ ->

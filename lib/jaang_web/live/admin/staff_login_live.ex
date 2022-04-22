@@ -10,7 +10,6 @@ defmodule JaangWeb.Admin.StaffLoginLive do
 
   def handle_event("save", %{"admin_user" => params}, socket) do
     %{"email" => email, "password" => password} = params
-    IO.inspect(params)
 
     case AdminAccounts.get_user_by_email_and_password(email, password) do
       nil ->

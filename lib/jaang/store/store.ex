@@ -2,6 +2,10 @@ defmodule Jaang.Store do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @moduledoc """
+  Partner(Store)'s Schema
+  """
+
   schema "stores" do
     field :name, :string
     field :description, :string
@@ -22,8 +26,7 @@ defmodule Jaang.Store do
 
   @doc false
   def changeset(%Jaang.Store{} = store, attrs) do
-    store
-    |> cast(attrs, [
+    fields = [
       :name,
       :description,
       :price_info,
@@ -31,6 +34,9 @@ defmodule Jaang.Store do
       :address,
       :phone_number,
       :store_logo
-    ])
+    ]
+    store
+    |> cast(attrs, fields)
+    |> validate_required(fields)
   end
 end

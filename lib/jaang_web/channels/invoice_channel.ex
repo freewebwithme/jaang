@@ -10,7 +10,7 @@ defmodule JaangWeb.InvoiceChannel do
     # Check if current user is the owner of requested Order
     invoice = InvoiceManager.get_invoice_by_id(invoice_id)
 
-    if(user.id == invoice.user_id) do
+    if user.id == invoice.user_id do
       # User is the owner of invoice.
       {:ok, %{event: "order confirmed", invoice_number: invoice.invoice_number}, socket}
     else

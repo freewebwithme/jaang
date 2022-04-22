@@ -20,8 +20,6 @@ defmodule JaangWeb.EmployeeSocket do
   # performing token verification on connect.
   @impl true
   def connect(%{"token" => token} = params, socket, _connect_info) do
-    IO.puts("Inspecting employee socket params")
-    IO.inspect(params)
 
     with {:ok, employee} <- EmployeeAuthMobile.get_employee_by_session_token(token) do
       IO.puts("Found current employee")

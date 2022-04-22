@@ -36,9 +36,6 @@ defmodule JaangWeb.Admin.CustomerServices.RefundLive.Index do
     search_by_list = ["Email"]
     search_by_default = "Email"
 
-    IO.puts("Refund request")
-    IO.inspect(Enum.count(refund_requests))
-
     socket =
       assign(socket,
         has_next_page: has_next_page,

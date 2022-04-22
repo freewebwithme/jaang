@@ -31,7 +31,6 @@ defmodule Jaang.Admin.Account.AdminUserToken do
   tokens do not need to be hashed.
   """
   def build_session_token(admin_user) do
-    IO.inspect(admin_user)
     # token = :crypto.strong_rand_bytes(@rand_size)
     token = Phoenix.Token.sign(JaangWeb.Endpoint, @salt, %{id: admin_user.id})
     {token, %AdminUserToken{token: token, context: "session", admin_user_id: admin_user.id}}

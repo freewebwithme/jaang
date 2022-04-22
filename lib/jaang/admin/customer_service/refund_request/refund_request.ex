@@ -51,7 +51,7 @@ defmodule Jaang.Admin.CustomerService.RefundRequest do
               replacement_item_changeset = get_change(refund_item_changeset, :replacement_item)
               category = get_change(replacement_item_changeset, :category_name)
 
-              if(category == "Produce") do
+              if category == "Produce" do
                 Money.add(Money.new(0), acc)
               else
                 total = get_change(replacement_item_changeset, :total)
@@ -62,7 +62,7 @@ defmodule Jaang.Admin.CustomerService.RefundRequest do
             _ ->
               category = get_change(refund_item_changeset, :category_name)
 
-              if(category == "Produce") do
+              if category == "Produce" do
                 Money.add(Money.new(0), acc)
               else
                 total = get_change(refund_item_changeset, :total)

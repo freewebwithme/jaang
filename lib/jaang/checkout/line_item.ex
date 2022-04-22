@@ -169,7 +169,7 @@ defmodule Jaang.Checkout.LineItem do
 
         # Set price depends on on_sale value
         current_price =
-          if(product_price.on_sale) do
+          if product_price.on_sale do
             product_price.sale_price
           else
             product_price.original_price

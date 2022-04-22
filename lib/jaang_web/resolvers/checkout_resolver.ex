@@ -13,7 +13,7 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
     order = OrderManager.get_cart(order_id)
 
     tip =
-      if(tip == "") do
+      if tip == "" do
         String.to_integer("0")
         |> Money.new()
       else
@@ -57,9 +57,6 @@ defmodule JaangWeb.Resolvers.CheckoutResolver do
           grand_total: grand_total,
           grand_final_total: grand_final_total
         }
-
-        IO.puts("Printing grand final total")
-        IO.inspect(store_total_amount)
 
         {:ok, store_total_amount}
 

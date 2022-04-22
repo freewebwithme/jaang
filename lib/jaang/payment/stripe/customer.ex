@@ -12,8 +12,6 @@ defmodule Jaang.Payment.Stripe.Customer do
         {:ok, stripe_id}
 
       {:error, error} ->
-        IO.puts("Inspecting create customer error message")
-        IO.inspect(error)
         {:error, error}
     end
   end

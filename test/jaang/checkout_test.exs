@@ -211,7 +211,8 @@ defmodule Jaang.CheckoutTest do
     assert cart.id == retrieved_cart.id
 
     # check if no item in cart
-    assert Enum.count(cart.line_items) == 0
+    #assert Enum.count(cart.line_items) == 0
+    assert Enum.empty?(cart.line_items)
 
     # add items from single store
     OrderManager.add_to_cart(cart, %{product_id: Integer.to_string(product_1.id), quantity: 1})

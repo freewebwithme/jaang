@@ -1,12 +1,15 @@
 <!-- Main -->
 <main class="flex-1 relative overflow-y-auto focus:outline-none" tabindex="0">
-  <div class="flex bg-white px-9 py-3 items-center">
+  <div class="flex bg-white px-9 py-3 items-center justify-between">
     <div class="flex-shrink-0 h-16 w-16">
-      <img class="h-16 w-16 rounded-full" src="{@store_logo}" alt="">
+      <img class="h-16 w-16 rounded-full" src={"#{@store_logo}"} alt="Store logo">
+    </div>
+    <div class="text-sm font-medium text-gray-900">
+      <%= @store_name %>
     </div>
     <div class="ml-4">
-      <div class="text-sm font-medium text-gray-900">
-        <%= @store_name %>
+      <div class="mt-6 flex space-x-3 md:mt-0 md:ml-4">
+        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Edit</button>
       </div>
     </div>
   </div>    

@@ -25,8 +25,6 @@ defmodule JaangWeb.Admin.Customers.CustomerDetailLive do
   end
 
   def handle_params(params, _url, socket) do
-    IO.puts("Inspecting params")
-    IO.inspect(params)
     page = String.to_integer(params["page"] || "1")
     per_page = String.to_integer(params["per_page"] || "10")
     by_state = params["filter_by"] || "All"

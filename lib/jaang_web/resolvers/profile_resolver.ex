@@ -41,7 +41,7 @@ defmodule JaangWeb.Resolvers.ProfileResolver do
     user = AccountManager.get_user_by_session_token(token)
     address = ProfileManager.get_address(address_id)
 
-    if(address.user_id == user.id) do
+    if address.user_id == user.id do
       # Delete address
       ProfileManager.delete_address(address)
     end

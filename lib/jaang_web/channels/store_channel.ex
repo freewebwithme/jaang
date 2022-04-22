@@ -62,7 +62,6 @@ defmodule JaangWeb.StoreChannel do
   @impl true
   def handle_in("check_employee_task", %{"employee_id" => employee_id} = _payload, socket) do
     IO.puts("Incoming event from client: 'check_employee_task'")
-    IO.inspect(employee_id)
 
     case EmployeeTasks.get_in_progress_employee_task(employee_id) do
       nil ->
@@ -285,8 +284,6 @@ defmodule JaangWeb.StoreChannel do
           }}, socket}
 
       {:error, message} ->
-        IO.puts("Updating line_item quantity error")
-        IO.inspect(message)
         {:reply, {:error, message}, socket}
     end
   end
@@ -323,7 +320,6 @@ defmodule JaangWeb.StoreChannel do
 
       {:error, message} ->
         IO.puts("Updating line_item weight error")
-        IO.inspect(message)
         {:reply, {:error, message}, socket}
     end
   end
@@ -471,7 +467,6 @@ defmodule JaangWeb.StoreChannel do
     else
       {:error, error} ->
         IO.puts("Finalized order failure")
-        IO.inspect(error)
         {:reply, :error, socket}
     end
   end
@@ -623,7 +618,7 @@ defmodule JaangWeb.StoreChannel do
     store_id = String.to_integer(store_id)
 
     orders =
-      if(Map.has_key?(orders, order_status)) do
+      if Map.has_key?(orders, order_status) do
         Map.get(orders, order_status)
         |> Enum.filter(fn order ->
           Enum.any?(order.employees, fn employee -> employee.id == employee_id end)

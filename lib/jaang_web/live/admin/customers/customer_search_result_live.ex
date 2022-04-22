@@ -4,8 +4,6 @@ defmodule JaangWeb.Admin.Customers.CustomerSearchResultLive do
   alias JaangWeb.Admin.Customers.CustomerDetailLive
 
   def mount(%{"search_term" => term, "search_by" => search_by} = params, _session, socket) do
-    IO.inspect(term)
-    IO.inspect(search_by)
 
     page = String.to_integer(params["page"] || "1")
     per_page = String.to_integer(params["per_page"] || "10")

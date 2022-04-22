@@ -10,6 +10,10 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
   alias JaangWeb.Admin.Components.PublishedToggleComponent
   alias JaangWeb.Admin.Products.ProductDetailLive
 
+  @moduledoc false
+
+  @max_file_size 4_000_000
+
   def mount(%{"store_id" => store_id, "product_id" => product_id}, _session, socket) do
     product = Products.get_product(store_id, product_id)
     changeset = Product.changeset(product, %{})
@@ -58,21 +62,21 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
       |> allow_upload(:product_image_one,
         accept: ~w(.jpg .jpeg .png),
         max_entries: 1,
-        max_file_size: 4_000_000,
+        max_file_size: @max_file_size,
         external: &presign_upload/2,
         progress: &handle_progress_one/3
       )
       |> allow_upload(:product_image_two,
         accept: ~w(.jpg .jpeg .png),
         max_entries: 1,
-        max_file_size: 4_000_000,
+        max_file_size: @max_file_size,
         external: &presign_upload/2,
         progress: &handle_progress_two/3
       )
       |> allow_upload(:product_image_three,
         accept: ~w(.jpg .jpeg .png),
         max_entries: 1,
-        max_file_size: 4_000_000,
+        max_file_size: @max_file_size,
         external: &presign_upload/2,
         progress: &handle_progress_three/3
       )
@@ -98,8 +102,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
   end
 
   # Save the form
-  def handle_event("product_update", %{"product" => product_attrs} = params, socket) do
-    IO.inspect(params)
+  def handle_event("product_update", %{"product" => product_attrs} = _params, socket) do
     # Compare if category or sub category changed
     %{
       "id" => product_id,
@@ -124,9 +127,8 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
     {:ok, new_price} = Money.parse(new_mp)
 
     price_changed = Utility.price_changed?(market_price, new_price)
-    IO.inspect(price_changed)
 
-    if(price_changed) do
+    if price_changed do
       IO.puts("Price changed")
       # Price is changed, create new Market Price
       MarketPrice.create_market_price_with_product_price(
@@ -138,7 +140,6 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
     end
 
     IO.puts("Updated product_attrs")
-    IO.inspect(product_attrs)
     product = Products.get_product(socket.assigns.store_id, socket.assigns.product_id)
     ProductManager.update_product(product, product_attrs)
     # Get updated product
@@ -184,9 +185,6 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
   end
 
   def handle_event("form_changed", params, socket) do
-    IO.puts("form changed")
-    IO.inspect(params)
-
     # _target diplays changed field name
     %{
       "_target" => targets,
@@ -303,7 +301,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
       SimpleS3Upload.sign_form_upload(config, bucket,
         key: key,
         content_type: entry.client_type,
-        max_file_size: 4_000_000,
+        max_file_size: @max_file_size,
         expires_in: :timer.hours(1)
       )
 

@@ -93,8 +93,6 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
             "Please check amount"
           )
 
-        IO.inspect(changeset)
-
         socket =
           update(socket, :changeset, fn _changeset -> changeset end)
           |> assign(:can_save, changeset.valid?)
@@ -132,7 +130,7 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
       order = Orders.get_order(order_id)
 
       status =
-        if(Money.compare(money, order.grand_total) == 0) do
+        if Money.compare(money, order.grand_total) == 0 do
           :refunded
         else
           :partially_refunded
@@ -152,8 +150,6 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
         Calculate.calculate_grand_final_after_refund_for_invoice(updated_invoice)
 
       invoice_status = Invoices.build_invoice_status(invoice_id)
-      IO.puts("Inspecting grand_total_price")
-      IO.inspect(grand_total_price)
 
       {:ok, invoice} =
         Invoices.update_invoice_and_notify(invoice_id, %{
@@ -161,8 +157,6 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
           status: invoice_status
         })
 
-      IO.puts("Inspecting updated invoice")
-      IO.inspect(invoice)
 
       send(self(), {:updated, updated_refund_request})
 

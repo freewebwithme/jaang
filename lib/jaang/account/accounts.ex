@@ -5,16 +5,15 @@ defmodule Jaang.Account.Accounts do
   alias Ecto.Changeset
   import Ecto.Query
 
-  @type changeset :: %Ecto.Changeset{}
-  @type user :: %Jaang.Account.User{}
 
   @doc """
   attrs = %{email: "user@example.com", profile: %{ first_name: "John", last_name: "Doe"}}
   """
   @spec create_user_with_profile(map) ::
-          {:ok, %User{} | {:error, changeset()}}
+          {:ok, User.t() | {:error, Ecto.Changeset.t() }}
   def create_user_with_profile(attrs) do
-    with {:ok, user} <- create_user(attrs) do
+    case create_user(attrs) do
+      {:ok, user} ->
       # Send confirmation email
       deliver_user_confirmation_instructions(
         user,
@@ -22,8 +21,8 @@ defmodule Jaang.Account.Accounts do
       )
 
       {:ok, user}
-    else
-      {:error, error} -> {:error, error}
+
+      {:error, changeset} -> {:error, changeset}
     end
   end
 
@@ -31,7 +30,7 @@ defmodule Jaang.Account.Accounts do
   Create user with information in attrs and send comfirmatin email
   attrs = %{email: "user@example.com", profile: %{ first_name: "John", last_name: "Doe"}}
   """
-  @spec create_user_with_profile_using_google(map) :: {:ok, %User{} | {:error, changeset}}
+  @spec create_user_with_profile_using_google(map) :: {:ok, User.t() | {:error, Ecto.Changeset.t() }}
   def create_user_with_profile_using_google(attrs) do
     case create_user_using_google(attrs) do
       {:ok, user} ->
@@ -53,19 +52,19 @@ defmodule Jaang.Account.Accounts do
   @doc """
   Create user using google information
   """
-  @spec create_user_using_google(map) :: {:ok, %User{} | {:error, changeset}}
+  @spec create_user_using_google(map) :: {:ok, User.t() | {:error, Ecto.Changeset.t()}}
   def create_user_using_google(attrs) do
     %User{} |> User.google_changeset(attrs) |> Repo.insert()
   end
 
-  @spec create_user(map) :: {:ok, %User{} | {:error, changeset}}
+  @spec create_user(map) :: {:ok, User.t() | {:error, Ecto.Changeset.t()}}
   def create_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
 
-  @spec create_address(%User{}, map) :: {:ok, %Address{} | {:error, changeset}}
+  @spec create_address(User.t(), map) :: {:ok, Address.t() | {:error, Ecto.Changeset.t()}}
   def create_address(%User{} = user, attrs) do
     attrs = Map.put(attrs, :user_id, user.id)
 
@@ -77,7 +76,7 @@ defmodule Jaang.Account.Accounts do
   @doc """
   Get a user with user id and preloaded profile, addresses with distance schema
   """
-  @spec get_user(integer()) :: %User{} | nil
+  @spec get_user(integer()) :: User.t() | nil
   def get_user(id) do
     Repo.get_by(User, id: id) |> Repo.preload([:profile, addresses: [:distance]])
   end
@@ -94,7 +93,7 @@ defmodule Jaang.Account.Accounts do
   Delete a user
   """
   def delete_user(user) do
-	  user
+    user
     |> Repo.delete!()
   end
 
@@ -113,14 +112,11 @@ defmodule Jaang.Account.Accounts do
   if user is changing default store,
   update distance schema also
   """
-  @spec update_profile(user, map) :: %Jaang.Account.Profile{}
+  @spec update_profile(User.t(), map) :: Jaang.Account.Profile.t()
   def update_profile(user, attrs) do
     profile = user.profile
     changeset = change_profile(profile, attrs)
     store_id = Changeset.get_change(changeset, :store_id)
-
-    IO.puts("Inspecting profile update attrs")
-    IO.inspect(attrs)
 
     cond do
       store_id == nil ->
@@ -134,7 +130,7 @@ defmodule Jaang.Account.Accounts do
         # Check if distance is already calculated
 
         # Check if only user has any address
-        if(!Enum.empty?(ProfileManager.get_all_addresses(user.id))) do
+        if !Enum.empty?(ProfileManager.get_all_addresses(user.id)) do
           Distance.check_and_update_store_distance(user, store_id)
         end
 
@@ -358,8 +354,6 @@ defmodule Jaang.Account.Accounts do
   def authenticate_google_idToken(idToken) do
     with {:ok, result} <- Jaang.Account.GoogleToken.verify_and_validate(idToken) do
       email = result["email"]
-      IO.puts("Printing google token verify result")
-      IO.inspect(result)
 
       if user = get_user_by_email(email) do
         {:ok, user}

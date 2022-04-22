@@ -6,6 +6,8 @@ defmodule Jaang.Product do
 
   import Ecto.Query, warn: false
 
+  @type t :: module
+
   schema "products" do
     field :name, :string
     field :description, :string

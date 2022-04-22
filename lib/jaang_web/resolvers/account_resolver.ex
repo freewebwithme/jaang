@@ -78,29 +78,17 @@ defmodule JaangWeb.Resolvers.AccountResolver do
   end
 
   @doc """
-  Autheticate google user using email
-  """
-  def google_signIn(_, %{email: email, display_name: display_name, photo_url: photo_url}, _) do
-    {:ok, user} = AccountManager.google_signin_from_mobile(email, display_name, photo_url)
-    token = UserAuthMobile.generate_user_session_token(user)
-
-    {:ok, %{user: user, token: token, expired: false}}
-  end
-
-  @doc """
   Authenticate user using Google idToken
   """
-  def google_signIn_with_id_token(_, %{id_token: id_token}, _) do
+  def google_sign_in_with_id_token(_, %{id_token: id_token}, _) do
 
     case AccountManager.authenticate_google_idToken(id_token) do
-	    {:ok, user} ->
+      {:ok, user} ->
         token = UserAuthMobile.generate_user_session_token(user)
 
         {:ok, %{user: user, token: token, expired: false}}
 
       {:error, message} ->
-        IO.puts("idToken error")
-        IO.inspect(message)
         {:error, message}
     end
   end

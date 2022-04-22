@@ -71,14 +71,14 @@ defmodule Jaang.Category.Categories do
     ##   AND p.store_id = #{store_id} LIMIT #{limit}) p
     ##  ON 1=1 WHERE sc.category_id = #{category_id}"
     raw_query = "SELECT * FROM sub_categories AS sc
-	    LEFT JOIN LATERAL (SELECT p.* FROM products AS p
-				WHERE p.sub_category_id = sc.id
-       	AND p.store_id = #{store_id} LIMIT #{limit}) AS p
+      LEFT JOIN LATERAL (SELECT p.* FROM products AS p
+       WHERE p.sub_category_id = sc.id
+         AND p.store_id = #{store_id} LIMIT #{limit}) AS p
         ON 1=1
 
-	    INNER JOIN product_prices AS pp
-	    ON p.id = pp.product_id
-	    WHERE NOW() BETWEEN pp.start_date AND pp.end_date
+      INNER JOIN product_prices AS pp
+      ON p.id = pp.product_id
+      WHERE NOW() BETWEEN pp.start_date AND pp.end_date
 
       AND sc.category_id = #{category_id}"
 

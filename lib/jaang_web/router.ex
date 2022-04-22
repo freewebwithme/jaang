@@ -43,7 +43,8 @@ defmodule JaangWeb.Router do
     live "/invoices/show/:id", Invoices.InvoiceLive.Show
     live "/invoices/search", Invoices.InvoiceLive.Search
 
-    live "/partners", Partners.PartnersOverviewLive
+    live "/partners", Partners.PartnersOverviewLive, :index
+    live "/partners/add", Partners.PartnersOverviewLive, :add
     live "/partners/:store_id", Partners.PartnerLive
     live "/partners/orders/:store_name/:order_id/detail", Partners.PartnerOrderDetailLive
 

@@ -20,7 +20,6 @@ defmodule JaangWeb.Resolvers.ProductResolver do
   end
 
   def get_replacement_products(_, %{product_id: product_id, limit: limit}, _) do
-    IO.inspect(product_id)
     products = ProductManager.get_replacement_products(product_id, limit)
     {:ok, products}
   end

@@ -140,7 +140,7 @@
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.PartnersOverviewLive),
+                  <%= live_redirect to: Routes.partners_overview_path(@socket, :index),
                       class: if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>
@@ -349,7 +349,7 @@
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.PartnersOverviewLive),
+                  <%= live_redirect to: Routes.partners_overview_path(@socket, :index),
                       class: if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
                   do %>

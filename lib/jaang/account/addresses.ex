@@ -59,7 +59,7 @@ defmodule Jaang.Account.Addresses do
     # If user update an address, delete distance information and make new one
     new_address = get_address(new_address.id)
 
-    if(new_address.distance == nil) do
+    if new_address.distance == nil do
       # There is no distance information(schema) so create one
       Distance.create_distance(new_address.user_id, new_address)
     else

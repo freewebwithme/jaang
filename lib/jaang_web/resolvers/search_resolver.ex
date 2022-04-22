@@ -3,7 +3,6 @@ defmodule JaangWeb.Resolvers.SearchResolver do
 
   def search_products(_, %{terms: terms, token: token, limit: limit, offset: offset}, _) do
     user = AccountManager.get_user_by_session_token(token)
-    IO.inspect(user.profile.store_id)
     {:ok, SearchManager.search(terms, user.profile.store_id, limit, offset)}
   end
 

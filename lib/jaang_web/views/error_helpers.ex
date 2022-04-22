@@ -11,7 +11,7 @@ defmodule JaangWeb.ErrorHelpers do
   def error_tag(form, field) do
     Enum.map(Keyword.get_values(form.errors, field), fn error ->
       content_tag(:span, translate_error(error),
-        class: "text-sm text-red-600 mt-3 ml-1",
+        class: "text-sm text-red-600 mt-3 ml-1 invalid-feedback",
         phx_feedback_for: input_id(form, field)
       )
     end)
@@ -21,8 +21,6 @@ defmodule JaangWeb.ErrorHelpers do
   Translates an error message using gettext.
   """
   def translate_error({msg, opts}) do
-    IO.puts("Translating error")
-    IO.inspect(msg)
     # When using gettext, we typically pass the strings we want
     # to translate as a static argument:
     #

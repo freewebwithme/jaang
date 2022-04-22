@@ -2,6 +2,8 @@ defmodule Jaang.Product.Unit do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @type t :: module
+
   schema "units" do
     # lb, each, pack, bundle
     field :name, :string

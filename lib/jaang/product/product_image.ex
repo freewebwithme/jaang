@@ -2,6 +2,8 @@ defmodule Jaang.Product.ProductImage do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @type t :: module
+
   schema "product_images" do
     field :image_url, :string
     field :order, :integer

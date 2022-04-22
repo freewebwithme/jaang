@@ -72,7 +72,8 @@ defmodule Jaang.MixProject do
       {:ex_signal, "~> 0.3.0"},
       {:date_time_parser, "~> 1.1.1"},
       {:xlsxir, "~> 1.6.4"},
-      {:esbuild, "~> 0.4.0"}
+      {:esbuild, "~> 0.4.0"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 

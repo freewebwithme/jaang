@@ -58,7 +58,6 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
 
   def create_employee_with_profile(attrs) do
     IO.puts("Inspecting register attrs")
-    IO.inspect(attrs)
 
     with {:ok, employee} <- create_employee(attrs) do
       # Send confirmation email

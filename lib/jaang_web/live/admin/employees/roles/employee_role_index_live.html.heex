@@ -1,11 +1,8 @@
 <%= if @live_action in [:add, :edit] do %>
-  <%= live_modal @socket, JaangWeb.Admin.Components.RoleFormComponent,
-      id: @role.id || :add,
-      title: @page_title,
-      action: @live_action,
-      role: @role,
-      return_to: Routes.employee_role_index_path(@socket, :index) 
-  %>
+<!-- Call RoleFormComponent in LiveModalComponent -->
+<.live_component module={JaangWeb.LiveModalComponent} id="role-modal" return_to={Routes.employee_role_index_path(@socket, :index)} >
+  <.live_component module={JaangWeb.Admin.Components.RoleFormComponent} title={@page_title}    return_to={Routes.employee_role_index_path(@socket, :index)} role={@role} id={@role.id || :add} action={@live_action}  />
+  </.live_component>
 <% end %>
 <div class="container mx-auto">
   <div class="flex items-center justify-between">

@@ -68,8 +68,6 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
   defp save_role(socket, :edit, attrs) do
     case EmployeeAccountManager.update_employee_role(socket.assigns.role, attrs) do
       {:ok, _employee} ->
-        IO.puts("role updated")
-        IO.inspect(socket.assigns.return_to)
 
         socket =
           socket
@@ -79,7 +77,6 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
         {:noreply, socket}
 
       {:error, changeset} ->
-        IO.puts("role update fail")
         {:noreply, assign(socket, changeset: changeset, can_save: changeset.valid?)}
     end
   end
@@ -87,9 +84,6 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
   defp save_role(socket, :add, attrs) do
     case EmployeeAccountManager.create_employee_role(attrs) do
       {:ok, _employee} ->
-        IO.puts("role created")
-
-        IO.inspect(socket.assigns.return_to)
 
         socket =
           socket
@@ -99,7 +93,6 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
         {:noreply, socket}
 
       {:error, changeset} ->
-        IO.puts("role create fail")
         {:noreply, assign(socket, changeset: changeset, can_save: changeset.valid?)}
     end
   end

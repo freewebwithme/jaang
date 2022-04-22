@@ -33,9 +33,6 @@ defmodule JaangWeb.Admin.Components.ActiveToggleComponent do
   end
 
   def handle_event("activate", %{"active" => active}, socket) do
-    IO.inspect(socket.assigns.changeset.data)
-    IO.puts("Printing active status")
-    IO.inspect(active)
     changeset = EmployeeAccountManager.change_employee(socket.assigns.employee, %{active: active})
 
     case EmployeeAccountManager.update_employee(changeset) do

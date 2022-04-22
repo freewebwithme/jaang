@@ -62,7 +62,6 @@ defmodule Jaang.Search do
         limit: ^limit,
         offset: ^offset
 
-    IO.inspect(join_product_price_query)
     Repo.all(join_product_price_query)
   end
 
