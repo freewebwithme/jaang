@@ -45,7 +45,11 @@ defmodule JaangWeb.Router do
 
     live "/partners", Partners.PartnersOverviewLive, :index
     live "/partners/add", Partners.PartnersOverviewLive, :add
-    live "/partners/:store_id", Partners.PartnerLive
+
+    # Show store(partner) detail
+    live "/partners/:store_id", Partners.PartnerLive, :show
+    live "/partners/:store_id/edit", Partners.PartnerLive, :edit
+
     live "/partners/orders/:store_name/:order_id/detail", Partners.PartnerOrderDetailLive
 
     live "/products", Products.ProductsLive

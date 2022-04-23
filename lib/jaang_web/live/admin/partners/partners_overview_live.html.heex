@@ -11,7 +11,7 @@
 
   <div class="grid gap-4 grid-cols-2 mt-2">
     <%= for store <- @store_infos do %>
-    <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Partners.PartnerLive, store.store_id) do %>
+    <%= live_redirect to: Routes.partner_path(@socket, :show, store.store_id) do %>
      <div class="bg-white shadow-md ">
         <div class="py-7 px-10">
           <div class="flex items-center mb-5">

@@ -1,19 +1,107 @@
+<%= if @live_action == :show do %>
 <!-- Main -->
 <main class="flex-1 relative overflow-y-auto focus:outline-none" tabindex="0">
   <div class="flex bg-white px-9 py-3 items-center justify-between">
     <div class="flex-shrink-0 h-16 w-16">
-      <img class="h-16 w-16 rounded-full" src={"#{@store_logo}"} alt="Store logo">
+      <img class="h-16 w-16 rounded-full" src={"#{@store.store_logo}"} alt="Store logo">
     </div>
-    <div class="text-sm font-medium text-gray-900">
-      <%= @store_name %>
+    <div class="flex flex-col items-center">
+      <div class="text-xl font-medium text-gray-900">
+        <%= @store.name %>
+      </div>
     </div>
     <div class="ml-4">
       <div class="mt-6 flex space-x-3 md:mt-0 md:ml-4">
-        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Edit</button>
+        <%= live_patch("Edit info", to: Routes.partner_path(@socket,:edit, @store.id),
+            class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            ) %>
       </div>
     </div>
   </div>    
   <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <div class="mt-3 grid grid-cols-4 rounded-lg shadow divide-x">
+      <!-- Store description -->
+      <div class="rounded-tl-lg rounded-tr-lg sm:rounded-tr-none relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+        <div>
+          <span class="rounded-lg inline-flex p-3 bg-teal-50 text-teal-700 ring-4 ring-white">
+            <!-- Heroicon name: outline/clock -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+          </span>
+        </div>
+        <div class="mt-4">
+          <h3 class="text-md font-medium">
+            <a href="#" class="focus:outline-none">
+              <!-- Extend touch target to entire panel -->
+              <span class="absolute inset-0" aria-hidden="true"></span>
+             Store Description
+            </a>
+          </h3>
+          <p class="mt-2 text-sm text-gray-500"><%= @store.description %></p>
+        </div>
+     </div>
+      <!-- Store Price info -->
+      <div class="rounded-tl-lg rounded-tr-lg sm:rounded-tr-none relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+        <div>
+          <span class="rounded-lg inline-flex p-3 bg-teal-50 text-teal-700 ring-4 ring-white">
+            <!-- Heroicon name: outline/clock -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </span>
+        </div>
+        <div class="mt-4">
+          <h3 class="text-md font-medium">
+            <a href="#" class="focus:outline-none">
+              <!-- Extend touch target to entire panel -->
+              <span class="absolute inset-0" aria-hidden="true"></span>
+              Price Info
+            </a>
+          </h3>
+          <p class="mt-2 text-sm text-gray-500"><%= @store.price_info %></p>
+        </div>
+     </div>
+      <!-- Available hours  -->
+      <div class="rounded-tl-lg rounded-tr-lg sm:rounded-tr-none relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+        <div>
+          <span class="rounded-lg inline-flex p-3 bg-teal-50 text-teal-700 ring-4 ring-white">
+            <!-- Heroicon name: outline/clock -->
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+        </div>
+        <div class="mt-4">
+          <h3 class="text-md font-medium">
+            <a href="#" class="focus:outline-none">
+              <!-- Extend touch target to entire panel -->
+              <span class="absolute inset-0" aria-hidden="true"></span>
+              Available Hours
+            </a>
+          </h3>
+          <p class="mt-2 text-sm text-gray-500"><%= @store.available_hours %></p>
+        </div>
+     </div>
+
+      <!-- Contact information -->
+      <div class="rounded-tl-lg rounded-tr-lg sm:rounded-tr-none relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+        <div>
+          <span class="rounded-lg inline-flex p-3 bg-teal-50 text-teal-700 ring-4 ring-white">
+            <!-- Heroicon name: outline/clock -->
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          </span>
+        </div>
+        <div class="mt-4">
+          <h3 class="text-md font-medium">
+            <a href="#" class="focus:outline-none">
+              <!-- Extend touch target to entire panel -->
+              <span class="absolute inset-0" aria-hidden="true"></span>
+              Contact Information
+            </a>
+          </h3>
+          <p class="mt-2 text-sm text-gray-500"><%= @store.address %></p>
+          <p class="mt-2 text-sm text-gray-500"><%= @store.phone_number %></p>
+        </div>
+     </div>
+    </div>
+
     <div class="py-2">
       <!-- Stats -->
       <div>
@@ -53,6 +141,7 @@
             </div>
             <div class="bg-gray-50 px-4 py-4 sm:px-6">
               <div class="text-sm">
+                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total New orders</span></a>
               </div>
             </div>
           </div>
@@ -90,7 +179,7 @@
             </div>
             <div class="bg-gray-50 px-4 py-4 sm:px-6">
               <div class="text-sm">
-                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
+                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total published products</span></a>
               </div>
             </div>
           </div>
@@ -128,7 +217,7 @@
             </div>
             <div class="bg-gray-50 px-4 py-4 sm:px-6">
               <div class="text-sm">
-                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
+                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Unpublished products </span></a>
               </div>
             </div>
           </div>
@@ -230,7 +319,7 @@
                <%= live_patch to: Routes.live_path(
                       @socket,
                       __MODULE__,
-                      @store_id,
+                      @store.id,
                       page: @options.page - 1,
                       per_page: @options.per_page 
                     ),
@@ -251,7 +340,7 @@
                   <%= live_patch i, to: Routes.live_path(
                       @socket,
                       __MODULE__,
-                      @store_id,
+                      @store.id,
                       page: i,
                       per_page: @options.per_page 
                   ),
@@ -267,7 +356,7 @@
               <%= live_patch to: Routes.live_path(
                         @socket,
                         __MODULE__,
-                        @store_id,
+                        @store.id,
                         page: @options.page + 1,
                         per_page: @options.per_page 
                       ),
@@ -286,9 +375,16 @@
       </div>
     </div>
   </div>
-
   </div>
-
-
   </div>
 </main>
+
+<% end %>
+<%= if @live_action == :edit do %>
+  <.live_component module={JaangWeb.LiveModalComponent} id="edit-store-modal" return_to={Routes.partner_path(@socket, :show, @store.id)}>
+
+    <.live_component module={JaangWeb.Admin.Components.PartnerFormComponent} title={"Edit #{@store.name} info"}
+                     return_to={Routes.partner_path(@socket, :show, @store.id)} id="edit-partner" store={@store} live_action={@live_action} />
+
+  </.live_component>
+<% end %>

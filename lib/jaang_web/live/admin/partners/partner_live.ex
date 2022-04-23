@@ -3,6 +3,8 @@ defmodule JaangWeb.Admin.Partners.PartnerLive do
   alias Jaang.Admin.Store.Stores
   alias Jaang.Admin.Order.Orders
 
+  @moduledoc false
+
   def mount(%{"store_id" => store_id}, _session, socket) do
     # Get store information
     store = Stores.get_store(store_id)
@@ -12,9 +14,7 @@ defmodule JaangWeb.Admin.Partners.PartnerLive do
     socket =
       assign(socket,
         current_page: store.name,
-        store_name: store.name,
-        store_logo: store.store_logo,
-        store_id: store.id,
+        store: store,
         orders: orders
       )
 
@@ -31,7 +31,7 @@ defmodule JaangWeb.Admin.Partners.PartnerLive do
     filter_by = %{by_state: state}
 
     orders =
-      Orders.get_orders(socket.assigns.store_id, paginate: paginate_options, filter_by: filter_by)
+      Orders.get_orders(socket.assigns.store.id, paginate: paginate_options, filter_by: filter_by)
 
     has_next_page = Helpers.has_next_page?(Enum.count(orders), per_page)
 
@@ -77,6 +77,10 @@ defmodule JaangWeb.Admin.Partners.PartnerLive do
           )
       )
 
+    {:noreply, socket}
+  end
+
+  def handle_info({:store_info_updated, _store}, socket) do
     {:noreply, socket}
   end
 end

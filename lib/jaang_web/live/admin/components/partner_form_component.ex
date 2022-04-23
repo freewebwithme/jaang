@@ -79,7 +79,7 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
           <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <%= label f, :available_hours, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :available_hours,
+              <%= textarea f, :available_hours,
               [phx_debounce: "500",
                required: true,
                class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
@@ -111,8 +111,20 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
           <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5" phx-drop-target={@uploads.store_logo.ref}>
             <%= label f, :store_logo, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
+            <%# if live action is edit, show current logo image %>
+              <%= if @live_action == :edit do %>
+               <div class="flex items-center pb-3">
+                <div class="flex-shrink-0 h-16 w-16">
+                  <img class="h-16 w-16 rounded-full" src={"#{@store.store_logo}"} alt="Store logo">
+                </div>
+                <p class="pl-3 text-sm text-indigo-500">Current logo</p>
+               </div>
+              <% end %>
                 <%= for entry <- @uploads.store_logo.entries do %>
-                  <%= live_img_preview entry, class: "inline-block h-14 w-14 rounded-full" %>
+                  <div class="flex items-center">
+                    <%= live_img_preview entry, class: "inline-block h-16 w-16 rounded-full" %>
+                    <p class="pl-3 text-sm text-red-500">Logo preview</p>
+                  </div>
                   <figcaption><%= entry.client_name %></figcaption>
                   <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
 
@@ -138,17 +150,28 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
           </div>
 
             <div class="flex">
-              <%= submit "Save", [
-                class: (if @can_save, do: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3",
-                else: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
-                phx_disable_with: "Saving..."
-                ]
-              %>
-              <%= live_redirect to: @return_to,
-                  class: "ml-4 relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              do %>
-                Cancel
+              <%= if @live_action == :show do %>
+                <%= submit "Save", [
+                  class: (if @can_save, do: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3",
+                  else: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
+                  phx_disable_with: "Saving..."
+                  ]
+                %>
+              <% else %>
+                <%= submit "Edit", [
+                  class: (if @can_save, do: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3",
+                  else: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
+                  phx_disable_with: "Editing..."
+                  ]
+                %>
+
               <% end %>
+                <%= live_redirect to: @return_to,
+                  class: "ml-4 relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  do %>
+                  Cancel
+                <% end %>
+
             </div>
         </.form>
       </div>
@@ -184,26 +207,34 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
   end
 
   def handle_event("save", %{"store" => attrs}, socket) do
-    {[completed_entry], []} = uploaded_entries(socket, :store_logo)
-    s3_file_name = build_s3_filename(completed_entry.client_name)
-    # Update "store_logo" value with real s3 url
-    updated_attrs = attrs |> Map.put("store_logo", s3_file_name)
+    if socket.assigns.live_action == :show do
+      {[completed_entry], []} = uploaded_entries(socket, :store_logo)
+      s3_file_name = build_s3_filename(completed_entry.client_name)
+      # Update "store_logo" value with real s3 url
+      updated_attrs = attrs |> Map.put("store_logo", s3_file_name)
 
-    case StoreManager.create_store(updated_attrs) do
-      {:ok, store} ->
-        send(self(), {:new_partner_added, store})
+      case StoreManager.create_store(updated_attrs) do
+        {:ok, store} ->
+          send(self(), {:new_partner_added, store})
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "New partner created successfully")
-         |> push_redirect(to: socket.assigns.return_to, replace: true)}
+          {:noreply,
+           socket
+           |> put_flash(:info, "New partner created successfully")
+           |> push_redirect(to: socket.assigns.return_to, replace: true)}
 
-      {:error, changeset} ->
-        {:noreply, socket |> assign(:changeset, changeset)}
+        {:error, changeset} ->
+          {:noreply, socket |> assign(:changeset, changeset)}
+      end
+    else
+      IO.puts("Editing parnter...")
+
+      {:noreply, socket}
     end
   end
 
   def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    IO.puts "Cancel upload"
+    IO.inspect(ref)
     {:noreply, cancel_upload(socket, :store_logo, ref)}
   end
 
