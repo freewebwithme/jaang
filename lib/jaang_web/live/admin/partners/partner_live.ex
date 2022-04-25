@@ -80,7 +80,7 @@ defmodule JaangWeb.Admin.Partners.PartnerLive do
     {:noreply, socket}
   end
 
-  def handle_info({:store_info_updated, _store}, socket) do
-    {:noreply, socket}
+  def handle_info({:partner_info_updated, store}, socket) do
+    {:noreply, socket |> assign(:store, store)}
   end
 end

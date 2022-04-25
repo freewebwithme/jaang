@@ -124,31 +124,25 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
                   <div class="flex items-center">
                     <%= live_img_preview entry, class: "inline-block h-16 w-16 rounded-full" %>
                     <p class="pl-3 text-sm text-red-500">Logo preview</p>
-                  </div>
-                  <figcaption><%= entry.client_name %></figcaption>
-                  <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
-
-                  <%# Cancel button %>
-                  <button phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel" phx-target={@myself}
-                          class="inline-flex items-center p-1 border border-transparent rounded-full border-red-700 shadow-sm text-white bg-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                    <!-- Heroicon name: solid/plus-sm -->
-                        <svg class="w-4 h-4" fill="none" stroke="red" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                  </button>
-
+                    <div class="ml-2">
+                      <button type="button" phx-click="delete-upload" phx-value-ref={entry.ref} phx-target={@myself} class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                      </button>
+                    </div>
                   <%# errors %>
                   <%= for err <- upload_errors(@uploads.store_logo, entry) do %>
                     <p class="mb-3 text-sm text-red-600 mt-3 ml-1"><%= error_to_string(err) %></p>
                   <% end %>
+                  </div>
                 <% end %>
-            <div class="mt-3 sm:mt-0">
-               <%= live_file_input(@uploads.store_logo) %>
-               <%= error_tag f, :store_logo %>
-             </div>
+                  <div class="mt-3 sm:mt-0">
+                    <%= live_file_input(@uploads.store_logo) %>
+                    <%= error_tag f, :store_logo %>
+                  </div>
             </div>
           </div>
 
+          <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <div class="flex">
               <%= if @live_action == :show do %>
                 <%= submit "Save", [
@@ -161,7 +155,7 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
                 <%= submit "Edit", [
                   class: (if @can_save, do: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3",
                   else: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
-                  phx_disable_with: "Editing..."
+                  phx_disable_with: "Editing...",
                   ]
                 %>
 
@@ -171,8 +165,8 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
                   do %>
                   Cancel
                 <% end %>
-
             </div>
+          </div>
         </.form>
       </div>
     </div>
@@ -227,14 +221,50 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
       end
     else
       IO.puts("Editing parnter...")
+      IO.inspect(attrs)
 
-      {:noreply, socket}
+      if Enum.empty?(socket.assigns.uploads.store_logo.entries) do
+        IO.puts("No updating logo")
+        IO.inspect(socket.assigns.return_to)
+
+        case StoreManager.update_store(socket.assigns.store, attrs) do
+          {:ok, store} ->
+            send(self(), {:partner_info_updated, store})
+
+            {:noreply,
+             socket
+             |> put_flash(:info, "Partner information updated successfully")
+             |> push_redirect(to: socket.assigns.return_to, replace: true)}
+
+          {:error, changeset} ->
+            {:noreply, socket |> assign(:changeset, changeset)}
+        end
+      else
+        IO.puts("Updating logo too")
+        {[completed_entry], []} = uploaded_entries(socket, :store_logo)
+        s3_file_name = build_s3_filename(completed_entry.client_name)
+        # Update "store_logo" value with real s3 url
+        updated_attrs = attrs |> Map.put("store_logo", s3_file_name)
+
+        case StoreManager.update_store(socket.assigns.store, updated_attrs) do
+          {:ok, store} ->
+            send(self(), {:partner_info_updated, store})
+
+            {:noreply,
+             socket
+             |> put_flash(:info, "Partner information updated successfully")
+             |> push_redirect(to: socket.assigns.return_to, replace: true)}
+
+          {:error, changeset} ->
+            {:noreply, socket |> assign(:changeset, changeset)}
+        end
+      end
     end
   end
 
-  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
-    IO.puts "Cancel upload"
-    IO.inspect(ref)
+  def handle_event("delete-upload", %{"ref" => ref}, socket) do
+    IO.puts("delete upload")
+
     {:noreply, cancel_upload(socket, :store_logo, ref)}
   end
 

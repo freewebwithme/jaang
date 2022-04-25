@@ -49,7 +49,7 @@
 <%= if @live_action == :add do %>
 <.live_component module={JaangWeb.LiveModalComponent} id="modal" return_to={Routes.partners_overview_path(@socket, :index)}>
 
-  <.live_component module={JaangWeb.Admin.Components.PartnerFormComponent} title={@page_title} return_to={Routes.partners_overview_path(@socket, :index)} id="add-partner" store={@store} />
+  <.live_component module={JaangWeb.Admin.Components.PartnerFormComponent} title={@page_title} return_to={Routes.partners_overview_path(@socket, :index)} id="add-partner" store={@store} live_action={@live_action} />
 
   </.live_component>
 
