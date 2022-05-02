@@ -33,4 +33,7 @@ defmodule JaangWeb.Resolvers.StoreResolver do
     store_distance = Distance.check_and_update_store_distance(user, store_id, address_id)
     {:ok, store_distance}
   end
+
+  def check_maintenance_status(_, _, _) do
+  end
 end

@@ -45,6 +45,11 @@ defmodule JaangWeb.Schema.StoreTypes do
 
       resolve(&StoreResolver.check_address/3)
     end
+
+    @desc "Check if app is in maintenance mode"
+    field :check_maintenance_status, :maintenance do
+      resolve(&StoreResolver.check_maintenance_status/3)
+    end
   end
 
   object :distance do
@@ -69,5 +74,10 @@ defmodule JaangWeb.Schema.StoreTypes do
     field :address, :string
     field :available_hours, :string
     # field :product, list_of(:product), resolve: dataloader(Products)
+  end
+
+  object :maintenance do
+    field :message, :string
+    field :isMaintenanceMode, :boolean
   end
 end
