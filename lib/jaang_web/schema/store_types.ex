@@ -24,6 +24,11 @@ defmodule JaangWeb.Schema.StoreTypes do
       # middleware(Middleware.Authenticate)
       resolve(&StoreResolver.get_delivery_datetime/3)
     end
+
+    @desc "Check if app is in maintenance mode"
+    field :check_maintenance_status, :maintenance do
+      resolve(&StoreResolver.check_maintenance_status/3)
+    end
   end
 
   object :store_mutations do
@@ -44,11 +49,6 @@ defmodule JaangWeb.Schema.StoreTypes do
       middleware(Middleware.Authenticate)
 
       resolve(&StoreResolver.check_address/3)
-    end
-
-    @desc "Check if app is in maintenance mode"
-    field :check_maintenance_status, :maintenance do
-      resolve(&StoreResolver.check_maintenance_status/3)
     end
   end
 
@@ -78,6 +78,6 @@ defmodule JaangWeb.Schema.StoreTypes do
 
   object :maintenance do
     field :message, :string
-    field :isMaintenanceMode, :boolean
+    field :in_maintenance_mode, :boolean
   end
 end

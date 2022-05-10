@@ -97,8 +97,12 @@ defmodule JaangWeb.Admin.Helpers do
   returns: "Nov 19, 2020 5:07 PM"
   """
   def display_datetime(datetime) do
-    {:ok, formatted_datetime} = Utility.convert_and_format_datetime(datetime)
-    formatted_datetime
+    if datetime == nil do
+      "No date and time specified"
+    else
+      {:ok, formatted_datetime} = Utility.convert_and_format_datetime(datetime)
+      formatted_datetime
+    end
   end
 
   def display_user_avatar(imageUrl) when is_nil(imageUrl) do

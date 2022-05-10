@@ -4,6 +4,10 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.OrderTableComponent do
   alias JaangWeb.Admin.Helpers
   alias JaangWeb.Router.Helpers, as: Routes
 
+  @moduledoc """
+  Order table function component
+  """
+
   def order_table(assigns) do
     ~H"""
     <div class="flex flex-col">

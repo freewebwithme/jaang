@@ -220,9 +220,6 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
           {:noreply, socket |> assign(:changeset, changeset)}
       end
     else
-      IO.puts("Editing parnter...")
-      IO.inspect(attrs)
-
       if Enum.empty?(socket.assigns.uploads.store_logo.entries) do
         IO.puts("No updating logo")
         IO.inspect(socket.assigns.return_to)

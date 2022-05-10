@@ -9,7 +9,6 @@ defmodule JaangWeb.CartChannel do
 
   def join("cart:" <> user_id, _params, %{assigns: %{current_user: user}} = socket) do
     # check if current user match client user
-    IO.puts("Printing user_id #{user_id}")
 
     if String.to_integer(user_id) == user.id do
       # If authorized, return cart information

@@ -57,9 +57,9 @@ console.log("Printing userToken:", window.userToken);
 // Finally, connect to the socket:
 socket.connect();
 //var userId = parseInt(window.userId);
-console.log("printing userId:", window.userId);
+//console.log("printing userId:", window.userId);
 var topic = "cart:" + window.userId;
-console.log(topic);
+//console.log(topic);
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("cart:" + userId, {});
 channel

@@ -1,0 +1,68 @@
+<div class="container mx-auto">
+  <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+    <div class="flex-1 min-w-0">
+      <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Maintenance mode detail</h1>
+    </div>
+
+    <%= if @maintenance.archived == false do %>
+    <div class="mt-4 flex sm:mt-0 sm:ml-4">
+      <%= live_patch("Edit maintenance mode", to: Routes.maintenance_detail_path(@socket, :edit, @maintenance.id),
+          class: "order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:order-1 sm:ml-3") %>
+    </div>
+    <% end %>
+    <div class="mt-4 flex sm:mt-0 sm:ml-4">
+      <%= live_patch("Back to list", to: Routes.maintenance_path(@socket, :index),
+          class: "order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:order-1 sm:ml-3") %>
+    </div>
+  </div>
+
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">Maintenance Information</h3>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+    <dl class="sm:divide-y sm:divide-gray-200">
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">Message</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <%= @maintenance.message %>
+        </dd>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">In maintenance mode?</dt>
+        <%= if @maintenance.in_maintenance_mode do %>
+            <dd class="mt-1 text-md font-bold text-green-400 sm:mt-0 sm:col-span-2"><%= Helpers.capitalize_text(@maintenance.in_maintenance_mode) %></dd>
+        <% else %>
+            <dd class="mt-1 text-md font-bold text-red-400 sm:mt-0 sm:col-span-2"><%= Helpers.capitalize_text(@maintenance.in_maintenance_mode) %></dd>
+        <% end %>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">Start date and time</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= Helpers.display_datetime(@maintenance.start_datetime) %></dd>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">End date and time</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= Helpers.display_datetime(@maintenance.end_datetime) %></dd>
+      </div>
+      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">Archived?</dt>
+        <%= if @maintenance.archived do %>
+            <dd class="mt-1 text-md font-bold text-green-400 sm:mt-0 sm:col-span-2"><%= Helpers.capitalize_text(@maintenance.archived) %>
+            <span class="ml-3 text-sm font-light text-gray-900">Can't edit this maintenance info</span></dd>
+        <% else %>
+            <dd class="mt-1 text-md font-bold text-red-400 sm:mt-0 sm:col-span-2"><%= Helpers.capitalize_text(@maintenance.archived) %> <span class="ml-3 text-sm font-light text-gray-900">(Can edit this maintenance info)</span> </dd>
+        <% end %>
+      </div>
+    </dl>
+  </div>
+  </div>
+</div>
+
+<%= if @live_action == :edit do %>
+    <.live_component module={JaangWeb.LiveModalComponent} id="edit-maintenance-modal" return_to={Routes.maintenance_detail_path(@socket, :show, @maintenance.id)}>
+
+      <.live_component module={JaangWeb.Admin.Components.MaintenanceFormComponent} title={@page_title} return_to={Routes.maintenance_detail_path(@socket, :show, @maintenance.id)}
+                       id="maintenance-edit-modal" maintenance={@maintenance} live_action={@live_action} />
+
+    </.live_component>
+<% end %>

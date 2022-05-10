@@ -2,6 +2,7 @@ defmodule JaangWeb.Resolvers.StoreResolver do
   alias Jaang.StoreManager
   alias Jaang.AccountManager
   alias Jaang.Distance
+  alias Jaang.Store.Maintenance
 
   # Store
   def get_stores(_, _, _) do
@@ -35,5 +36,13 @@ defmodule JaangWeb.Resolvers.StoreResolver do
   end
 
   def check_maintenance_status(_, _, _) do
+    case Maintenance.check_maintenance_mode() do
+      nil ->
+        {:ok, %{message: nil, in_maintenance_mode: false}}
+
+      %Maintenance{} = maintenance ->
+        {:ok,
+         %{message: maintenance.message, in_maintenance_mode: maintenance.in_maintenance_mode}}
+    end
   end
 end

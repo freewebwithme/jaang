@@ -229,6 +229,65 @@
                   <% end %>
                 </div>
               </div>
+              <!-- Customer services -->
+              <div x-data="{ isExpanded: false }" class="space-y-1">
+                <button @click.prevent="isExpanded = !isExpanded" class="group w-full flex items-center pl-2 pr-1 py-2 text-base font-medium rounded-md  text-indigo-100 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                  <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                  </svg>
+
+                  Customer Services
+                  <!-- Expanded: "text-gray-400 rotate-90", Collapsed: "text-gray-300" -->
+                  <svg :class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
+                       class="ml-auto h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
+                       x-state:on="Expanded" x-state:off="Collapsed" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
+                  </svg>
+                </button>
+                <div x-show="isExpanded" class="space-y-1">
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServicesOverviewLive),
+                      class: if @current_page == "Customer Services Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                      else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
+                  do %>
+                    <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                      </path>
+                    </svg>
+                    Overview
+                  <% end %>
+
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerMessageLive.Index),
+                      class: if @current_page == "Customer Service Messages", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                      else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
+                  do %>
+                    <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    Messages
+
+                  <% end %>
+
+                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Index),
+                      class: if @current_page == "Refund Request", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                      else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
+                  do %>
+
+                  <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+                  </svg>
+                  Refund Requests
+                  <% end %>
+                </div>
+              </div>
+
+              <%= live_redirect to: Routes.maintenance_path(@socket, :index),
+                  class: if @current_page == "Maintenances", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+                  else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
+              do %>
+                <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Maintenances
+              <% end %>
             </nav>
           </div>
           <div class="flex-shrink-0 flex border-t border-indigo-800 p-4">
@@ -455,7 +514,19 @@
                   Refund Requests
                   <% end %>
                 </div>
+
               </div>
+
+              <!-- Maintenance menu -->
+              <%= live_redirect to: Routes.maintenance_path(@socket, :index),
+
+                  class: if @current_page == "Maintenances", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                  else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+              do %>
+                <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Maintenances
+
+              <% end %>
             </nav>
           </div>
           <div class="flex-shrink-0 flex border-t border-indigo-800 p-4">

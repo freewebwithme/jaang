@@ -5,6 +5,8 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
   alias JaangWeb.Admin.Orders.OrderSearchResultLive
   alias JaangWeb.Admin.Helpers
 
+  @moduledoc false
+
   def mount(_params, _session, socket) do
     if connected?(socket), do: Jaang.Checkout.Carts.subscribe()
 

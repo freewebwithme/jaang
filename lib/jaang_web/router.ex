@@ -84,6 +84,11 @@ defmodule JaangWeb.Router do
     live "/customer-services/refund-request/:id", CustomerServices.RefundLive.Show
     live "/customer-services/refund-request/:id/accept", CustomerServices.RefundLive.Show, :accept
     live "/customer-services/refund-request/:id/deny", CustomerServices.RefundLive.Show, :deny
+
+    live "/maintenances", Maintenances.MaintenanceLive, :index
+    live "/maintenances/add", Maintenances.MaintenanceLive, :add
+    live "/maintenances/detail/:id", Maintenances.MaintenanceDetailLive, :show
+    live "/maintenances/edit/:id", Maintenances.MaintenanceDetailLive, :edit
   end
 
   scope "/", JaangWeb do
