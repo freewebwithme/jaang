@@ -2,7 +2,7 @@
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
 import "phoenix_html";
-import "alpinejs";
+import Alpine from "alpinejs";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 
@@ -11,6 +11,10 @@ let csrfToken = document
   .getAttribute("content");
 
 let Uploaders = {};
+
+window.Alpine = Alpine;
+
+Alpine.start()
 
 Uploaders.S3 = function (entries, onViewError) {
   entries.forEach((entry) => {
@@ -38,13 +42,13 @@ let liveSocket = new LiveSocket("/live", Socket, {
   uploaders: Uploaders,
   dom: {
     onBeforeElUpdated(from, to) {
-      if (from.__x) {
-        window.Alpine.clone(from.__x, to);
-      }
+      //if (from.__x) {
+      //  window.Alpine.clone(from.__x, to);
+      //}
       // in alpinejs V3
-      // if (from._x_dataStack) {
-      //   window.Alpine.clone(from, to);
-      // }
+       if (from._x_dataStack) {
+         window.Alpine.clone(from, to);
+       }
     },
   },
   params: { _csrf_token: csrfToken },

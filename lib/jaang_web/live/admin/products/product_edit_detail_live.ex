@@ -35,6 +35,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
         current_page: "Edit Product detail",
         product_id: product.id,
         store_id: store_id,
+        store_name: product.store_name,
         product: product,
         changeset: changeset,
         categories: categories,
@@ -139,7 +140,6 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
       )
     end
 
-    IO.puts("Updated product_attrs")
     product = Products.get_product(socket.assigns.store_id, socket.assigns.product_id)
     ProductManager.update_product(product, product_attrs)
     # Get updated product
@@ -268,19 +268,16 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
 
   # Add image
   def handle_event("add-product-image-one", _, socket) do
-    IO.puts("Add image one")
     consume_uploaded_entries(socket, :product_image_one, fn _meta, _entry -> :ok end)
     {:noreply, socket}
   end
 
   def handle_event("add-product-image-two", _, socket) do
-    IO.puts("Add image two")
     consume_uploaded_entries(socket, :product_image_two, fn _meta, _entry -> :ok end)
     {:noreply, socket}
   end
 
   def handle_event("add-product-image-three", _, socket) do
-    IO.puts("Add image three")
     consume_uploaded_entries(socket, :product_image_three, fn _meta, _entry -> :ok end)
     {:noreply, socket}
   end

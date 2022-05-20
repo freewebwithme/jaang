@@ -3,8 +3,48 @@ defmodule JaangWeb.Admin.Products.ProductsListLive do
   alias Jaang.Admin.Product.Products
   alias JaangWeb.Admin.Products.{ProductDetailLive, ProductSearchResultLive, ProductAddLive}
 
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
+    IO.puts("Product List page")
+    IO.inspect(params)
     {:ok, socket, temporary_assigns: [products: []]}
+  end
+
+  # Handle params for page and per page
+  def handle_params(
+        %{
+          "store_id" => store_id,
+          "store_name" => store_name,
+          "page" => page,
+          "per_page" => per_page
+        } = params,
+        _url,
+        socket
+      ) do
+    page = String.to_integer(page)
+    per_page = String.to_integer(per_page)
+    paginate_options = %{page: page, per_page: per_page}
+    filter_by = params["filter_by"] || "All"
+
+    products =
+      Products.get_products(store_id,
+        paginate: paginate_options,
+        filter_by: %{by_state: filter_by}
+      )
+
+    has_next_page = Helpers.has_next_page?(Enum.count(products), per_page)
+
+    socket =
+      assign(socket,
+        store_id: store_id,
+        store_name: store_name,
+        has_next_page: has_next_page,
+        options: paginate_options,
+        products: products,
+        current_page: "Products List",
+        filter_by: filter_by
+      )
+
+    {:noreply, socket}
   end
 
   # Handle params for filter by
@@ -42,46 +82,6 @@ defmodule JaangWeb.Admin.Products.ProductsListLive do
     {:noreply, socket}
   end
 
-  # Handle params for page and per page
-  def handle_params(
-        %{
-          "store_id" => store_id,
-          "store_name" => store_name,
-          "page" => page,
-          "per_page" => per_page
-        } = params,
-        _url,
-        socket
-      ) do
-    IO.puts("Calling per_page by handle_params")
-
-    page = String.to_integer(page)
-    per_page = String.to_integer(per_page)
-    paginate_options = %{page: page, per_page: per_page}
-    filter_by = params["filter_by"] || "All"
-
-    products =
-      Products.get_products(store_id,
-        paginate: paginate_options,
-        filter_by: %{by_state: filter_by}
-      )
-
-    has_next_page = Helpers.has_next_page?(Enum.count(products), per_page)
-
-    socket =
-      assign(socket,
-        store_id: store_id,
-        store_name: store_name,
-        has_next_page: has_next_page,
-        options: paginate_options,
-        products: products,
-        current_page: "Products List",
-        filter_by: filter_by
-      )
-
-    {:noreply, socket}
-  end
-
   # Catch all handle_params
   def handle_params(%{"store_id" => store_id, "store_name" => store_name} = params, _url, socket) do
     page = String.to_integer(params["page"] || "1")
@@ -114,7 +114,7 @@ defmodule JaangWeb.Admin.Products.ProductsListLive do
             socket,
             __MODULE__,
             socket.assigns.store_name,
-            store_id: socket.assigns.store_id,
+            socket.assigns.store_id,
             store_name: socket.assigns.store_name,
             page: socket.assigns.options.page,
             per_page: socket.assigns.options.per_page,
@@ -137,7 +137,7 @@ defmodule JaangWeb.Admin.Products.ProductsListLive do
             socket,
             __MODULE__,
             socket.assigns.store_name,
-            store_id: socket.assigns.store_id,
+            socket.assigns.store_id,
             store_name: socket.assigns.store_name,
             page: socket.assigns.options.page,
             per_page: per_page,
@@ -157,6 +157,7 @@ defmodule JaangWeb.Admin.Products.ProductsListLive do
             socket,
             ProductSearchResultLive,
             socket.assigns.store_name,
+            search_by,
             store_id: socket.assigns.store_id,
             store_name: socket.assigns.store_name,
             search_by: search_by,

@@ -1,11 +1,14 @@
 defmodule JaangWeb.Admin.Products.ProductDetailLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Admin.Product.Products
-  alias JaangWeb.Admin.Products.ProductEditDetailLive
+  alias JaangWeb.Admin.Products.{ProductEditDetailLive, ProductsListLive}
   @moduledoc false
 
-
-  def mount(%{"store_id" => store_id, "product_id" => product_id}, _session, socket) do
+  def mount(
+        %{"store_id" => store_id, "product_id" => product_id},
+        _session,
+        socket
+      ) do
     # get product
     product = Products.get_product(store_id, product_id)
 
@@ -14,7 +17,8 @@ defmodule JaangWeb.Admin.Products.ProductDetailLive do
        current_page: "Product detail",
        product: product,
        store_id: store_id,
-       product_id: product_id
+       product_id: product_id,
+       store_name: product.store_name
      )}
   end
 
@@ -28,6 +32,22 @@ defmodule JaangWeb.Admin.Products.ProductDetailLive do
             ProductEditDetailLive,
             socket.assigns.store_id,
             socket.assigns.product_id
+          )
+      )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("goback", _, socket) do
+    socket =
+      push_redirect(
+        socket,
+        to:
+          Routes.live_path(
+            socket,
+            ProductsListLive,
+            socket.assigns.store_name,
+            socket.assigns.store_id
           )
       )
 

@@ -54,8 +54,8 @@ defmodule JaangWeb.Router do
 
     live "/products", Products.ProductsLive
     live "/products/add/new", Products.ProductAddLive
-    live "/products/:store_name/list", Products.ProductsListLive
-    live "/products/:store_name/search/", Products.ProductSearchResultLive
+    live "/products/:store_name/:store_id", Products.ProductsListLive
+    live "/products/:store_name/search/:search_by", Products.ProductSearchResultLive
     live "/products/detail/:store_id/:product_id", Products.ProductDetailLive
     live "/products/detail/:store_id/edit/:product_id", Products.ProductEditDetailLive
 
@@ -95,6 +95,9 @@ defmodule JaangWeb.Router do
     pipe_through :browser
 
     live "/", PageLive
+    live "/privacy", PrivacyLive
+    live "/termscondition", TermsConditionLive
+    live "/return", ReturnLive
     delete "/log_out", AuthController, :delete
     # account confirmation
     get "/account/confirm", AccountConfirmationController, :new

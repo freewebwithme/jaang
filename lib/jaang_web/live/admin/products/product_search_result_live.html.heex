@@ -175,7 +175,9 @@
                   <div class="-mt-px w-0 flex-1 flex">
                    <%= live_patch to: Routes.live_path(
                           @socket,
-                          __MODULE__, @store_name,
+                          __MODULE__,
+                          @store_name,
+                          @search_by,
                           store_id: @store_id,
                           page: @options.page - 1,
                           per_page: @options.per_page,
@@ -200,7 +202,9 @@
                     <%= if @has_next_page do %>
                       <%= live_patch i, to: Routes.live_path(
                           @socket,
-                          __MODULE__, @store_name,
+                          __MODULE__,
+                          @store_name,
+                          @search_by,
                           store_id: @store_id,
                           page: i,
                           per_page: @options.per_page,
@@ -220,7 +224,9 @@
                 <div class="-mt-px w-0 flex-1 flex justify-end">
                   <%= live_patch to: Routes.live_path(
                             @socket,
-                            __MODULE__, @store_name,
+                            __MODULE__,
+                            @store_name,
+                            @search_by,
                             store_id: @store_id,
                             page: @options.page + 1,
                             per_page: @options.per_page,

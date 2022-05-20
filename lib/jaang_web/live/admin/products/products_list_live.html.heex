@@ -171,7 +171,7 @@
                       <%= live_redirect "View", to:
                            Routes.live_path(
                              @socket,
-                             ProductDetailLive, @store_id, product.id),
+                             ProductDetailLive, @store_id, product.id, store_name: @store_name),
                           class: "text-indigo-600 hover:text-indigo-900" %>
                     </td>
                   </tr>
@@ -186,8 +186,9 @@
                   <div class="-mt-px w-0 flex-1 flex">
                    <%= live_patch to: Routes.live_path(
                           @socket,
-                          __MODULE__, @store_name,
-                          store_id: @store_id,
+                          __MODULE__,
+                          @store_name,
+                          @store_id,
                           page: @options.page - 1,
                           per_page: @options.per_page,
                           has_next_page: @has_next_page,
@@ -209,8 +210,9 @@
                     <%= if @has_next_page do %>
                       <%= live_patch i, to: Routes.live_path(
                           @socket,
-                          __MODULE__, @store_name,
-                          store_id: @store_id,
+                          __MODULE__,
+                          @store_name,
+                          @store_id,
                           page: i,
                           per_page: @options.per_page,
                           has_next_page: @has_next_page,
@@ -227,8 +229,9 @@
                 <div class="-mt-px w-0 flex-1 flex justify-end">
                   <%= live_patch to: Routes.live_path(
                             @socket,
-                            __MODULE__, @store_name,
-                            store_id: @store_id,
+                            __MODULE__,
+                            @store_name,
+                            @store_id,
                             page: @options.page + 1,
                             per_page: @options.per_page,
                             has_next_page: @has_next_page,

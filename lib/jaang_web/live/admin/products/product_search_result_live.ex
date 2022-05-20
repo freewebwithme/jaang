@@ -3,6 +3,8 @@ defmodule JaangWeb.Admin.Products.ProductSearchResultLive do
   alias Jaang.Admin.Product.Products
   alias JaangWeb.Admin.Products.ProductDetailLive
 
+  @moduledoc false
+
   def mount(
         %{
           "store_id" => store_id,
@@ -97,6 +99,7 @@ defmodule JaangWeb.Admin.Products.ProductSearchResultLive do
             socket,
             __MODULE__,
             socket.assigns.store_name,
+            socket.assigns.search_by,
             store_id: socket.assigns.store_id,
             store_name: socket.assigns.store_name,
             page: socket.assigns.options.page,
@@ -118,6 +121,7 @@ defmodule JaangWeb.Admin.Products.ProductSearchResultLive do
             socket,
             __MODULE__,
             socket.assigns.store_name,
+            socket.assigns.search_by,
             store_id: socket.assigns.store_id,
             store_name: socket.assigns.store_name,
             page: socket.assigns.options.page,
@@ -141,6 +145,7 @@ defmodule JaangWeb.Admin.Products.ProductSearchResultLive do
             socket,
             __MODULE__,
             socket.assigns.store_name,
+            socket.assigns.search_by,
             store_id: socket.assigns.store_id,
             store_name: socket.assigns.store_name,
             page: socket.assigns.options.page,
