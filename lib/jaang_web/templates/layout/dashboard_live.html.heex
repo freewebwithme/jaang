@@ -154,6 +154,18 @@
                 </div>
               </div>
 
+              <%= live_redirect to: Routes.categories_path(@socket, :index),
+                  class: if @current_page == "Categories", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+                  else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
+              do %>
+                <!-- Heroicon name: users -->
+                <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                  </path>
+                </svg>
+                Categories
+              <% end %>
+
               <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Products.ProductsLive),
                   class: if @current_page == "Products", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
@@ -388,6 +400,18 @@
                   <% end %>
                 </div>
               </div>
+
+              <%= live_redirect to: Routes.categories_path(@socket, :index),
+
+                  class: if @current_page == "Categories", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                  else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+              do %>
+                <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+                Categories
+
+              <% end %>
 
               <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Products.ProductsLive),
                   

@@ -23,8 +23,18 @@ defmodule Jaang.Category.Categories do
     |> Repo.insert()
   end
 
+  def change_category(category, attrs) do
+    category
+    |> Category.changeset(attrs)
+  end
+
+  def change_subcategory(subcategory, attrs) do
+    subcategory
+    |> SubCategory.changeset(attrs)
+  end
+
   def get_category(id) do
-    Repo.get(Category, id)
+    Repo.get(Category, id) |> Repo.preload([:sub_categories])
   end
 
   def get_sub_category(id) do
@@ -32,7 +42,8 @@ defmodule Jaang.Category.Categories do
   end
 
   def list_categories() do
-    Repo.all(Category)
+    query = from c in Category, preload: [:sub_categories], order_by: [:name]
+    Repo.all(query)
   end
 
   def list_sub_categories(category_id) do

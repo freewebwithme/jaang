@@ -23,6 +23,7 @@ defmodule JaangWeb.Admin.Partners.PartnersOverviewLive do
   end
 
   def handle_info({:new_partner_added, _store}, socket) do
+    IO.puts("New partner added")
     store_infos = create_store_infos_from_store()
 
     {:noreply,

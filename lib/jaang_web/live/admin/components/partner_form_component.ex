@@ -144,7 +144,7 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
 
           <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <div class="flex">
-              <%= if @live_action == :show do %>
+              <%= if @live_action == :add do %>
                 <%= submit "Save", [
                   class: (if @can_save, do: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3",
                   else: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
@@ -201,7 +201,7 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
   end
 
   def handle_event("save", %{"store" => attrs}, socket) do
-    if socket.assigns.live_action == :show do
+    if socket.assigns.live_action == :add do
       {[completed_entry], []} = uploaded_entries(socket, :store_logo)
       s3_file_name = build_s3_filename(completed_entry.client_name)
       # Update "store_logo" value with real s3 url
@@ -214,7 +214,7 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
           {:noreply,
            socket
            |> put_flash(:info, "New partner created successfully")
-           |> push_redirect(to: socket.assigns.return_to, replace: true)}
+           |> push_patch(to: socket.assigns.return_to, replace: true)}
 
         {:error, changeset} ->
           {:noreply, socket |> assign(:changeset, changeset)}
@@ -231,7 +231,7 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
             {:noreply,
              socket
              |> put_flash(:info, "Partner information updated successfully")
-             |> push_redirect(to: socket.assigns.return_to, replace: true)}
+             |> push_patch(to: socket.assigns.return_to, replace: true)}
 
           {:error, changeset} ->
             {:noreply, socket |> assign(:changeset, changeset)}
@@ -250,7 +250,7 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
             {:noreply,
              socket
              |> put_flash(:info, "Partner information updated successfully")
-             |> push_redirect(to: socket.assigns.return_to, replace: true)}
+             |> push_patch(to: socket.assigns.return_to, replace: true)}
 
           {:error, changeset} ->
             {:noreply, socket |> assign(:changeset, changeset)}

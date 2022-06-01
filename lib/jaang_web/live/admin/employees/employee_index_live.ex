@@ -60,7 +60,6 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
         },
         socket
       ) do
-
     roles = find_selected_roles(socket, employee_attrs)
     stores = find_selected_assigned_stores(socket, employee_attrs)
 
@@ -231,6 +230,7 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
     roles = EmployeeAccountManager.list_roles()
     changeset = EmployeeAccountManager.change_employee(%Employee{}, %{})
     stores = StoreManager.get_all_stores()
+    IO.inspect(changeset)
 
     socket
     |> assign(:employee, %Employee{})

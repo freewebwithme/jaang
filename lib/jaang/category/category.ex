@@ -16,5 +16,9 @@ defmodule Jaang.Category do
   def changeset(%Jaang.Category{} = category, attrs) do
     category
     |> cast(attrs, [:name, :description])
+    |> validate_required([:name, :description])
+    |> validate_length(:name, min: 3, max: 50)
+    |> validate_length(:description, min: 5, max: 200)
+    |> cast_assoc(:sub_categories)
   end
 end

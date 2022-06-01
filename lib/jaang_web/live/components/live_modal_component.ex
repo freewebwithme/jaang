@@ -1,6 +1,10 @@
 defmodule JaangWeb.LiveModalComponent do
   use JaangWeb, :live_component
 
+  @moduledoc """
+  Live modal template
+  """
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -30,7 +34,6 @@ defmodule JaangWeb.LiveModalComponent do
       </div>
     </div>
     """
-
   end
 
   @impl true

@@ -1,0 +1,59 @@
+<%= if @live_action == :index do %>
+<div class="container mx-auto">
+  <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+    <div class="flex-1 min-w-0">
+      <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">All Categories</h1>
+    </div>
+    <div class="mt-4 flex sm:mt-0 sm:ml-4">
+      <%= live_patch("Add Category", to: Routes.categories_path(@socket, :add), class: "order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:order-1 sm:ml-3") %>
+    </div>
+  </div>
+</div>
+<div class="grid gap-4 grid-cols-3 mt-2">
+  <%= for category <- @categories do %>
+    <%= live_patch to: Routes.categories_path(@socket, :show, category.id) do %>
+     <div class="bg-white shadow-md ">
+        <div class="py-7 px-10">
+          <div class="flex items-center mb-5">
+            <div class="h-10 w-10 flex items-center justify-center bg-indigo-500 rounded-md">
+                <!-- Heroicon name: outline/view-list -->
+                <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+            </div>
+            <div class="ml-4">
+              <div class="text-xl text-gray-900">
+                <%= category.name %>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
+
+          <%= for sub_category <- category.sub_categories do %>
+            <div class="flex content-evenly">
+              <p class="flex-1">- <%= sub_category.name %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+     <% end %>
+  <% end %>
+</div>
+<% end %>
+
+<%= if @live_action == :add do %>
+<.live_component module={JaangWeb.LiveModalComponent} id="modal" return_to={Routes.categories_path(@socket, :index)}>
+
+  <.live_component module={JaangWeb.Admin.Components.CategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :index)} id="add-partner" category={@category} live_action={@live_action} />
+
+  </.live_component>
+
+<% end %>
+
+<%= if @live_action == :show do %>
+  <h1><%= @category.name %></h1>
+  <%= for sub <- @category.sub_categories do %>
+      <h1><%= sub.name %></h1>
+  <% end %>
+<% end %>

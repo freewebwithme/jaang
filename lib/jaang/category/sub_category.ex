@@ -2,6 +2,10 @@ defmodule Jaang.Category.SubCategory do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @moduledoc """
+  Subcategory module
+  """
+
   schema "sub_categories" do
     field :name, :string
 

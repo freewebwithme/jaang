@@ -52,6 +52,22 @@ defmodule JaangWeb.Router do
 
     live "/partners/orders/:store_name/:order_id/detail", Partners.PartnerOrderDetailLive
 
+    live "/categories", Categories.CategoriesLive, :index
+    live "/categories/add", Categories.CategoriesLive, :add
+    live "/categories/:category_id", Categories.CategoriesLive, :show
+    live "/categories/:category_id/edit", Categories.CategoriesLive, :edit
+    live "/categories/:category_id/delete", Categories.CategoriesLive, :delete
+
+    live "/categories/subcategory/add", Categories.CategoriesLive, :subcategory_add
+
+    live "/categories/subcategory/:subcategory_id/edit",
+         Categories.CategoriesLive,
+         :subcategory_edit
+
+    live "/categories/suvcategory/:subcategory_id/delete",
+         Categories.CategoriesLive,
+         :subcategory_delete
+
     live "/products", Products.ProductsLive
     live "/products/add/new", Products.ProductAddLive
     live "/products/:store_name/:store_id", Products.ProductsListLive
