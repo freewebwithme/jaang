@@ -8,10 +8,10 @@ defmodule JaangWeb.Admin.Components.PartnerFormComponent do
   """
 
   @max_file_size 4_000_000
-  @bucket System.fetch_env!("AWS_BUCKET_NAME")
-  @region System.fetch_env!("AWS_REGION")
-  @access_key_id System.fetch_env!("AWS_ACCESS_KEY_ID")
-  @secret_access_key System.fetch_env!("AWS_SECRET_ACCESS_KEY")
+  @bucket System.get_env("AWS_BUCKET_NAME")
+  @region System.get_env("AWS_REGION")
+  @access_key_id System.get_env("AWS_ACCESS_KEY_ID")
+  @secret_access_key System.get_env("AWS_SECRET_ACCESS_KEY")
 
   def update(%{store: store} = assigns, socket) do
     changeset = StoreManager.change_store(store, %{})
