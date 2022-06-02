@@ -47,7 +47,8 @@ if config_env() == :prod do
 
   config :jaang, JaangWeb.Endpoint,
     server: true,
-    url: [host: "#{app_name}.fly.dev", port: 80],
+    # url: [host: "#{app_name}.fly.dev", port: 80],
+    url: [host: "jaangcart.com", port: 443],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
@@ -57,7 +58,6 @@ if config_env() == :prod do
       port: port
     ],
     secret_key_base: secret_key_base
-
 
   # ## Using releases
   #

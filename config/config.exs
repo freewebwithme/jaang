@@ -13,7 +13,7 @@ config :jaang,
 
 # Configures the endpoint
 config :jaang, JaangWeb.Endpoint,
-  url: [host: "https://jaangcart.com"],
+  url: [host: "jaangcart.com"],
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: JaangWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Jaang.PubSub,
