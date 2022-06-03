@@ -46,7 +46,7 @@
 <%= if @live_action == :add do %>
 <.live_component module={JaangWeb.LiveModalComponent} id="modal" return_to={Routes.categories_path(@socket, :index)}>
 
-  <.live_component module={JaangWeb.Admin.Components.CategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :index)} id="add-partner" category={@category} live_action={@live_action} />
+  <.live_component module={JaangWeb.Admin.Components.CategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :index)} id="add-category-form" category={@category} live_action={@live_action} />
 
   </.live_component>
 
@@ -58,9 +58,20 @@
 <%= if @live_action == :show do %>
   <.live_component module={JaangWeb.LiveModalComponent} id="category-show-modal" return_to={Routes.categories_path(@socket, :index)}>
 
-    <div class="max-w-xs">
-      <p class="font-light text-xs mb-1">Name</p>
-      <h1 class="font-bold text-2xl"><%= @category.name %></h1>
+    <div class="">
+      <div class="flex justify-between">
+        <div>
+          <p class="font-light text-xs mb-1">Name</p>
+          <h1 class="font-bold text-2xl"><%= @category.name %></h1>
+        </div>
+        <div></div>
+        <div class="mt-2">
+          <%= live_patch to: Routes.categories_path(@socket, :subcategory_add, @category.id), class: "indigo-button" do %>
+          Add a subcategory
+          <% end %>
+        </div>
+
+      </div>
       <p class="font-light text-xs mt-6 mb-1">Description</p>
       <p class="font-medium text-base"><%= @category.description %></p>
 
@@ -95,7 +106,18 @@
 <%# Category edit form page %>
 
 <%= if @live_action == :edit do %>
-  <.live_component module={JaangWeb.LiveModalComponet} id="category-edit-modal" return_to={Routes.categories_path(@socket, :show, @category.id)}>
+  <.live_component module={JaangWeb.LiveModalComponent} id="category-edit-modal" return_to={Routes.categories_path(@socket, :show, @category.id)}>
+    <.live_component module={JaangWeb.Admin.Components.CategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :show, @category.id)} id="edit-category-form" category={@category} live_action={@live_action}>
+    </.live_component>
+  </.live_component>
+<% end %>
 
+<%# Subcategory Add page %>
+
+<%= if @live_action == :subcategory_add do %>
+  <.live_component module={JaangWeb.LiveModalComponent} id="subcategory-add-modal" return_to={Routes.categories_path(@socket, :show, @category.id)}>
+
+    <.live_component module={JaangWeb.Admin.Components.SubcategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :show, @category.id)} id="add_subcategory-form" category={@category} sub_category={@sub_category} live_action={@live_action}>
+      </.live_component>
   </.live_component>
 <% end %>

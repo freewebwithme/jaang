@@ -15,9 +15,18 @@ defmodule Jaang.Category.Categories do
     |> Repo.insert()
   end
 
-  def create_subcategory(category, attrs) do
+  @doc """
+  This function is used for test file and seed file
+  """
+  def create_subcategory(%Category{} = category, attrs) do
     attrs = Map.put(attrs, :category_id, category.id)
 
+    %SubCategory{}
+    |> SubCategory.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_sub_category(attrs) do
     %SubCategory{}
     |> SubCategory.changeset(attrs)
     |> Repo.insert()
@@ -31,6 +40,15 @@ defmodule Jaang.Category.Categories do
   def change_subcategory(subcategory, attrs) do
     subcategory
     |> SubCategory.changeset(attrs)
+  end
+
+  def update_category(category, attrs) do
+    IO.inspect(category)
+    IO.inspect(attrs)
+
+    category
+    |> Category.changeset(attrs)
+    |> Repo.update()
   end
 
   def get_category(id) do

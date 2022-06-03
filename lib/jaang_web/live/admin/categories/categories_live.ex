@@ -2,6 +2,7 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
   use JaangWeb, :dashboard_live_view
   alias Jaang.Category.Categories
   alias Jaang.Category
+  alias Jaang.Category.SubCategory
 
   @moduledoc false
 
@@ -20,6 +21,16 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
 
   def handle_info({:new_category, category}, socket) do
     updated_categories = [category | socket.assigns.categories]
+    {:noreply, socket |> assign(:categories, updated_categories)}
+  end
+
+  def handle_info({:category_updated, _category}, socket) do
+    updated_categories = Categories.list_categories()
+    {:noreply, socket |> assign(:categories, updated_categories)}
+  end
+
+  def handle_info({:new_subcategory_added, _sub_category}, socket) do
+    updated_categories = Categories.list_categories()
     {:noreply, socket |> assign(:categories, updated_categories)}
   end
 
@@ -46,7 +57,16 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
     category = Categories.get_category(id)
 
     socket
-    |> assign(:page_title, "Edit Category")
+    |> assign(:page_title, "Edit a Category")
     |> assign(:category, category)
+  end
+
+  defp apply_action(socket, :subcategory_add, %{"category_id" => id}) do
+    category = Categories.get_category(id)
+
+    socket
+    |> assign(:page_title, "Add a subcategory")
+    |> assign(:category, category)
+    |> assign(:sub_category, %SubCategory{})
   end
 end

@@ -8,9 +8,6 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
 
   def update(%{category: category} = assigns, socket) do
     changeset = Categories.change_category(category, %{})
-    IO.puts("Inspecting changeset")
-    IO.inspect(changeset)
-    IO.inspect(category)
 
     {:ok,
      socket
@@ -54,13 +51,13 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
               <%= error_tag f, :description %>
             </div>
           </div>
-
+          <%= if @live_action != :edit do %>
           <div class="border-b pb-3 border-gray-200">
             <h3 class="text-md">Add Sub Category</h3>
             <p class="mt-1 max-w-2xl text-sm text-gray-500">At least Add one sub category for this category, you can add subcategories later</p>
           </div>
 
-           <%= inputs_for f, :sub_categories, [prepend: [%Jaang.Category.SubCategory{}]], fn sc -> %>
+           <%= inputs_for f, :sub_categories, [append: [%Jaang.Category.SubCategory{}]], fn sc -> %>
              <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
               <%= label sc, :name, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
                <div class="mt-1 sm:mt-0 sm:col-span-2">
@@ -72,7 +69,7 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
                </div>
              </div>
            <% end %>
-
+           <% end %>
           <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <div class="flex">
               <%= if @live_action == :add do %>
@@ -118,17 +115,32 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
   end
 
   def handle_event("save", %{"category" => category_attrs}, socket) do
-    case Categories.create_category(category_attrs) do
-      {:ok, category} ->
-        send(self(), {:new_category, category})
+    if socket.assigns.live_action == :add do
+      case Categories.create_category(category_attrs) do
+        {:ok, category} ->
+          send(self(), {:new_category, category})
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "New Category added successfully")
-         |> push_patch(to: socket.assigns.return_to, replace: true)}
+          {:noreply,
+           socket
+           |> put_flash(:info, "New Category added successfully")
+           |> push_patch(to: socket.assigns.return_to, replace: true)}
 
-      {:error, changeset} ->
-        {:noreply, socket |> assign(:changeset, changeset)}
+        {:error, changeset} ->
+          {:noreply, socket |> assign(:changeset, changeset)}
+      end
+    else
+      case Categories.update_category(socket.assigns.category, category_attrs) do
+        {:ok, category} ->
+          send(self(), {:category_updated, category})
+
+          {:noreply,
+           socket
+           |> put_flash(:info, "Category information updated successfully")
+           |> push_patch(to: socket.assigns.return_to, replace: true)}
+
+        {:error, changeset} ->
+          {:noreply, socket |> assign(:changeset, changeset)}
+      end
     end
   end
 end

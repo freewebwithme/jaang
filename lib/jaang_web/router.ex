@@ -58,7 +58,7 @@ defmodule JaangWeb.Router do
     live "/categories/:category_id/edit", Categories.CategoriesLive, :edit
     live "/categories/:category_id/delete", Categories.CategoriesLive, :delete
 
-    live "/categories/subcategory/add", Categories.CategoriesLive, :subcategory_add
+    live "/categories/:category_id/subcategory/add", Categories.CategoriesLive, :subcategory_add
 
     live "/categories/subcategory/:subcategory_id/edit",
          Categories.CategoriesLive,
