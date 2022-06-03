@@ -41,4 +41,12 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
     |> assign(:page_title, "Category detail")
     |> assign(:category, category)
   end
+
+  defp apply_action(socket, :edit, %{"category_id" => id}) do
+    category = Categories.get_category(id)
+
+    socket
+    |> assign(:page_title, "Edit Category")
+    |> assign(:category, category)
+  end
 end

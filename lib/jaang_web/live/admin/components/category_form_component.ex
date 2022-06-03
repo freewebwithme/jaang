@@ -77,22 +77,22 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
             <div class="flex">
               <%= if @live_action == :add do %>
                 <%= submit "Save", [
-                  class: (if @can_save, do: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3",
-                  else: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
+                  class: (if @can_save, do: "indigo-button",
+                  else: "disable-button"),
                   phx_disable_with: "Saving..."
                   ]
                 %>
               <% else %>
                 <%= submit "Edit", [
-                  class: (if @can_save, do: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3",
-                  else: "relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
+                  class: (if @can_save, do: "indigo-button",
+                  else: "disable-button"),
                   phx_disable_with: "Editing...",
                   ]
                 %>
 
               <% end %>
                 <%= live_redirect to: @return_to,
-                  class: "ml-4 relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  class: "ml-4 red-button"
                   do %>
                   Cancel
                 <% end %>

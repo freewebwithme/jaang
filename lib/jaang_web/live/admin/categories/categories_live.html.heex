@@ -42,6 +42,7 @@
 </div>
 <% end %>
 
+<%# Category add form %>
 <%= if @live_action == :add do %>
 <.live_component module={JaangWeb.LiveModalComponent} id="modal" return_to={Routes.categories_path(@socket, :index)}>
 
@@ -51,9 +52,50 @@
 
 <% end %>
 
+
+<%# Category detail page %>
+
 <%= if @live_action == :show do %>
-  <h1><%= @category.name %></h1>
-  <%= for sub <- @category.sub_categories do %>
-      <h1><%= sub.name %></h1>
-  <% end %>
+  <.live_component module={JaangWeb.LiveModalComponent} id="category-show-modal" return_to={Routes.categories_path(@socket, :index)}>
+
+    <div class="max-w-xs">
+      <p class="font-light text-xs mb-1">Name</p>
+      <h1 class="font-bold text-2xl"><%= @category.name %></h1>
+      <p class="font-light text-xs mt-6 mb-1">Description</p>
+      <p class="font-medium text-base"><%= @category.description %></p>
+
+      <p class="font-light text-xs mt-6 mb-1">Subcategories</p>
+      <ul class="list-disc ml-4">
+        <%= for sub <- @category.sub_categories do %>
+          <li><%= sub.name %></li>
+        <% end %>
+      </ul>
+      <div class="flex mt-4">
+        <div>
+          <%= live_patch to: Routes.categories_path(
+              @socket,
+              :edit,
+              @category.id
+              ),
+              class: "indigo-button"
+              do %>
+          Edit
+          <% end %>
+
+        </div>
+
+        <div class="ml-4">
+          <%= live_patch to: Routes.categories_path(@socket, :index), class: "red-button" do %>Cancel<% end %>
+        </div>
+      </div>
+    </div>
+  </.live_component>
+<% end %>
+
+<%# Category edit form page %>
+
+<%= if @live_action == :edit do %>
+  <.live_component module={JaangWeb.LiveModalComponet} id="category-edit-modal" return_to={Routes.categories_path(@socket, :show, @category.id)}>
+
+  </.live_component>
 <% end %>
