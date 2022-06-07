@@ -34,6 +34,11 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
     {:noreply, socket |> assign(:categories, updated_categories)}
   end
 
+  def handle_info({:subcategory_updated, _sub_category}, socket) do
+    updated_categories = Categories.list_categories()
+    {:noreply, socket |> assign(:categories, updated_categories)}
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Category List")
@@ -68,5 +73,28 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
     |> assign(:page_title, "Add a subcategory")
     |> assign(:category, category)
     |> assign(:sub_category, %SubCategory{})
+  end
+
+  defp apply_action(socket, :subcategory_edit, %{"category_id" => id, "subcategory_id" => sub_id}) do
+    category = Categories.get_category(id)
+    sub_category = Categories.get_sub_category(sub_id)
+
+    socket
+    |> assign(:page_title, "Edit a subcategory")
+    |> assign(:category, category)
+    |> assign(:sub_category, sub_category)
+  end
+
+  defp apply_action(socket, :subcategory_delete, %{
+         "category_id" => id,
+         "subcategory_id" => sub_id
+       }) do
+    category = Categories.get_category(id)
+    sub_category = Categories.get_sub_category(sub_id)
+
+    socket
+    |> assign(:page_title, "Delete a subcategory")
+    |> assign(:category, category)
+    |> assign(:sub_category, sub_category)
   end
 end

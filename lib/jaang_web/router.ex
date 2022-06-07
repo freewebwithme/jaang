@@ -60,13 +60,17 @@ defmodule JaangWeb.Router do
 
     live "/categories/:category_id/subcategory/add", Categories.CategoriesLive, :subcategory_add
 
-    live "/categories/subcategory/:subcategory_id/edit",
+    live "/categories/:category_id/subcategory/:subcategory_id/edit",
          Categories.CategoriesLive,
          :subcategory_edit
 
-    live "/categories/suvcategory/:subcategory_id/delete",
+    live "/categories/:category_id/subcategory/:subcategory_id/delete",
          Categories.CategoriesLive,
          :subcategory_delete
+
+    live "/categories/:category_id/subcategory/:subcategory_id/delete/confirm",
+         Categories.CategoriesLive,
+         :subcategory_delete_confirm
 
     live "/products", Products.ProductsLive
     live "/products/add/new", Products.ProductAddLive

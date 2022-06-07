@@ -19,5 +19,7 @@ defmodule Jaang.Category.SubCategory do
     |> cast(attrs, [:name, :category_id])
     |> validate_length(:name, min: 3, max: 50)
     |> validate_required([:name, :category_id])
+
+    #    |> foreign_key_constraint(:category)
   end
 end

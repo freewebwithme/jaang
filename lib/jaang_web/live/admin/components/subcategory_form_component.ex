@@ -22,17 +22,32 @@ defmodule JaangWeb.Admin.Components.SubcategoryFormComponent do
   end
 
   def handle_event("save", %{"sub_category" => sub_attrs}, socket) do
-    case Categories.create_sub_category(sub_attrs) do
-      {:ok, sub_category} ->
-        send(self(), {:new_subcategory_added, sub_category})
+    if socket.assigns.live_action == :subcategory_add do
+      case Categories.create_sub_category(sub_attrs) do
+        {:ok, sub_category} ->
+          send(self(), {:new_subcategory_added, sub_category})
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "Subcategory created successfully")
-         |> push_patch(to: socket.assigns.return_to, replace: true)}
+          {:noreply,
+           socket
+           |> put_flash(:info, "Subcategory created successfully")
+           |> push_patch(to: socket.assigns.return_to, replace: true)}
 
-      {:error, changeset} ->
-        {:noreply, socket |> assign(:changeset, changeset)}
+        {:error, changeset} ->
+          {:noreply, socket |> assign(:changeset, changeset)}
+      end
+    else
+      case Categories.update_subcategory(socket.assigns.sub_category, sub_attrs) do
+        {:ok, sub_category} ->
+          send(self(), {:subcategory_updated, sub_category})
+
+          {:noreply,
+           socket
+           |> put_flash(:info, "Subcategory updated successfully")
+           |> push_patch(to: socket.assigns.return_to, replace: true)}
+
+        {:error, changeset} ->
+          {:noreply, socket |> assign(:changeset, changeset)}
+      end
     end
   end
 
@@ -68,7 +83,11 @@ defmodule JaangWeb.Admin.Components.SubcategoryFormComponent do
           </div>
           <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <div class="flex">
-              <%= submit "Add", [class: (if @can_save, do: "indigo-button", else: "disable-button"), phx_disable_with: "Adding..."] %>
+              <%= if @live_action == :subcategory_add do %>
+                <%= submit "Add", [class: (if @can_save, do: "indigo-button", else: "disable-button"), phx_disable_with: "Adding..."] %>
+              <% else %>
+                <%= submit "Save", [class: (if @can_save, do: "indigo-button", else: "disable-button"), phx_disable_with: "Saving..."] %>
+              <% end %>
               <%= live_patch to: @return_to, class: "ml-4 red-button" do %>
                 Cancel
               <% end %>

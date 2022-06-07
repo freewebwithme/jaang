@@ -28,6 +28,7 @@
             </div>
           </div>
 
+          <p class="text-md text-gray-700"><%= category.description %></p>
           <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
 
           <%= for sub_category <- category.sub_categories do %>
@@ -52,7 +53,6 @@
 
 <% end %>
 
-
 <%# Category detail page %>
 
 <%= if @live_action == :show do %>
@@ -64,10 +64,9 @@
           <p class="font-light text-xs mb-1">Name</p>
           <h1 class="font-bold text-2xl"><%= @category.name %></h1>
         </div>
-        <div></div>
         <div class="mt-2">
           <%= live_patch to: Routes.categories_path(@socket, :subcategory_add, @category.id), class: "indigo-button" do %>
-          Add a subcategory
+          Add a sub category
           <% end %>
         </div>
 
@@ -75,10 +74,32 @@
       <p class="font-light text-xs mt-6 mb-1">Description</p>
       <p class="font-medium text-base"><%= @category.description %></p>
 
+      <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
+
       <p class="font-light text-xs mt-6 mb-1">Subcategories</p>
       <ul class="list-disc ml-4">
         <%= for sub <- @category.sub_categories do %>
-          <li><%= sub.name %></li>
+          <div class="mt-2">
+            <li>
+              <div class="flex justify-between">
+                <div>
+                  <%= sub.name %>
+                </div>
+                <div class="flex">
+                  <div> <%= live_patch to: Routes.categories_path(@socket, :subcategory_edit, @category.id, sub.id), class: "indigo-button-sm" do %>
+                    Edit
+                    <% end %>
+                  </div>
+                  <div class="ml-1">
+                    <%= live_patch to: Routes.categories_path(@socket, :subcategory_delete, @category.id, sub.id), class: "red-button-sm" do %>
+                    Delete
+                    <% end %>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </div>
         <% end %>
       </ul>
       <div class="flex mt-4">
@@ -117,7 +138,50 @@
 <%= if @live_action == :subcategory_add do %>
   <.live_component module={JaangWeb.LiveModalComponent} id="subcategory-add-modal" return_to={Routes.categories_path(@socket, :show, @category.id)}>
 
-    <.live_component module={JaangWeb.Admin.Components.SubcategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :show, @category.id)} id="add_subcategory-form" category={@category} sub_category={@sub_category} live_action={@live_action}>
+    <.live_component module={JaangWeb.Admin.Components.SubcategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :show, @category.id)} id="add-subcategory-form" category={@category} sub_category={@sub_category} live_action={@live_action}>
       </.live_component>
   </.live_component>
+<% end %>
+
+<%# Subcategory edit form %>
+<%= if @live_action == :subcategory_edit do %>
+<.live_component module={JaangWeb.LiveModalComponent} id="subcategory-edit-modal" return_to={Routes.categories_path(@socket, :show, @category.id)}>
+
+  <.live_component module={JaangWeb.Admin.Components.SubcategoryFormComponent} title={@page_title} return_to={Routes.categories_path(@socket, :show, @category.id)} id="edit-subcategory-form" category={@category} sub_category={@sub_category} live_action={@live_action}>
+  </.live_component>
+
+</.live_component>
+<% end %>
+
+<%# Subcategory delete %>
+<%= if @live_action == :subcategory_delete do %>
+<.live_component module={JaangWeb.LiveModalComponent} id="subcategory-edit-modal" return_to={Routes.categories_path(@socket, :show, @category.id)}>
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+              <!-- Heroicon name: outline/exclamation -->
+              <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Delete a subcategory?</h3>
+              <div class="mt-2">
+                <p class="text-sm text-gray-500">Are you sure you want to delete a subcategory?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <%= live_patch to: Routes.categories_path(@socket, :subcategory_delete_confirm, @category.id, @sub_category.id), class: "red-button"do %>
+            Delete
+          <% end %>
+
+          <%= live_patch to: Routes.categories_path(@socket, :show, @category.id), class: "white-button mr-1"do %>
+            Cancel
+          <% end %>
+        </div>
+
+</.live_component>
+
 <% end %>

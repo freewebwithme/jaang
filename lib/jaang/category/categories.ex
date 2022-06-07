@@ -43,11 +43,14 @@ defmodule Jaang.Category.Categories do
   end
 
   def update_category(category, attrs) do
-    IO.inspect(category)
-    IO.inspect(attrs)
-
     category
     |> Category.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_subcategory(subcategory, attrs) do
+    subcategory
+    |> SubCategory.changeset(attrs)
     |> Repo.update()
   end
 
