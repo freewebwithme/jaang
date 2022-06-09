@@ -17,9 +17,8 @@ defmodule Jaang.Category.SubCategory do
   def changeset(%Jaang.Category.SubCategory{} = sub_category, attrs) do
     sub_category
     |> cast(attrs, [:name, :category_id])
+    |> cast_assoc(:category)
     |> validate_length(:name, min: 3, max: 50)
     |> validate_required([:name, :category_id])
-
-    #    |> foreign_key_constraint(:category)
   end
 end

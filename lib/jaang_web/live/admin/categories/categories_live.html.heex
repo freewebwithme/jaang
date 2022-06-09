@@ -167,15 +167,13 @@
             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
               <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Delete a subcategory?</h3>
               <div class="mt-2">
-                <p class="text-sm text-gray-500">Are you sure you want to delete a subcategory?</p>
+                <p class="text-sm text-gray-500">Are you sure you want to delete a <span class="text-lg font-medium text-gray-700"><%= @sub_category.name %> </span>?</p>
               </div>
             </div>
           </div>
         </div>
         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          <%= live_patch to: Routes.categories_path(@socket, :subcategory_delete_confirm, @category.id, @sub_category.id), class: "red-button"do %>
-            Delete
-          <% end %>
+          <button class="red-button" phx-click="subcategory-delete" value={@sub_category.id}>Delete</button>
 
           <%= live_patch to: Routes.categories_path(@socket, :show, @category.id), class: "white-button mr-1"do %>
             Cancel

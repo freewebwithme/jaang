@@ -39,6 +39,48 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
     {:noreply, socket |> assign(:categories, updated_categories)}
   end
 
+  def handle_event("subcategory-delete", %{"value" => id}, socket) do
+    IO.inspect(id)
+    return_to = Routes.categories_path(socket, :show, socket.assigns.category.id)
+
+    case Categories.delete_sub_category(id) do
+      {:ok, _sub_category} ->
+        socket =
+          push_patch(
+            socket,
+            to: return_to,
+            replace: true
+          )
+          |> put_flash(:info, "Sub category deleted successfully")
+
+        {:noreply, socket}
+
+      {:error, _changeset} ->
+        socket =
+          socket
+          |> push_patch(
+            to: return_to,
+            replace: true
+          )
+          |> put_flash(:error, "Sub category can't be deleted!")
+
+        {:noreply, socket}
+
+      {:has_product, message} ->
+        IO.inspect(message)
+
+        socket =
+          socket
+          |> push_patch(
+            to: return_to,
+            replace: true
+          )
+          |> put_flash(:error, message)
+
+        {:noreply, socket}
+    end
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Category List")

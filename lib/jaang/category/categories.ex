@@ -62,6 +62,17 @@ defmodule Jaang.Category.Categories do
     Repo.get(SubCategory, id)
   end
 
+  def delete_sub_category(id) do
+    sub_category = Repo.get(SubCategory, id) |> Repo.preload([:products])
+
+    if Enum.empty?(sub_category.products) do
+      Repo.delete(sub_category)
+    else
+      {:has_product,
+       "You can't delete this sub category. Some products depend on this subcategory."}
+    end
+  end
+
   def list_categories() do
     query = from c in Category, preload: [:sub_categories], order_by: [:name]
     Repo.all(query)
