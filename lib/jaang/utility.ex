@@ -89,7 +89,6 @@ defmodule Jaang.Utility do
     sub_categories = Repo.all(SubCategory)
 
     Enum.map(product_infos, fn info ->
-
       [
         product_name,
         product_image_1,
@@ -192,5 +191,7 @@ defmodule Jaang.Utility do
         String.replace(acc, "%{#{key}}", to_string(value))
       end)
     end)
+    |> inspect
+    |> String.replace(~r/[%\[\]"{}:]/, "")
   end
 end

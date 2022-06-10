@@ -73,6 +73,14 @@ defmodule Jaang.Category.Categories do
     end
   end
 
+  def delete_category(id) do
+    category = Repo.get(Category, id)
+
+    category
+    |> Category.changeset(%{})
+    |> Repo.delete()
+  end
+
   def list_categories() do
     query = from c in Category, preload: [:sub_categories], order_by: [:name]
     Repo.all(query)

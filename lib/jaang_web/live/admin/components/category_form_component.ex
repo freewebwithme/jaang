@@ -89,10 +89,11 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
 
               <% end %>
                 <%= live_redirect to: @return_to,
-                  class: "ml-4 red-button"
+                  class: "ml-4 white-button"
                   do %>
                   Cancel
                 <% end %>
+                <button type="button" class="red-button ml-3" phx-click="category-delete" value={@category.id}>Delete</button>
             </div>
           </div>
         </.form>

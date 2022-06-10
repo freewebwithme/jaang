@@ -20,6 +20,6 @@ defmodule Jaang.Category do
     |> validate_length(:name, min: 3, max: 50)
     |> validate_length(:description, min: 5, max: 200)
     |> cast_assoc(:sub_categories)
-    |> foreign_key_constraint(:sub_categories)
+    |> no_assoc_constraint(:sub_categories)
   end
 end

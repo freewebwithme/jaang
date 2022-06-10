@@ -3,6 +3,7 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
   alias Jaang.Category.Categories
   alias Jaang.Category
   alias Jaang.Category.SubCategory
+  alias Jaang.Utility
 
   @moduledoc false
 
@@ -29,6 +30,11 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
     {:noreply, socket |> assign(:categories, updated_categories)}
   end
 
+  def handle_info({:category_deleted, _sub_category}, socket) do
+    updated_categories = Categories.list_categories()
+    {:noreply, socket |> assign(:categories, updated_categories)}
+  end
+
   def handle_info({:new_subcategory_added, _sub_category}, socket) do
     updated_categories = Categories.list_categories()
     {:noreply, socket |> assign(:categories, updated_categories)}
@@ -39,12 +45,18 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
     {:noreply, socket |> assign(:categories, updated_categories)}
   end
 
+  def handle_info({:subcategory_deleted, _sub_category}, socket) do
+    updated_categories = Categories.list_categories()
+    {:noreply, socket |> assign(:categories, updated_categories)}
+  end
+
   def handle_event("subcategory-delete", %{"value" => id}, socket) do
-    IO.inspect(id)
     return_to = Routes.categories_path(socket, :show, socket.assigns.category.id)
 
     case Categories.delete_sub_category(id) do
-      {:ok, _sub_category} ->
+      {:ok, sub_category} ->
+        send(self(), {:subcategory_deleted, sub_category})
+
         socket =
           push_patch(
             socket,
@@ -67,8 +79,6 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
         {:noreply, socket}
 
       {:has_product, message} ->
-        IO.inspect(message)
-
         socket =
           socket
           |> push_patch(
@@ -76,6 +86,28 @@ defmodule JaangWeb.Admin.Categories.CategoriesLive do
             replace: true
           )
           |> put_flash(:error, message)
+
+        {:noreply, socket}
+    end
+  end
+
+  def handle_event("category-delete", %{"value" => id}, socket) do
+    return_to = Routes.categories_path(socket, :index)
+
+    case Categories.delete_category(id) do
+      {:ok, category} ->
+        send(self(), {:category_deleted, category})
+
+        socket =
+          push_patch(socket, to: return_to, replace: true)
+          |> put_flash(:info, "Category deleted successfully")
+
+        {:noreply, socket}
+
+      {:error, changeset} ->
+        socket =
+          push_patch(socket, to: return_to, replace: true)
+          |> put_flash(:error, Utility.error_details(changeset))
 
         {:noreply, socket}
     end

@@ -73,6 +73,24 @@
       </div>
       <p class="font-light text-xs mt-6 mb-1">Description</p>
       <p class="font-medium text-base"><%= @category.description %></p>
+      <div class="flex mt-4">
+        <div>
+          <%= live_patch to: Routes.categories_path(
+              @socket,
+              :edit,
+              @category.id
+              ),
+              class: "indigo-button"
+              do %>
+          Edit
+          <% end %>
+
+        </div>
+
+        <div class="ml-4">
+          <%= live_patch to: Routes.categories_path(@socket, :index), class: "white-button" do %>Cancel<% end %>
+        </div>
+      </div>
 
       <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>
 
@@ -102,24 +120,6 @@
           </div>
         <% end %>
       </ul>
-      <div class="flex mt-4">
-        <div>
-          <%= live_patch to: Routes.categories_path(
-              @socket,
-              :edit,
-              @category.id
-              ),
-              class: "indigo-button"
-              do %>
-          Edit
-          <% end %>
-
-        </div>
-
-        <div class="ml-4">
-          <%= live_patch to: Routes.categories_path(@socket, :index), class: "red-button" do %>Cancel<% end %>
-        </div>
-      </div>
     </div>
   </.live_component>
 <% end %>
