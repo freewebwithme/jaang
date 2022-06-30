@@ -18,10 +18,10 @@
         >
           <div class="flex items-center flex-grow flex-shrink-0 lg:flex-grow-0">
             <div class="flex items-center justify-between w-full md:w-auto">
-              <a href="#" aria-label="Home">
+              <a href="/" aria-label="Home">
                 <img
                   class="h-8 w-auto sm:h-10"
-                  src="https://tailwindui.com/img/logos/workflow-mark-on-white.svg"
+                  src={Routes.static_path(@socket, "/images/logo-purple.png") }
                   alt="Logo"
                 />
               </a>
@@ -77,7 +77,7 @@
               <div>
                 <img
                   class="h-8 w-auto"
-                  src="https://tailwindui.com/img/logos/workflow-mark-on-white.svg"
+                  src={Routes.static_path(@socket, "/images/logo-purple.png")}
                   alt=""
                 />
               </div>
@@ -122,6 +122,9 @@
 
           <div class="mt-10 text-gray-600 text-xl">
             <p>We are currently deliver in Los Angeles area only. </p>
+          </div>
+          <div class="mt-10">
+            <a class="purple-button-lg" href={Routes.live_path(@socket, JaangWeb.Live.Storefront.MainLive)}>Start Shopping</a>
           </div>
         </div>
       </main>
