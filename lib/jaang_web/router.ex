@@ -135,11 +135,12 @@ defmodule JaangWeb.Router do
     post "/staff-logout", Admin.AdminAuthController, :log_out
   end
 
-  scope "/store", JaangWeb do
+  ### Storefront
+  scope "/store", JaangWeb.Live.Storefront do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/", MainStoreController, :index
-    # live "/", MainLive
+    # get "/", MainStoreController, :index
+    live "/", MainLive
   end
 
   scope "/auth", JaangWeb do

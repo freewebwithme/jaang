@@ -5,7 +5,6 @@
   focus:underline transition ease-in-out duration-150" %>
 </div>
 <div>
-  <p>user token<%= assigns[:user_token] %></p>
 </div>
 
 <!-- This example requires Tailwind CSS v2.0+ -->

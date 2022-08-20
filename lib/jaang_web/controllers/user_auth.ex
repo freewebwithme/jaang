@@ -37,7 +37,7 @@ defmodule JaangWeb.UserAuth do
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
     |> maybe_write_remember_me_cookies(token, params)
-    |> redirect(to: Routes.main_store_path(conn, :index))
+    |> redirect(to: Routes.live_path(conn, JaangWeb.Live.Storefront.MainLive))
 
     # |> redirect(to: Routes.live_path(conn, JaangWeb.MainLive))
   end
