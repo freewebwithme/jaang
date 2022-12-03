@@ -1,6 +1,6 @@
 <main role="main" class="antialiased container mx-auto text-gray-900">
 
-  <%= if Phoenix.Flash.get(@conn, :info) != nil do %>
+  <%= if Phoenix.Flash.get(@flash, :info) != nil do %>
     <div class="bg-blue-50 border-l-4 border-blue-400 p-4"
          phx-click="lv:clear-flash" phx-value-key="info" role="alert">
       <div class="flex">
@@ -20,7 +20,7 @@
 
   <% end %>
 
-  <%= if Phoenix.Flash.get(@conn, :error) != nil do %>
+  <%= if Phoenix.Flash.get(@flash, :error) != nil do %>
 
     <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4"
          phx-click="lv:clear-flash" phx-value-key="error" role="alert">
@@ -33,7 +33,7 @@
         </div>
         <div class="ml-3">
           <p class="text-sm text-yellow-700">
-            <%= Phoenix.Flash.get(@conn, :error) %>
+            <%= Phoenix.Flash.get(@flash, :error) %>
           </p>
         </div>
       </div>

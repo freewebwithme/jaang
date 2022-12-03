@@ -164,7 +164,7 @@ defmodule JaangWeb.Router do
     # Log in
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
-    post "/identity/callback", AuthController, :identity_callback
+    post "/login/identity/callback", AuthController, :identity_callback
   end
 
   scope "/" do

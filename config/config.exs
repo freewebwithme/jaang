@@ -42,7 +42,7 @@ config :ex_aws,
 config :ueberauth, Ueberauth,
   providers: [
     google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]},
-    identity: {Ueberauth.Strategy.Identity, [callback_methods: ["POST"]]}
+    identity: {Ueberauth.Strategy.Identity, [callback_methods: ["POST"], callback_path: "/auth/login/identity/callback"]}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
