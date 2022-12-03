@@ -2,7 +2,7 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
   use JaangWeb, :live_component
   use Phoenix.HTML
   alias Jaang.Admin.CustomerServices
-  alias Jaang.{InvoiceManager, StripeManager}
+  alias Jaang.StripeManager
   alias Jaang.Admin.Order.Orders
   alias Jaang.Admin.Invoice.Invoices
   alias Jaang.Checkout.Calculate
@@ -22,7 +22,7 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
      <div class="container mx-auto">
         <p class="text-lg font-medium pb-10"> Do you want to accept this request? </p>
 
-        <.form let={f} for={@changeset} url="#" phx-change="validate" phx-submit="accept" phx-target={@myself}>
+        <.form let={f} for={@changeset} phx-change="validate" phx-submit="accept" phx-target={@myself}>
           <%= hidden_input f, :invoice_id, value: @refund_request.order.invoice_id %>
           <%= hidden_input f, :order_id, value: @refund_request.order.id %>
           <div class="pb-5">
@@ -151,7 +151,7 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
 
       invoice_status = Invoices.build_invoice_status(invoice_id)
 
-      {:ok, invoice} =
+      {:ok, _invoice} =
         Invoices.update_invoice_and_notify(invoice_id, %{
           grand_total_price: grand_total_price,
           status: invoice_status
@@ -163,7 +163,7 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
       socket =
         socket
         |> put_flash(:info, "Refund request accepted and refunded completely")
-        |> push_redirect(to: socket.assigns.return_to)
+        |> push_navigate(to: socket.assigns.return_to)
 
       {:noreply, socket}
     else
@@ -171,7 +171,7 @@ defmodule JaangWeb.Admin.Components.RefundAcceptComponent do
         socket =
           socket
           |> put_flash(:error, "Refund request failed. Please try again")
-          |> push_redirect(to: socket.assigns.return_to)
+          |> push_navigate(to: socket.assigns.return_to)
 
         {:noreply, socket}
     end

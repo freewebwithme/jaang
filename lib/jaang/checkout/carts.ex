@@ -302,7 +302,6 @@ defmodule Jaang.Checkout.Carts do
           line_item = line_item |> Map.update!(:note, fn _value -> note end)
           IO.puts("Adding a note")
 
-          updated_line_item =
             if line_item.has_replacement do
               # Or if line_item has already replacement_item, then remove it
               IO.puts("Removing replacement item")

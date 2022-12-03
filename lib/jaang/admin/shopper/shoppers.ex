@@ -4,7 +4,6 @@ defmodule Jaang.Admin.Shoppers do
   1. find best available shopper
   2. review shopper
   """
-  alias Jaang.Admin.Account.Employee.Employee
   alias Jaang.Admin.Store.Stores
 
   # How can I find best available shoper?
@@ -17,7 +16,6 @@ defmodule Jaang.Admin.Shoppers do
     # Get employee list from store
     store = Stores.get_store_with_employees(store_id)
     # Get only shoppers
-    shoppers =
       Enum.filter(store.employees, fn employee ->
         Enum.any?(employee.roles, fn role -> role.name == "Shopper" end)
       end)

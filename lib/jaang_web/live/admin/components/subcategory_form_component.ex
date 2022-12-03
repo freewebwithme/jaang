@@ -72,7 +72,7 @@ defmodule JaangWeb.Admin.Components.SubcategoryFormComponent do
         <p class="mt-1 max-w-2xl text-sm text-gray-500">At least Add one sub category for this category, you can add subcategories later</p>
       </div>
       <div>
-        <.form let={f} for={@changeset} url="#" phx-submit="save" phx-change="validate" phx-target={@myself}>
+        <.form let={f} for={@changeset} phx-submit="save" phx-change="validate" phx-target={@myself}>
             <%= hidden_input f, :category_id, value: @category.id %>
           <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <%= label f, :name, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>

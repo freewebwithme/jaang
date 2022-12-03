@@ -24,7 +24,7 @@ defmodule JaangWeb.Admin.Products.ProductDetailLive do
 
   def handle_event("edit", _, socket) do
     socket =
-      push_redirect(
+      push_navigate(
         socket,
         to:
           Routes.live_path(
@@ -40,7 +40,7 @@ defmodule JaangWeb.Admin.Products.ProductDetailLive do
 
   def handle_event("goback", _, socket) do
     socket =
-      push_redirect(
+      push_navigate(
         socket,
         to:
           Routes.live_path(

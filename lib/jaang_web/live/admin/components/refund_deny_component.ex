@@ -18,7 +18,7 @@ defmodule JaangWeb.Admin.Components.RefundDenyComponent do
      <div class="container mx-auto">
         <p class="text-lg font-medium pb-10"> Do you want to deny this request? </p>
 
-        <.form let={f} for={@changeset} url="#" phx-change="validate" phx-submit="deny" phx-target={@myself}>
+        <.form let={f} for={@changeset} phx-change="validate" phx-submit="deny" phx-target={@myself}>
           <div class="pb-5">
             <label>Type deny reason</label>
           </div>
@@ -94,7 +94,7 @@ defmodule JaangWeb.Admin.Components.RefundDenyComponent do
         socket =
           socket
           |> put_flash(:info, "Refund request denied successfully")
-          |> push_redirect(to: socket.assigns.return_to)
+          |> push_navigate(to: socket.assigns.return_to)
 
         {:noreply, socket}
     end

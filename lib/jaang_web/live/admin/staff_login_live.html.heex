@@ -9,9 +9,9 @@
       <p class="text-center text-red-800 py-2">
         <%= @error_message %>
       </p>
-    </div>  
-    <.form let={f} for={@changeset} url="{Routes.admin_auth_path(@socket, :log_in)}" phx_submit="save"
-      phx_trigger_action={@trigger_submit} class="mt-8 space-y-6">
+    </div>
+    <.form let={f} for={@changeset} action={Routes.admin_auth_path(@socket, :log_in)} phx-submit="save"
+      phx-trigger-action={@trigger_submit} class="mt-8 space-y-6">
       <div class="rounded-md shadow-sm -space-y-px">
         <div>
           <%= label f, :email, class: "sr-only" %>

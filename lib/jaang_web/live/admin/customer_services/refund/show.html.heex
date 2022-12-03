@@ -67,7 +67,7 @@
            <p class="py-3 font-bold text-red-700">Refund request has denied</p>
            <p><%= @refund_request.deny_reason %></p>
        <% end %>
-       
+
        <%= if @refund_request.status == :refunded do %>
          <div class="flex content-evenly">
            <p class="flex-1">Total accepted refund</p>
@@ -78,16 +78,15 @@
 
        <%= if @refund_request.status == :not_completed do %>
          <div class="text-right py-10">
-           <%= live_redirect "Deny",
-               to: Routes.refund_show_path(@socket, :deny, @refund_request.id),
-               class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-           %>
-           <%= live_redirect "Accept",
-               to: Routes.refund_show_path(@socket, :accept, @refund_request.id),
-               class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-           %>
+           <.link navigate={Routes.refund_show_path(@socket, :deny, @refund_request.id)}
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            Deny
+          </.link>
+           <.link navigate={Routes.refund_show_path(@socket, :accept, @refund_request.id)}
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Accept
+          </.link>
          </div>
-
        <% end %>
 
      </div>
@@ -110,16 +109,16 @@
          <p class="flex-1 text-right font-bold"><%= @refund_request.user.profile.phone %></p>
        </div>
        <div class="content-end">
-         <%= live_redirect "View detail",
-             to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @refund_request.user.id),
-             class: "text-indigo-600 hover:text-indigo-900"
-         %>
+         <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @refund_request.user.id)}
+             class="text-indigo-600 hover:text-indigo-900">
+             View detail
+         </.link>
        </div>
      </div>
      <div class="py-7 px-10">
        <h2 class="text-xl text-gray-900 mb-5 font-bold">Order information</h2>
          <div class="flex items-center">
-           <div class="flex-shrink-0 h-14 w-14 ">              
+           <div class="flex-shrink-0 h-14 w-14 ">
              <img class="h-14 w-14 rounded-full" src={"#{@refund_request.order.store_logo}"} alt="store logo">
            </div>
            <div class="ml-4">
@@ -154,10 +153,10 @@
          </div>
          <% end %>
          <div class="content-end">
-           <%= live_redirect "View detail",
-               to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, @refund_request.order.id),
-               class: "text-indigo-600 hover:text-indigo-900"
-           %>
+           <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, @refund_request.order.id)}
+               class="text-indigo-600 hover:text-indigo-900">
+               View detail
+           </.link>
          </div>
      </div>
    </div>
@@ -190,7 +189,7 @@
                     Product name
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category 
+                    Category
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Quantity or Weight
@@ -205,7 +204,7 @@
                     Total
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Refund reason 
+                    Refund reason
                   </th>
                 </tr>
               </thead>
@@ -382,4 +381,3 @@
       </div>
     </div>
 </main>
-

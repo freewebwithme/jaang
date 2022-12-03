@@ -10,14 +10,10 @@
         <li>
           <div class="space-y-4">
             <div class="aspect-w-3 aspect-h-2">
-              <%= live_redirect to: Routes.live_path(
-                @socket,
-                ProductsListLive,
-                store.name,
-                store.id
-              ), class: "aspect-w-3 aspect-h-2" do %>
+              <.link navigate={Routes.live_path(@socket, ProductsListLive, store.name, store.id)}
+                 class="aspect-w-3 aspect-h-2" do>
               <img class="object-contain shadow-lg rounded-lg" src={"#{store.store_logo}"} alt="">
-              <% end %>
+              </.link>
             </div>
 
             <div class="space-y-2">
@@ -25,7 +21,7 @@
                 <h3><%= store.name %></h3>
                 <p class="text-indigo-600"><%= store.description %></p>
               </div>
-              
+
             </div>
           </div>
         </li>

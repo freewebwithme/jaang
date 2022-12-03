@@ -171,7 +171,7 @@ defmodule JaangWeb.Admin.Products.ProductEditDetailLive do
       |> put_flash(:info, "Product updated successfully")
 
     socket =
-      push_redirect(socket,
+      push_navigate(socket,
         to:
           Routes.live_path(
             socket,

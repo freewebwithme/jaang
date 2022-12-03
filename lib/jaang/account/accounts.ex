@@ -196,7 +196,7 @@ defmodule Jaang.Account.Accounts do
   """
   def deliver_update_email_instructions(%User{} = user, current_email, update_email_url_fun)
       when is_function(update_email_url_fun, 1) do
-    {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
+    {_encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
 
     Repo.insert!(user_token)
 
@@ -375,7 +375,7 @@ defmodule Jaang.Account.Accounts do
   end
 
   # @doc """
-  # Mobile client sign in using Google Sign in 
+  # Mobile client sign in using Google Sign in
   # """
   # @spec google_signin_from_mobile(String.t(), String.t(), String.t()) :: {:ok, %User{}}
   # def google_signin_from_mobile(email, display_name, photo_url) when is_nil(display_name) do

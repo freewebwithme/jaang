@@ -20,7 +20,7 @@ if config_env() == :prod do
       For example: ecto://USER:PASS@HOST/DATABASE
       """
 
-  maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
+  _maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
 
   config :jaang, Jaang.Repo,
     url: database_url,
@@ -41,7 +41,7 @@ if config_env() == :prod do
 
   port = String.to_integer(System.get_env("PORT") || "4000")
 
-  app_name =
+  _app_name =
     System.get_env("FLY_APP_NAME") ||
       raise "FLY_APP_NAME not available"
 

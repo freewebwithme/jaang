@@ -16,8 +16,7 @@ defmodule JaangWeb do
   below. Instead, define any helper function in modules
   and import those modules here.
   """
-
-  def controller do
+def controller do
     quote do
       use Phoenix.Controller, namespace: JaangWeb
 
@@ -87,20 +86,20 @@ defmodule JaangWeb do
   end
 
   defp view_helpers do
-    quote do
-      # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
+   quote do
+     # Use all HTML functionality (forms, tags, etc)
+     use Phoenix.HTML
 
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
-      import Phoenix.LiveView.Helpers
-      import JaangWeb.LiveHelpers
+     # Import basic rendering functionality (render, render_layout, etc)
+     import Phoenix.View
+     import Phoenix.Component
+     import JaangWeb.LiveHelpers
 
-      import JaangWeb.ErrorHelpers
-      import JaangWeb.Gettext
-      alias JaangWeb.Router.Helpers, as: Routes
-      alias JaangWeb.Admin.Helpers
-    end
+     import JaangWeb.ErrorHelpers
+     import JaangWeb.Gettext
+     alias JaangWeb.Router.Helpers, as: Routes
+     alias JaangWeb.Admin.Helpers
+   end
   end
 
   @doc """

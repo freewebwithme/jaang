@@ -19,7 +19,7 @@ defmodule JaangWeb.EmployeeSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(%{"token" => token} = params, socket, _connect_info) do
+  def connect(%{"token" => token} = _params, socket, _connect_info) do
 
     with {:ok, employee} <- EmployeeAuthMobile.get_employee_by_session_token(token) do
       IO.puts("Found current employee")

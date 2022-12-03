@@ -5,7 +5,6 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
   alias Jaang.Product.Products
   alias Jaang.Store.Stores
   alias JaangWeb.Resolvers.Employee.EmployeeAccountResolver
-  alias JaangWeb.Schema.Middleware
 
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
@@ -31,8 +30,8 @@ defmodule JaangWeb.Schema.Employee.EmployeeAccountTypes do
       resolve(&EmployeeAccountResolver.log_in_employee/3)
     end
 
-    @desc "Reset password"
-    field :reset_password, :simple_response do
+    @desc "Reset password for Employee"
+    field :reset_password_employee, :simple_response do
       arg(:email, non_null(:string))
 
       resolve(&EmployeeAccountResolver.reset_password/3)

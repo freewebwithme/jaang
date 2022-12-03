@@ -213,7 +213,7 @@
         </ul>
       </div>
       <div class="space-y-6 sm:space-y-5">
-        <.form let={f} for={@changeset} url="#" phx-submit="product_update" phx-change="form_changed" class="space-y-6 sm:space-y-5">
+        <.form let={f} for={@changeset} phx-submit="product_update" phx-change="form_changed" class="space-y-6 sm:space-y-5">
           <%= hidden_input f, :id %>
           <%= hidden_input f, :store_id %>
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">

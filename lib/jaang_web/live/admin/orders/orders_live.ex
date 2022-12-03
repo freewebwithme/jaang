@@ -92,7 +92,7 @@ defmodule JaangWeb.Admin.Orders.OrdersLive do
 
   def handle_event("search", %{"search-by" => search_by, "search-field" => search_term}, socket) do
     socket =
-      push_redirect(
+      push_navigate(
         socket,
         to:
           Routes.live_path(

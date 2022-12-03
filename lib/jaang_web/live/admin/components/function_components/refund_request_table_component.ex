@@ -114,8 +114,8 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.RefundRequestTableCompone
                         <div class="text-sm text-gray-900"><%= Helpers.display_datetime(request.inserted_at) %></div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <%= live_redirect "View", to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Show, request.id),
-                            class: "text-indigo-600 hover:text-indigo-900" %>
+                      <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Show, request.id)}
+                          class="text-indigo-600 hover:text-indigo-900">View</.link>
                       </td>
                     </tr>
                   <% end %>

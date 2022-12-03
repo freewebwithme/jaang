@@ -126,8 +126,8 @@ defmodule JaangWeb.Admin.Components.FunctionComponents.InvoiceTableComponent do
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <%= live_redirect "View", to: Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Show, invoice.id),
-                            class: "text-indigo-600 hover:text-indigo-900" %>
+                        <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Show, invoice.id)}
+                            class="text-indigo-600 hover:text-indigo-900">View</.link>
                       </td>
                     </tr>
                   <% end %>

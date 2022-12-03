@@ -465,7 +465,7 @@ defmodule JaangWeb.StoreChannel do
       packed_orders = Orders.count_packed_order_for_employee(employee_id)
       {:reply, {:ok, %{packed_orders_count: packed_orders}}, socket}
     else
-      {:error, error} ->
+      {:error, _error} ->
         IO.puts("Finalized order failure")
         {:reply, :error, socket}
     end

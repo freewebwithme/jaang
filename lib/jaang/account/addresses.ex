@@ -2,8 +2,6 @@ defmodule Jaang.Account.Addresses do
   alias Jaang.Account.Address
   alias Jaang.Repo
   alias Jaang.Distance
-  alias Jaang.AccountManager
-  alias Ecto.Changeset
 
   import Ecto.Query
 

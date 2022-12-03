@@ -1,5 +1,5 @@
 <main role="main" class="antialiased text-gray-900">
-  <%= if live_flash(@flash,:info) != nil do %>
+  <%= if Phoenix.Flash.get(@flash,:info) != nil do %>
     <div class="bg-blue-50 border-l-4 border-blue-400 p-4"
          phx-click="lv:clear-flash" phx-value-key="info" role="alert">
       <div class="flex">
@@ -11,7 +11,7 @@
         </div>
         <div class="ml-3">
           <p class="text-sm text-blue-700">
-            <%= live_flash(@flash, :info) %>
+            <%= Phoenix.Flash.get(@flash, :info) %>
           </p>
         </div>
       </div>
@@ -19,7 +19,7 @@
 
   <% end %>
 
-  <%= if live_flash(@flash, :error) != nil do %>
+  <%= if Phoenix.Flash.get(@flash, :error) != nil do %>
 
     <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4"
          phx-click="lv:clear-flash" phx-value-key="error" role="alert">
@@ -32,7 +32,7 @@
         </div>
         <div class="ml-3">
           <p class="text-sm text-yellow-700">
-            <%= live_flash(@flash, :error) %>
+            <%= Phoenix.Flash.get(@flash, :error) %>
           </p>
         </div>
       </div>
@@ -51,7 +51,7 @@
            class="fixed inset-0 flex z-40">
         <!--
           Off-canvas menu overlay, show/hide based on off-canvas menu state.
-        
+
           Entering: "transition-opacity ease-linear duration-300"
             From: "opacity-0"
             To: "opacity-100"
@@ -71,7 +71,7 @@
         </div>
         <!--
           Off-canvas menu, show/hide based on off-canvas menu state.
-        
+
           Entering: "transition ease-in-out duration-300 transform"
             From: "-translate-x-full"
             To: "translate-x-0"
@@ -95,100 +95,102 @@
           <div class="mt-5 flex-1 h-0 overflow-y-auto">
             <nav class="px-2 space-y-1">
               <!-- Current: "bg-indigo-800 text-white", Default: "text-indigo-100 hover:bg-indigo-600" -->
-              <%= live_redirect to: Routes.live_path(@socket,JaangWeb.Admin.Home.HomeLive),
-                  class: if @current_page == "Home", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+              <.link navigate={Routes.live_path(@socket,JaangWeb.Admin.Home.HomeLive)}
+                class={
+                  if @current_page == "Home", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                          else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-              do %>
+                }>
                 <!-- Heroicon name: home -->
                 <svg class="mr-4 h-6 w-6 text-indigo-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 Dashboard
-              <% end %>
-
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrdersLive),
-                  class: if @current_page == "Orders", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+              </.link>
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Orders.OrdersLive)}
+                class={
+                  if @current_page == "Orders", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-              do %>
+                }>
                 <!-- Heroicon name: users -->
                 <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
-                Orders 
-              <% end %>
-
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Index),
-                  class: if @current_page == "Invoices", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+                Orders
+              </.link>
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Index)}
+                class={
+                  if @current_page == "Invoices", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-              do %>
+                }>
                 <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                Invoices 
-              <% end %>
-            
+                Invoices
+              </.link>
               <div x-data="{ isExpanded: false }" class="space-y-1">
                 <button @click.prevent="isExpanded = !isExpanded" class="group w-full flex items-center pl-2 pr-1 py-2 text-base font-medium rounded-md  text-indigo-100 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <!-- Heroicon name: users -->
                   <svg class="text-indigo-300  mr-4 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
-                  Partners 
+                  Partners
                   <!-- Expanded: "text-gray-400 rotate-90", Collapsed: "text-gray-300" -->
-                  <svg :class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
+                  <svg x-bind:class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
                        class="ml-auto h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
                        x-state:on="Expanded" x-state:off="Collapsed" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.partners_overview_path(@socket, :index),
-                      class: if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  <.link navigate={Routes.partners_overview_path(@socket, :index)}
+                    class={
+                      if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                     <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                       </path>
                     </svg>
                     Overview
-                  <% end %>
-
+                  </.link>
                 </div>
               </div>
 
-              <%= live_redirect to: Routes.categories_path(@socket, :index),
-                  class: if @current_page == "Categories", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+              <.link navigate={Routes.categories_path(@socket, :index)}
+                class={
+                  if @current_page == "Categories", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-              do %>
+                }>
                 <!-- Heroicon name: users -->
                 <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                   </path>
                 </svg>
                 Categories
-              <% end %>
-
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Products.ProductsLive),
-                  class: if @current_page == "Products", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+              </.link>
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Products.ProductsLive)}
+                class={
+                  if @current_page == "Products", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-              do %>
+                }>
                 <!-- Heroicon name: users -->
                 <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                   </path>
                 </svg>
                 Products
-              <% end %>
+              </.link>
 
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomersLive),
-                  class: if @current_page == "Customers", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomersLive)}
+                class={
+                  if @current_page == "Customers", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-              do %>
+                }>
                 <!-- Heroicon name: users -->
                 <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                   </path>
                 </svg>
-                Customers 
-              <% end %>
+                Customers
+              </.link>
               <div x-data="{ isExpanded: false }" class="space-y-1">
                 <button @click.prevent="isExpanded = !isExpanded" class="group w-full flex items-center pl-2 pr-1 py-2 text-base font-medium rounded-md  text-indigo-100 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <!-- Heroicon name: users -->
@@ -197,48 +199,49 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                     </path>
                   </svg>
-                  Employees 
+                  Employees
                   <!-- Expanded: "text-gray-400 rotate-90", Collapsed: "text-gray-300" -->
-                  <svg :class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
+                  <svg x-bind:class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
                        class="ml-auto h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
                        x-state:on="Expanded" x-state:off="Collapsed" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.EmployeesOverviewLive),
-                      class: if @current_page == "Employees Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Employees.EmployeesOverviewLive)}
+                    class={
+                      if @current_page == "Employees Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                     <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                       </path>
                     </svg>
                     Overview
-                  <% end %>
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.ShoppersLive),
-                      class: if @current_page == "Shoppers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  </.link>
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Employees.ShoppersLive)}
+                    class={
+                      if @current_page == "Shoppers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
-
+                    }>
                     <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                       </path>
                     </svg>
                     Shoppers
-                  <% end %>
-                  
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.DriversLive),
-                      class: if @current_page == "Drivers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
-                      else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                  </.link>
 
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Employees.DriversLive)}
+                    class={
+                      if @current_page == "Drivers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                      else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
+                    }>
                   <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0">
                     </path>
                   </svg>
                     Drivers
-                  <% end %>
+                  </.link>
                 </div>
               </div>
               <!-- Customer services -->
@@ -251,55 +254,55 @@
 
                   Customer Services
                   <!-- Expanded: "text-gray-400 rotate-90", Collapsed: "text-gray-300" -->
-                  <svg :class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
+                  <svg x-bind:class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
                        class="ml-auto h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
                        x-state:on="Expanded" x-state:off="Collapsed" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServicesOverviewLive),
-                      class: if @current_page == "Customer Services Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServicesOverviewLive)}
+                      class={
+                      if @current_page == "Customer Services Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                      }>
                     <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                       </path>
                     </svg>
                     Overview
-                  <% end %>
-
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerMessageLive.Index),
-                      class: if @current_page == "Customer Service Messages", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  </.link>
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerMessageLive.Index)}
+                    class={
+                      if @current_page == "Customer Service Messages", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                     <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
                     </svg>
                     Messages
-
-                  <% end %>
-
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Index),
-                      class: if @current_page == "Refund Request", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  </.link>
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Index)}
+                    class={
+                      if @current_page == "Refund Request", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
-
+                    }>
                   <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
                   </svg>
                   Refund Requests
-                  <% end %>
+                  </.link>
                 </div>
               </div>
 
-              <%= live_redirect to: Routes.maintenance_path(@socket, :index),
-                  class: if @current_page == "Maintenances", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
+              <.link navigate={Routes.maintenance_path(@socket, :index)}
+                class={
+                  if @current_page == "Maintenances", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-base font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-              do %>
+                }>
                 <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 Maintenances
-              <% end %>
+              </.link>
             </nav>
           </div>
           <div class="flex-shrink-0 flex border-t border-indigo-800 p-4">
@@ -325,7 +328,7 @@
         </div>
       </div>
     </div>
-  
+
     <!-- Static sidebar for desktop -->
     <div class="hidden bg-indigo-700 md:flex md:flex-shrink-0">
       <div class="flex flex-col w-64">
@@ -338,40 +341,35 @@
             <nav class="flex-1 px-2 space-y-1">
               <!-- Current: "bg-indigo-800 text-white", Default: "text-indigo-100 hover:bg-indigo-600" -->
 
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Home.HomeLive),
-                  class: if @current_page == "Dashboard", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Home.HomeLive)}
+                class={
+                  if @current_page == "Dashboard", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                          else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              do %>
-
+                }>
                 <!-- Heroicon name: home -->
                 <svg class="mr-3 h-6 w-6 text-indigo-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 Dashboard
-
-              <% end %>
-            
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrdersLive), 
-                  
-                  class: if @current_page == "Orders", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+              </.link>
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Orders.OrdersLive)}
+                class={
+                  if @current_page == "Orders", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              do %>
+                }>
                 <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
                 Orders
-
-              <% end %>
-
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Index), 
-                  
-                  class: if @current_page == "Invoices", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+              </.link>
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Invoices.InvoiceLive.Index)}
+                class={
+                  if @current_page == "Invoices", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              do %>
+                }>
                 <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Invoices
-
-              <% end %>
+              </.link>
               <div x-data="{ isExpanded: false}" class="space-y-1">
                 <button @click="isExpanded = !isExpanded" class="group w-full flex items-center pl-2 pr-1 py-2 text-sm font-medium rounded-md  text-indigo-100 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <!-- Heroicon name: users -->
@@ -379,116 +377,111 @@
                   <svg class="mr-4 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
                   </svg>
-                  Partners 
+                  Partners
                   <!-- Expanded: "text-gray-400 rotate-90", Collapsed: "text-gray-300" -->
-                  <svg :class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
+                  <svg x-bind:class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
                        class="ml-auto h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
                        x-state:on="Expanded" x-state:off="Collapsed" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.partners_overview_path(@socket, :index),
-                      class: if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  <.link navigate={Routes.partners_overview_path(@socket, :index)}
+                    class={
+                      if @current_page == "Partners Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                     <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                       </path>
                     </svg>
                     Overview
-                  <% end %>
+                  </.link>
                 </div>
               </div>
 
-              <%= live_redirect to: Routes.categories_path(@socket, :index),
-
-                  class: if @current_page == "Categories", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+              <.link navigate={Routes.categories_path(@socket, :index)}
+                class={
+                  if @current_page == "Categories", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              do %>
+                }>
                 <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
                 Categories
-
-              <% end %>
-
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Products.ProductsLive),
-                  
-                  class: if @current_page == "Products", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+              </.link>
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Products.ProductsLive)}
+                class={
+                  if @current_page == "Products", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              do %>
+                }>
                 <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
-               Products 
+               Products
+              </.link>
 
-              <% end %>
-
-              <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomersLive),
-                  
-                  class: if @current_page == "Customers", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomersLive)}
+                class={
+                  if @current_page == "Customers", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              do %>
-
+                }>
                 <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
-                Customers 
-
-              <% end %>
-
+                Customers
+              </.link>
               <div x-data="{ isExpanded: false}" class="space-y-1">
                 <button @click="isExpanded = !isExpanded" class="group w-full flex items-center pl-2 pr-1 py-2 text-sm font-medium rounded-md  text-indigo-100 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <!-- Heroicon name: users -->
                   <svg class="text-indigo-300  mr-4 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
-                  Employees 
+                  Employees
                   <!-- Expanded: "text-gray-400 rotate-90", Collapsed: "text-gray-300" -->
-                  <svg :class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
+                  <svg x-bind:class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
                        class="ml-auto h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
                        x-state:on="Expanded" x-state:off="Collapsed" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.EmployeesOverviewLive),
-                      class: if @current_page == "Employees Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Employees.EmployeesOverviewLive)}
+                    class={
+                      if @current_page == "Employees Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                     <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                       </path>
                     </svg>
                     Overview
-                  <% end %>
-                  
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.ShoppersLive),
-                      class: if @current_page == "Shoppers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
-                      else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                  </.link>
 
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Employees.ShoppersLive)}
+                    class={
+                      if @current_page == "Shoppers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                      else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
+                    }>
                     <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                       </path>
                     </svg>
                     Shoppers
-                  <% end %>
-
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.Employees.DriversLive),
-                      class: if @current_page == "Drivers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  </.link>
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Employees.DriversLive)}
+                    class={
+                      if @current_page == "Drivers", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
-
+                    }>
                   <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0">
                     </path>
                   </svg>
                     Drivers
-                  <% end %>
+                  </.link>
                 </div>
-              </div>                
+              </div>
 
               <!-- Customer Service -->
               <div x-data="{ isExpanded: false}" class="space-y-1">
@@ -500,57 +493,57 @@
                   </svg>
                   Customer Services
                   <!-- Expanded: "text-gray-400 rotate-90", Collapsed: "text-gray-300" -->
-                  <svg :class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
+                  <svg x-bind:class="{'text-gray-400 rotate-90': isExpanded, 'text-gray-300': !isExpanded }"
                        class="ml-auto h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
                        x-state:on="Expanded" x-state:off="Collapsed" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
                 </button>
                 <div x-show="isExpanded" class="space-y-1">
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServicesOverviewLive),
-                      class: if @current_page == "Customer Services Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerServicesOverviewLive)}
+                    class={
+                      if @current_page == "Customer Services Overview", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                     <svg class="mr-4 w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                       </path>
                     </svg>
                     Overview
-                  <% end %>
-                  
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerMessageLive.Index),
-                      class: if @current_page == "Customer Service Messages", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                  </.link>
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.CustomerMessageLive.Index)}
+                    class={
+                      if @current_page == "Customer Service Messages", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                     <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
                     </svg>
-                    Messages 
-                  <% end %>
-
-                  <%= live_redirect to: Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Index),
-                      class: if @current_page == "Refund Request", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
+                    Messages
+                  </.link>
+                  <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.CustomerServices.RefundLive.Index)}
+                    class={
+                      if @current_page == "Refund Request", do: "bg-indigo-800 text-white group flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md",
                       else: "text-indigo-100 hover:bg-indigo-600 group flex items-center pl-11 px-2 py-2 text-sm font-medium rounded-md"
-                  do %>
+                    }>
                   <svg class="text-indigo-300 mr-4 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
                   </svg>
                   Refund Requests
-                  <% end %>
+                  </.link>
                 </div>
 
               </div>
 
               <!-- Maintenance menu -->
-              <%= live_redirect to: Routes.maintenance_path(@socket, :index),
-
-                  class: if @current_page == "Maintenances", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+              <.link navigate={Routes.maintenance_path(@socket, :index)}
+                class={
+                  if @current_page == "Maintenances", do: "bg-indigo-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   else: "text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              do %>
+                }>
                 <svg class="mr-3 w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 Maintenances
-
-              <% end %>
+              </.link>
             </nav>
           </div>
           <div class="flex-shrink-0 flex border-t border-indigo-800 p-4">
@@ -573,7 +566,7 @@
         </div>
       </div>
     </div>
-  
+
     <div class="flex flex-col w-0 flex-1 overflow-x-hidden overflow-y-scroll">
       <div class="md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
         <button @click="close = !close" class="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
@@ -589,4 +582,3 @@
   </div>
 
 </main>
-

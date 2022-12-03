@@ -1,7 +1,6 @@
 defmodule Jaang.Admin.EmployeeTask.EmployeeTasks do
   alias Jaang.Repo
   alias Jaang.Admin.EmployeeTask
-  alias Jaang.Invoice
   alias Jaang.Admin.Order.Orders
   import Ecto.Query
 

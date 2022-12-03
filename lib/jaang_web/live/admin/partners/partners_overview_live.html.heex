@@ -11,7 +11,7 @@
 
   <div class="grid gap-4 grid-cols-2 mt-2">
     <%= for store <- @store_infos do %>
-    <%= live_redirect to: Routes.partner_path(@socket, :show, store.store_id) do %>
+    <.link navigate={Routes.partner_path(@socket, :show, store.store_id)}>
      <div class="bg-white shadow-md ">
         <div class="py-7 px-10">
           <div class="flex items-center mb-5">
@@ -21,7 +21,7 @@
             </div>
             <div class="ml-4">
               <div class="text-xl text-gray-900">
-                <%= store.store_name %> 
+                <%= store.store_name %>
               </div>
             </div>
           </div>
@@ -40,7 +40,7 @@
           </div>
         </div>
       </div>
-     <% end %>
+      </.link>
       <% end %>
   </div>
 </div>

@@ -47,7 +47,7 @@ defmodule JaangWeb.Admin.Invoices.InvoiceLive.Search do
     socket = assign(socket, invoices: invoices, has_next_page: has_next_page)
 
     socket =
-      push_redirect(
+      push_navigate(
         socket,
         to:
           Routes.live_path(

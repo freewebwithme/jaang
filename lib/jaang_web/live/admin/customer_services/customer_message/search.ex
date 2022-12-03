@@ -66,7 +66,7 @@ defmodule JaangWeb.Admin.CustomerServices.CustomerMessageLive.Search do
     socket = assign(socket, customer_messages: customer_messages, has_next_page: has_next_page)
 
     socket =
-      push_redirect(
+      push_navigate(
         socket,
         to:
           Routes.live_path(

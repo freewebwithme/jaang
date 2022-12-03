@@ -3,7 +3,6 @@ defmodule JaangWeb.Schema.CartTypes do
 
   alias Jaang.Admin.Account.Employee.EmployeeAccounts
 
-  alias JaangWeb.Schema.Middleware
   alias JaangWeb.Resolvers.{CartResolver, PaymentResolver, OrderResolver, CheckoutResolver}
   alias Jaang.Utility
   alias Jaang.Checkout.Carts

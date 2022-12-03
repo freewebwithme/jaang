@@ -3,22 +3,15 @@
     <div class="flex items-center justify-between">
       <h2 class="py-3 text-3xl text-gray-900">Employees</h2>
       <div class="flex-shrink-0">
-        <%= live_redirect "Add employee", to:
-            Routes.employee_index_path(
-              @socket,
-              :add
-            ),
-            class: "mr-5 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        %>
-        <%= live_redirect "Roles", to:
-            Routes.employee_role_index_path(
-              @socket,
-              :index
-            ),
-            class: "mr-5 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        %>
-        
-      </div> 
+        <.link navigate={Routes.employee_index_path(@socket, :add)}
+            class="mr-5 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Add Employee
+        </.link>
+        <.link navigate={Routes.employee_role_index_path(@socket, :index)}
+            class="mr-5 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Roles
+        </.link>
+      </div>
     </div>
     <div class="py-4">
       <!-- Stats -->
@@ -43,7 +36,7 @@
                     <div class="text-2xl font-semibold text-gray-900">
                       238
                     </div>
-                  
+
                     <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
                       <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -82,7 +75,7 @@
                     <div class="text-2xl font-semibold text-gray-900">
                       377
                     </div>
-                  
+
                     <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
                       <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -102,7 +95,7 @@
               </div>
             </div>
           </div>
-        
+
           <div class="bg-white overflow-hidden shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
               <div class="flex items-center">
@@ -120,7 +113,7 @@
                     <div class="text-2xl font-semibold text-gray-900">
                       135
                     </div>
-                  
+
                     <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
                       <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -140,7 +133,7 @@
               </div>
             </div>
           </div>
-        
+
           <div class="bg-white overflow-hidden shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
               <div class="flex items-center">
@@ -158,7 +151,7 @@
                     <div class="text-2xl font-semibold text-gray-900">
                       90
                     </div>
-                  
+
                     <div class="ml-2 flex items-baseline text-sm font-semibold text-red-600">
                       <svg class="self-center flex-shrink-0 h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />

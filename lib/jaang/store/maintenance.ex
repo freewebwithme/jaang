@@ -82,7 +82,7 @@ defmodule Jaang.Store.Maintenance do
     maintenance |> changeset(attrs)
   end
 
-  @timezone "America/Los_Angeles"
+  #@timezone "America/Los_Angeles"
 
   def check_maintenance_mode() do
     # get latest maintenance and check if it is on

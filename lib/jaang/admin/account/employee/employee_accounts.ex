@@ -142,7 +142,7 @@ defmodule Jaang.Admin.Account.Employee.EmployeeAccounts do
         update_email_url_fun
       )
       when is_function(update_email_url_fun, 1) do
-    {encoded_token, employee_token} =
+    {_encoded_token, employee_token} =
       EmployeeToken.build_email_token(employee, "change:#{current_email}")
 
     Repo.insert!(employee_token)

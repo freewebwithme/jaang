@@ -62,7 +62,7 @@ defmodule JaangWeb.Admin.Products.ProductAddLive do
 
   def handle_event(
         "add_product",
-        %{"product" => prod_attrs} = params,
+        %{"product" => prod_attrs} = _params,
         socket
       ) do
 
@@ -95,7 +95,7 @@ defmodule JaangWeb.Admin.Products.ProductAddLive do
     create_product_image(socket.assigns.image_three, 3, new_product)
 
     socket =
-      push_redirect(
+      push_navigate(
         socket,
         to: Routes.live_path(socket, ProductDetailLive, socket.assigns.store_id, new_product.id),
         replace: true

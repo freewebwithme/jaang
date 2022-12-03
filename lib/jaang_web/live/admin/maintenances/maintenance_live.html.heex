@@ -75,8 +75,10 @@
                         <% end %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <%= live_redirect "View", to: Routes.maintenance_detail_path(@socket, :show, maintenance.id),
-                            class: "text-indigo-600 hover:text-indigo-900" %>
+                        <.link navigate={Routes.maintenance_detail_path(@socket, :show, maintenance.id)}
+                            class="text-indigo-600 hover:text-indigo-900">
+                          View
+                        </.link>
                       </td>
                     </tr>
                   <% end %>

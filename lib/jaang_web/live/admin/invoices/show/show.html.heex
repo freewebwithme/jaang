@@ -64,10 +64,10 @@
             <p class="flex-1 text-right font-bold"><%= @invoice.user.profile.phone %></p>
           </div>
           <div class="content-end">
-            <%= live_redirect "View detail",
-                to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @invoice.user.id),
-                class: "text-indigo-600 hover:text-indigo-900"
-            %>
+            <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @invoice.user.id)}
+                class="text-indigo-600 hover:text-indigo-900">
+              View detail
+            </.link>
           </div>
         </div>
         <div class="py-7 px-10">
@@ -76,7 +76,7 @@
           <%= for order <- @invoice.orders do %>
 
             <div class="flex items-center">
-              <div class="flex-shrink-0 h-14 w-14 ">              
+              <div class="flex-shrink-0 h-14 w-14 ">
                 <img class="h-14 w-14 rounded-full" src={"#{order.store_logo}"} alt="store logo">
               </div>
               <div class="ml-4">
@@ -114,10 +114,10 @@
 
 
             <div class="content-end">
-              <%= live_redirect "View detail",
-                  to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, order.id),
-                  class: "text-indigo-600 hover:text-indigo-900"
-              %>
+              <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, order.id)}
+                  class="text-indigo-600 hover:text-indigo-900">
+                View detail
+              </.link>
             </div>
 
             <div class="w-full border-t border-gray-300 mt-5 mb-5"></div>

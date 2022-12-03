@@ -1,7 +1,6 @@
 defmodule JaangWeb.Admin.StaffLoginLive do
   use JaangWeb, :live_view
   alias Jaang.Admin.Account.{AdminUser, AdminAccounts}
-  alias JaangWeb.Router.Helpers, as: Routes
 
   def mount(_params, _session, socket) do
     changeset = AdminUser.changeset(%AdminUser{})

@@ -22,7 +22,7 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
       </div>
 
       <div class="max-w-2xl">
-        <.form let={f} for={@changeset} url="#" phx-submit="save" phx-change="validate" phx-target={@myself} class="space-y-6 sm:space-y-5">
+        <.form let={f} for={@changeset}  phx-submit="save" phx-change="validate" phx-target={@myself} class="space-y-6 sm:space-y-5">
           <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <%= label f, :name, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
@@ -39,11 +39,11 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
                 phx_disable_with: "Saving..."
                 ]
               %>
-              <%= live_redirect to: @return_to,
-                  class: "ml-4 relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              do %>
+              <.link navigate={@return_to}
+                  class="ml-4 relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
                 Cancel
-              <% end %>
+              </.link>
             </div>
           </div>
         </.form>
@@ -72,7 +72,7 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
         socket =
           socket
           |> put_flash(:info, "Role updated successfully")
-          |> push_redirect(to: socket.assigns.return_to)
+          |> push_navigate(to: socket.assigns.return_to)
 
         {:noreply, socket}
 
@@ -88,7 +88,7 @@ defmodule JaangWeb.Admin.Components.RoleFormComponent do
         socket =
           socket
           |> put_flash(:info, "New role added successfully")
-          |> push_redirect(to: socket.assigns.return_to)
+          |> push_navigate(to: socket.assigns.return_to)
 
         {:noreply, socket}
 

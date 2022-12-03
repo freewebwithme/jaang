@@ -19,11 +19,11 @@
               <div class="space-y-4">
                 <div class="aspect-w-3 aspect-h-2">
                   <%= if @image_one == nil do %>
-                    <img class="py-2 object-contain shadow-lg rounded-lg" 
+                    <img class="py-2 object-contain shadow-lg rounded-lg"
                         src="https://via.placeholder.com/250"  alt="" />
 
                   <% else %>
-                    <img class="py-2 object-contain shadow-lg rounded-lg" 
+                    <img class="py-2 object-contain shadow-lg rounded-lg"
                         src={"#{@image_one}"}  alt="" />
                   <% end %>
                 </div>
@@ -44,7 +44,7 @@
                         </div>
                       </div>
                     <% end %>
-                  
+
                     <%= live_file_input @uploads.product_image_one %>
                     <%= for entry <- @uploads.product_image_one.entries do %>
                       <%= live_img_preview entry, height: 50, class: "mt-2" %>
@@ -54,13 +54,13 @@
                         </div>
                         <a href="#" phx-click="cancel-product-image-one" phx-value-ref={"#{entry.ref}"}
                                 class="ml-2 flex-shrink-0 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                Cancel 
+                                Cancel
                         </a>
-                        <button type="submit" 
+                        <button type="submit"
                                 class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Upload
                         </button>
-                        
+
                       </div>
                     <% end %>
                   </form>
@@ -72,10 +72,10 @@
               <div class="space-y-4">
                 <div class="aspect-w-3 aspect-h-2">
                   <%= if @image_one == nil do %>
-                    <img class="py-2 object-contain shadow-lg rounded-lg" 
+                    <img class="py-2 object-contain shadow-lg rounded-lg"
                         src="https://via.placeholder.com/250"  alt="" />
                   <% else %>
-                    <img class="py-2 object-contain shadow-lg rounded-lg" 
+                    <img class="py-2 object-contain shadow-lg rounded-lg"
                         src={"#{@image_two}"}  alt="" />
                   <% end %>
                 </div>
@@ -96,7 +96,7 @@
                         </div>
                       </div>
                     <% end %>
-                  
+
                     <%= live_file_input @uploads.product_image_two %>
                     <%= for entry <- @uploads.product_image_two.entries do %>
                       <%= live_img_preview entry, height: 50, class: "mt-2" %>
@@ -106,33 +106,33 @@
                         </div>
                         <a href="#" phx-click="cancel-product-image-two" phx-value-ref="{entry.ref}"
                                 class="ml-2 flex-shrink-0 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                Cancel 
+                                Cancel
                         </a>
-                        <button type="submit" 
+                        <button type="submit"
                                 class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Upload
                         </button>
-                        
+
                       </div>
                     <% end %>
                   </form>
                   </div>
               </div>
             </li>
-            
+
             <!-- image three -->
             <li>
               <div class="space-y-4">
                 <div class="aspect-w-3 aspect-h-2">
                   <%= if @image_one == nil do %>
-                    <img class="py-2 object-contain shadow-lg rounded-lg" 
+                    <img class="py-2 object-contain shadow-lg rounded-lg"
                         src="https://via.placeholder.com/250"  alt="" />
                   <% else %>
-                    <img class="py-2 object-contain shadow-lg rounded-lg" 
+                    <img class="py-2 object-contain shadow-lg rounded-lg"
                         src={"#{@image_three}"}  alt="" />
                   <% end %>
                 </div>
-  
+
                 <div class="space-y-2">
                   <div class="text-lg leading-6 font-medium space-y-1">
                     <br>
@@ -149,7 +149,7 @@
                         </div>
                       </div>
                     <% end %>
-                  
+
                     <%= live_file_input @uploads.product_image_three%>
                     <%= for entry <- @uploads.product_image_three.entries do %>
                       <%= live_img_preview entry, height: 50, class: "mt-2" %>
@@ -159,13 +159,13 @@
                         </div>
                         <a href="#" phx-click="cancel-product-image-three" phx-value-ref="{entry.ref}"
                                 class="ml-2 flex-shrink-0 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                Cancel 
+                                Cancel
                         </a>
-                        <button type="submit" 
+                        <button type="submit"
                                 class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Upload
                         </button>
-                        
+
                       </div>
                     <% end %>
                   </form>
@@ -177,13 +177,13 @@
 
       <!-- Basic information -->
       <div class="space-y-6 sm:space-y-5">
-        <.form let={f} for={@changeset} url="#" phx-submit="add_product" phx-change="form_changed" class="space-y-6 sm:space-y-5">
+        <.form let={f} for={@changeset} phx-submit="add_product" phx-change="form_changed" class="space-y-6 sm:space-y-5">
           <%= hidden_input f, :store_id, value: @store_id %>
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :name, 
-              [phx_debounce: "blur", 
+              <%= text_input f, :name,
+              [phx_debounce: "blur",
                 phx_update: "ignore",
                required: true,
                class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"] %>
@@ -204,8 +204,8 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :description, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= textarea f, :description, 
-                [phx_debounce: "blur", 
+              <%= textarea f, :description,
+                [phx_debounce: "blur",
                 phx_update: "ignore",
                  class: "max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md", rows: 5] %>
               <%= error_tag f, :description %>
@@ -216,7 +216,7 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :barcode, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :barcode, 
+              <%= text_input f, :barcode,
                   class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
                   required: true,
                   phx_update: "ignore",
@@ -228,7 +228,7 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :market_price, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= number_input f, :market_price, 
+              <%= number_input f, :market_price,
                   phx_debounce: "blur",
                   phx_update: "ignore",
                   required: true,
@@ -271,8 +271,8 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :ingredients, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= textarea f, :ingredients, 
-                  phx_debounce: "blur", 
+              <%= textarea f, :ingredients,
+                  phx_debounce: "blur",
                   phx_update: "ignore",
                   class: "max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md", rows: 3 %>
               <%= error_tag f, :ingredients %>
@@ -284,7 +284,7 @@
             <%= label f, :warnings, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
               <%= text_input f, :warnings,
-                  phx_debounce: "blue", 
+                  phx_debounce: "blue",
                   phx_update: "ignore",
                   class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
               <%= error_tag f, :warnings %>
@@ -294,7 +294,7 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :unit_name, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <%= text_input f, :unit_name, 
+              <%= text_input f, :unit_name,
                   required: true,
                   phx_debounce: "blur",
                   phx_update: "ignore",
@@ -306,10 +306,10 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :tags, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :tags, 
+                <%= text_input f, :tags,
                     [phx_debounce: "blur",
                      phx_update: "ignore",
-                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
+                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
                      ] %>
                 <%= error_tag f, :tags %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated tag name.</p>
@@ -319,10 +319,10 @@
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <%= label f, :recipe_tags, class: "block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
               <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <%= text_input f, :recipe_tags, 
+                <%= text_input f, :recipe_tags,
                     [phx_debounce: "blur",
                      phx_update: "ignore",
-                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",  
+                     class: "max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md",
                      ] %>
                 <%= error_tag f, :recipe_tags %>
                 <p class="mt-2 text-sm text-gray-500">Write comma separated recipe tag name.</p>
@@ -337,7 +337,7 @@
                           else: "relative inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-gray-500 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"),
                   ]
               %>
-            </div> 
+            </div>
 
           </div>
         </.form>
@@ -345,5 +345,5 @@
 
      </div>
   </div>
- 
+
 </div>

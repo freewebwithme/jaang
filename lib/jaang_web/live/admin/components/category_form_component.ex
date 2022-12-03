@@ -29,7 +29,7 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
       </div>
 
       <div class="max-w-2xl">
-        <.form let={f} for={@changeset} url="#" phx-submit="save" phx-change="validate" phx-target={@myself} class="space-y-6 sm:space-y-5">
+        <.form let={f} for={@changeset} phx-submit="save" phx-change="validate" phx-target={@myself} class="space-y-6 sm:space-y-5">
           <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <%= label f, :name, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
@@ -88,7 +88,7 @@ defmodule JaangWeb.Admin.Components.CategoryFormComponent do
                 %>
 
               <% end %>
-                <%= live_redirect to: @return_to,
+                <%= push_patch to: @return_to,
                   class: "ml-4 white-button"
                   do %>
                   Cancel

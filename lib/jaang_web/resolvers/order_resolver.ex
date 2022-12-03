@@ -45,7 +45,7 @@ defmodule JaangWeb.Resolvers.OrderResolver do
     end
   end
 
-  def contact_customer_service(_, %{token: token, order_id: order_id, message: message} = args, _) do
+  def contact_customer_service(_, %{token: token, order_id: order_id, message: message} = _args, _) do
     user = AccountManager.get_user_by_session_token(token)
 
     # create customer message

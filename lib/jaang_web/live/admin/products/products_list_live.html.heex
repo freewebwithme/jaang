@@ -7,16 +7,11 @@
       </span>
     </h2>
     <div class="flex-shrink-0">
-      <%= live_redirect "Add product", to:
-          Routes.live_path(
-            @socket,
-            ProductAddLive,
-            store_id: @store_id
-          ),
-          class: "mr-5 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      %>
+      <.link navigate={Routes.live_path(@socket, ProductAddLive, store_id: @store_id)}
+          class="mr-5 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Add product
+      </.link>
     </div>
-
   </div>
 
   <div class="flex justify-between items-center py-3 ml-10 ">
@@ -71,7 +66,7 @@
     <% else %>
     <!-- Product table -->
     <div class="flex flex-col mt-10">
-      
+
 
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -80,13 +75,13 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name 
+                    Name
                   </th>
-                 
+
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Barcode
                   </th>
-                 
+
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Category Name
                   </th>
@@ -94,10 +89,10 @@
                     Sub Category Name
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                   Market Price 
+                   Market Price
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                   Customer Price 
+                   Customer Price
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                    Published?
@@ -123,11 +118,11 @@
                         </div>
                       </div>
                     </td>
-                    
+
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="text-sm text-gray-900"><%= product.barcode %></div>
                     </td>
-                    
+
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span class="text-sm text-gray-900">
                         <%= product.category_name %>
@@ -159,20 +154,19 @@
                       <%= if product.published do %>
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           Yes
-                        </span>                        
+                        </span>
                       <% else %>
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                          No 
+                          No
                         </span>
 
                       <% end %>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <%= live_redirect "View", to:
-                           Routes.live_path(
-                             @socket,
-                             ProductDetailLive, @store_id, product.id, store_name: @store_name),
-                          class: "text-indigo-600 hover:text-indigo-900" %>
+                      <.link navigate={Routes.live_path(@socket, ProductDetailLive, @store_id, product.id, store_name: @store_name)}
+                          class="text-indigo-600 hover:text-indigo-900">
+                         View
+                      </.link>
                     </td>
                   </tr>
                 <% end %>

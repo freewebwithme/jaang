@@ -43,7 +43,7 @@ defmodule Jaang.Admin.Order.Orders do
           order_by: [{^sort_order, ^sort_by}]
 
       {:search_by, %{search_by: search_by, search_term: term}}, query ->
-        search_pattern = "%#{term}"
+        #search_pattern = "%#{term}"
         search_by = String.to_atom(search_by)
 
         case search_by do

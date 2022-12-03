@@ -27,7 +27,7 @@ defmodule JaangWeb.Admin.Components.MaintenanceFormComponent do
       </div>
 
       <div class="max-w-2xl">
-        <.form let={f} for={@changeset} url="#" phx-submit="create" phx-change="validate" phx-target={@myself} class="space-y-6 sm:space-y-5">
+        <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" phx-target={@myself} class="space-y-6 sm:space-y-5">
 
           <div class="sm:grid sm:grid-cols-5 sm:gap-4 sm:items-start sm:pt-5 sm:pb-5">
             <%= label f, :message, class: "block text-center text-sm font-medium text-gray-700 sm:mt-px sm:pt-2" %>
@@ -84,11 +84,11 @@ defmodule JaangWeb.Admin.Components.MaintenanceFormComponent do
                 %>
 
               <% end %>
-                <%= live_redirect to: @return_to,
-                  class: "ml-4 relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                  do %>
+                <.link navigate={@return_to}
+                  class="ml-4 relative inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
                   Cancel
-                <% end %>
+                </.link>
             </div>
           </div>
         </.form>
@@ -129,7 +129,7 @@ defmodule JaangWeb.Admin.Components.MaintenanceFormComponent do
         socket =
           socket
           |> put_flash(:info, "New Maintenance created")
-          |> push_redirect(to: socket.assigns.return_to, replace: true)
+          |> push_navigate(to: socket.assigns.return_to, replace: true)
 
         {:noreply, socket}
 
@@ -155,7 +155,7 @@ defmodule JaangWeb.Admin.Components.MaintenanceFormComponent do
         socket =
           socket
           |> put_flash(:info, "Maintenance updated successfully")
-          |> push_redirect(to: socket.assigns.return_to, replace: true)
+          |> push_navigate(to: socket.assigns.return_to, replace: true)
 
         {:noreply, socket}
 
@@ -164,7 +164,7 @@ defmodule JaangWeb.Admin.Components.MaintenanceFormComponent do
           socket
           |> put_flash(:error, "Can't edit archived maintenance")
           |> assign(:changeset, changeset)
-          |> push_redirect(to: socket.assigns.return_to, replace: true)
+          |> push_navigate(to: socket.assigns.return_to, replace: true)
 
         {:noreply, socket}
 

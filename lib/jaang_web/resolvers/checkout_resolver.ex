@@ -1,7 +1,7 @@
 defmodule JaangWeb.Resolvers.CheckoutResolver do
-  alias Jaang.{AccountManager, OrderManager, InvoiceManager}
+  alias Jaang.{AccountManager, OrderManager}
   alias Jaang.Checkout.Calculate
-  alias Jaang.Invoice.{StoreTotalAmount, TotalAmount}
+  alias Jaang.Invoice.{StoreTotalAmount}
 
   @doc """
   Calculate final total amount

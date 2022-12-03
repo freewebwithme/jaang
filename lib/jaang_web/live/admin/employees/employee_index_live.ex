@@ -46,7 +46,7 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
 
     socket =
       socket
-      |> push_redirect(to: Routes.live_path(socket, EmployeesOverviewLive))
+      |> push_navigate(to: Routes.live_path(socket, EmployeesOverviewLive))
       |> put_flash(:info, "Employee is deleted successfully")
 
     {:noreply, socket}
@@ -192,23 +192,21 @@ defmodule JaangWeb.Admin.Employees.EmployeeIndexLive do
   defp put_flash_and_redirect_for_edit_action(socket) do
     socket
     |> put_flash(:info, "Employee is updated successfully")
-    |> push_redirect(to: Routes.live_path(socket, EmployeeDetailLive, socket.assigns.employee.id))
+    |> push_navigate(to: Routes.live_path(socket, EmployeeDetailLive, socket.assigns.employee.id))
   end
 
   defp put_flash_and_redirect_for_add_action(socket) do
     socket
     |> put_flash(:info, "Employee is created successfully")
-    |> push_redirect(to: Routes.live_path(socket, EmployeesOverviewLive))
+    |> push_navigate(to: Routes.live_path(socket, EmployeesOverviewLive))
   end
 
   def employee_has_role?(employee, role) do
-    result = role in employee.roles
-    result
+    role in employee.roles
   end
 
   def employee_has_assigned_store?(employee, store) do
-    result = store in employee.assigned_stores
-    result
+    store in employee.assigned_stores
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do

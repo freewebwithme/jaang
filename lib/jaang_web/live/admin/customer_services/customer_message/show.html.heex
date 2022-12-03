@@ -49,7 +49,7 @@
              <div class="relative border rounded-tl-md rounded-tr-md p-4 flex">
                <div class="flex items-center h-5">
                  <input id={"#{status.status}"} name="customer-message-status" type="radio"
-                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 cursor-pointer border-gray-300" 
+                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 cursor-pointer border-gray-300"
                         value={"#{status.status}"}
                         checked={@current_status == status.status}>
                </div>
@@ -63,7 +63,7 @@
                    <%= status.desc %>
                  </span>
                </label>
-             </div>          
+             </div>
              <% end %>
            </div>
           </fieldset>
@@ -94,10 +94,8 @@
          <p class="flex-1 text-right font-bold"><%= @customer_message.user.profile.phone %></p>
        </div>
        <div class="content-end">
-         <%= live_redirect "View detail",
-             to: Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @customer_message.user.id),
-             class: "text-indigo-600 hover:text-indigo-900"
-         %>
+          <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Customers.CustomerDetailLive, @customer_message.user.id)}
+             class="text-indigo-600 hover:text-indigo-900">View detail</.link>
        </div>
       </div>
     </div>
@@ -106,7 +104,7 @@
       <div class="py-7 px-10">
        <h2 class="text-xl text-gray-900 mb-5 font-bold">Order information</h2>
          <div class="flex items-center">
-           <div class="flex-shrink-0 h-14 w-14 ">              
+           <div class="flex-shrink-0 h-14 w-14 ">
              <img class="h-14 w-14 rounded-full" src={"#{@customer_message.order.store_logo}"} alt="store logo">
            </div>
            <div class="ml-4">
@@ -141,10 +139,8 @@
          </div>
          <% end %>
          <div class="content-end">
-           <%= live_redirect "View detail",
-               to: Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, @customer_message.order.id),
-               class: "text-indigo-600 hover:text-indigo-900"
-           %>
+          <.link navigate={Routes.live_path(@socket, JaangWeb.Admin.Orders.OrderDetailLive, @customer_message.order.id)}
+             class="text-indigo-600 hover:text-indigo-900">View detail</.link>
          </div>
      </div>
     </div>

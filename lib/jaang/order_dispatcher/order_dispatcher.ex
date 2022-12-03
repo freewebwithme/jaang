@@ -1,5 +1,4 @@
 defmodule Jaang.OrderDispatcher do
-  alias Jaang.Invoice
   alias Jaang.Admin.ShopperManager
 
   @doc """
@@ -30,6 +29,6 @@ defmodule Jaang.OrderDispatcher do
   end
 
   def find_available_shopper(store_id) do
-    shoppers = ShopperManager.get_best_available_shopper(store_id)
+    ShopperManager.get_best_available_shopper(store_id)
   end
 end

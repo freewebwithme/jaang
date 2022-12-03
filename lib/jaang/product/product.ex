@@ -1,7 +1,6 @@
 defmodule Jaang.Product do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Jaang.Repo
   alias Jaang.Product.{Tag, RecipeTag}
 
   import Ecto.Query, warn: false

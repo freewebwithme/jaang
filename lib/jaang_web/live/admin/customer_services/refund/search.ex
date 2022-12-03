@@ -66,7 +66,7 @@ defmodule JaangWeb.Admin.CustomerServices.RefundLive.Search do
     socket = assign(socket, refund_requests: refund_requests, has_next_page: has_next_page)
 
     socket =
-      push_redirect(
+      push_navigate(
         socket,
         to:
           Routes.live_path(
