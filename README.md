@@ -1,4 +1,4 @@
-# Backend server for Jaang Cart
+# Backend server for Jaang Cart(https://jaangcart.com/)
 
 To start your Phoenix server:
 
